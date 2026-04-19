@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marlon Palomares — AI Automation & Google Ads Specialist</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060810;
+    --bg2:     #0b0e1a;
+    --bg3:     #0f1322;
+    --accent:  #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --green:   #00ff88;
+    --text:    #e8eeff;
+    --muted:   #6b7299;
+    --card:    rgba(255,255,255,0.03);
+    --border:  rgba(255,255,255,0.07);
+    --r:       12px;
+    --glow:    0 0 40px rgba(0,212,255,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px var(--accent); }
+  .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(0,212,255,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: transform 0.3s cubic-bezier(.23,1,.32,1), width 0.2s, height 0.2s; }
+
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+  .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -8s; }
+  .orb-3 { width: 350px; height: 350px; background: var(--accent3); top: 50%; left: 55%; animation-delay: -14s; }
+  @keyframes orb-drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-50px) scale(1.1); } 100% { transform: translate(-40px,30px) scale(0.9); } }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5vw; backdrop-filter: blur(20px); background: rgba(6,8,16,0.7); border-bottom: 1px solid var(--border); animation: slide-down 0.6s ease both; }
+  @keyframes slide-down { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+  .logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); letter-spacing: 0.05em; }
+  .logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 1.6rem; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: 0.85rem; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-dropdown { position: relative; }
+  .nav-dropdown > a { display: flex; align-items: center; gap: 0.3rem; }
+  .nav-dropdown > a::after { display: none; }
+  .nav-dropdown-arrow { font-size: 0.6rem; transition: transform 0.2s; }
+  .nav-dropdown:hover .nav-dropdown-arrow { transform: rotate(180deg); }
+  .nav-dropdown-menu { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); background: rgba(11,14,26,0.97); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; min-width: 210px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(-50%) translateY(-6px); z-index: 200; }
+  .nav-dropdown:hover .nav-dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+  .nav-dropdown-menu a { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; border-radius: 5px; font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .nav-dropdown-menu a:hover { background: rgba(0,212,255,0.08); color: var(--text); }
+  .nav-dropdown-menu a::after { display: none !important; }
+  .nav-dropdown-menu .dm-icon { width: 22px; text-align: center; font-size: 0.85rem; flex-shrink: 0; }
+  .nav-dropdown-menu hr { border: none; border-top: 1px solid var(--border); margin: 0.3rem 0; }
+
+  .nav-cta { font-family: 'Space Mono', monospace; font-size: 0.78rem; padding: 0.55rem 1.3rem; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; letter-spacing: 0.06em; }
+  .nav-cta:hover { background: rgba(0,212,255,0.1); box-shadow: 0 0 20px rgba(0,212,255,0.25); transform: translateY(-1px); }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4rem; padding: 10rem 5vw 6rem; position: relative; }
+  .hero-content { display: flex; flex-direction: column; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; border: 1px solid rgba(0,255,136,0.3); background: rgba(0,255,136,0.06); border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; animation: fade-up 0.7s ease 0.2s both; width: fit-content; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); } }
+  .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; animation: fade-up 0.7s ease 0.3s both; }
+  .hero-title { font-size: clamp(3rem, 7.5vw, 7rem); font-weight: 900; line-height: 1.0; letter-spacing: -2px; margin-bottom: 0.5rem; animation: fade-up 0.7s ease 0.4s both; }
+  .hero-title .name { display: block; color: var(--text); }
+  .hero-title .role { display: block; background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200%; animation: grad-shift 4s ease infinite; }
+  @keyframes grad-shift { 0%,100% { background-position:0%; } 50% { background-position:100%; } }
+  .hero-sub { font-size: clamp(1rem, 1.8vw, 1.15rem); font-weight: 400; color: var(--muted); max-width: 560px; line-height: 1.8; margin: 2rem 0 2.5rem; animation: fade-up 0.7s ease 0.55s both; }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; animation: fade-up 0.7s ease 0.7s both; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; background: var(--accent); color: var(--bg); font-weight: 700; font-size: 0.9rem; text-decoration: none; border-radius: 4px; transition: transform 0.2s, box-shadow 0.25s; box-shadow: 0 0 30px rgba(0,212,255,0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.5); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: 1px solid var(--border); color: var(--text); font-weight: 500; font-size: 0.9rem; text-decoration: none; border-radius: 4px; background: var(--card); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+  .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
+  .hero-meta { display: flex; gap: 2.5rem; flex-wrap: wrap; margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--border); animation: fade-up 0.7s ease 0.85s both; }
+  .meta-num { font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.3rem; }
+  .meta-label { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+  .scroll-indicator { position: absolute; bottom: 2.5rem; left: 5vw; display: flex; align-items: center; gap: 0.8rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); animation: fade-up 0.7s ease 1.1s both; }
+  .scroll-line { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, var(--muted)); animation: scroll-pulse 2s ease-in-out infinite; }
+  @keyframes scroll-pulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+
+  .hero-profile { animation: fade-up 0.8s ease 0.5s both; flex-shrink: 0; position: relative; }
+  .profile-frame { width: 280px; height: 340px; position: relative; border-radius: 20px; overflow: hidden; }
+  .profile-frame::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 2; pointer-events: none; }
+  .profile-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,8,16,0.5) 0%, transparent 60%); z-index: 1; pointer-events: none; border-radius: 20px; }
+  .profile-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; border-radius: 20px; }
+  .profile-glow { position: absolute; inset: -20px; border-radius: 30px; background: radial-gradient(ellipse at center, rgba(0,212,255,0.15) 0%, rgba(123,47,255,0.08) 50%, transparent 70%); z-index: -1; animation: profile-pulse 4s ease-in-out infinite; }
+  @keyframes profile-pulse { 0%,100% { opacity:0.6; transform:scale(1); } 50% { opacity:1; transform:scale(1.04); } }
+  .profile-badge { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--bg2), var(--bg3)); border: 1px solid rgba(0,255,136,0.4); border-radius: 30px; padding: 0.45rem 1.1rem; display: flex; align-items: center; gap: 0.45rem; white-space: nowrap; box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 16px rgba(0,255,136,0.12); z-index: 3; }
+  .pb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
+  .pb-text { font-family: 'Space Mono', monospace; font-size: 0.64rem; letter-spacing: 0.08em; color: var(--green); text-transform: uppercase; }
+
+  section { padding: 6rem 5vw; }
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.8rem; }
+  .section-sub { color: var(--muted); font-weight: 400; max-width: 480px; line-height: 1.75; margin-bottom: 3rem; }
+
+  .marquee-wrap { overflow: hidden; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 5rem; background: rgba(0,212,255,0.02); }
+  .marquee { display: flex; gap: 3rem; width: max-content; animation: marquee 22s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  .marquee-item { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.8rem; white-space: nowrap; }
+  .marquee-item .dot { color: var(--accent); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .service-card { background: var(--bg); padding: 2.2rem; position: relative; overflow: hidden; transition: background 0.3s; }
+  .service-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+  .service-card:nth-child(1)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .service-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .service-card:nth-child(3)::before { background: linear-gradient(135deg, rgba(255,107,53,0.07), transparent); }
+  .service-card:nth-child(4)::before { background: linear-gradient(135deg, rgba(0,255,136,0.07), transparent); }
+  .service-card:nth-child(5)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .service-card:nth-child(6)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .service-card:hover::before { opacity: 1; }
+  .service-card:hover { background: var(--bg2); }
+  .service-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
+  .service-icon { width: 52px; height: 52px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; }
+  .si-1 { background: rgba(0,212,255,0.1); } .si-2 { background: rgba(123,47,255,0.1); } .si-3 { background: rgba(255,107,53,0.1); } .si-4 { background: rgba(0,255,136,0.1); } .si-5 { background: rgba(0,212,255,0.1); } .si-6 { background: rgba(123,47,255,0.1); }
+  .service-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .service-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
+  .service-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .tool-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; padding: 0.2rem 0.6rem; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); letter-spacing: 0.05em; }
+
+  .portfolio-links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; margin-top: 0; }
+  .pl-card { border: 1px solid var(--border); border-radius: var(--r); padding: 1.6rem; background: var(--card); text-decoration: none; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s; opacity: 0; transform: translateY(20px); }
+  .pl-card.in-view { opacity: 1; transform: none; transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.25s, background 0.25s, box-shadow 0.25s; }
+  .pl-card:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.05); transform: translateY(-4px) !important; box-shadow: 0 16px 50px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.1); }
+  .pl-icon { font-size: 2rem; margin-bottom: 0.3rem; }
+  .pl-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .pl-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .pl-arrow { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); margin-top: auto; padding-top: 0.6rem; letter-spacing: 0.05em; }
+
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+  .project-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--card); transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s; opacity: 0; transform: translateY(30px); }
+  .project-card.in-view { opacity: 1; transform: none; transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
+  .project-card:hover { border-color: rgba(0,212,255,0.35); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow); transform: translateY(-4px) !important; }
+  .project-thumb { aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; overflow: hidden; }
+  .project-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, var(--bg)); }
+  .p-t-1 { background: linear-gradient(135deg, #001520 0%, #003060 60%, #060810 100%); }
+  .p-t-2 { background: linear-gradient(135deg, #0a0020 0%, #2a0060 60%, #060810 100%); }
+  .p-t-3 { background: linear-gradient(135deg, #1a0800 0%, #50200a 60%, #060810 100%); }
+  .p-t-4 { background: linear-gradient(135deg, #001a0a 0%, #00402a 60%, #060810 100%); }
+  .p-t-5 { background: linear-gradient(135deg, #100a00 0%, #402800 60%, #060810 100%); }
+  .project-inner { padding: 1.4rem; }
+  .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  .tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; font-weight: 400; padding: 0.2rem 0.65rem; border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-purple { background: rgba(123,47,255,0.1); color: #a78bfa; border: 1px solid rgba(123,47,255,0.2); }
+  .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .tag-green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .project-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .project-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
+  .project-result { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--green); margin-bottom: 1.2rem; font-weight: 600; }
+  .project-result::before { content: '▲'; font-size: 0.65rem; }
+  .project-links { display: flex; gap: 0.75rem; }
+  .proj-link { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .proj-link:hover { color: var(--text); }
+
+  .timeline { position: relative; padding-left: 1.8rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent); }
+  .tl-item { position: relative; padding: 0 0 3rem 2.2rem; opacity: 0; transform: translateX(-20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .tl-item.in-view { opacity: 1; transform: none; }
+  .tl-dot { position: absolute; left: -2.5rem; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 12px rgba(0,212,255,0.5); }
+  .tl-period { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+  .tl-role { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .tl-company { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem; }
+  .tl-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.75; max-width: 560px; }
+  .tl-desc ul { padding-left: 1.2rem; margin-top: 0.5rem; }
+  .tl-desc li { margin-bottom: 0.3rem; }
+
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
+  .cert-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--card); cursor: pointer; transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; opacity: 0; transform: translateY(20px); display: flex; flex-direction: column; }
+  .cert-card.in-view { opacity: 1; transform: none; transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.25s, box-shadow 0.25s; }
+  .cert-card:hover { border-color: rgba(0,212,255,0.45); background: rgba(0,212,255,0.04); transform: translateY(-4px) !important; box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.1); }
+  .cert-thumb { width: 100%; aspect-ratio: 4 / 3; background: #0a0c18; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+  .cert-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 8px; display: block; transition: transform 0.35s ease; }
+  .cert-card:hover .cert-thumb img { transform: scale(1.06); }
+  .cert-view-hint { position: absolute; bottom: 7px; right: 7px; background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 3px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .cert-card:hover .cert-view-hint { opacity: 1; }
+  .cert-badge-overlay { position: absolute; top: 7px; left: 7px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; border: 1px solid; font-family: 'Space Mono', monospace; }
+  .cbo-google  { color: #4fc3f7; background: rgba(79,195,247,.12); border-color: rgba(79,195,247,.3); }
+  .cbo-semrush { color: #ff6b35; background: rgba(255,107,53,.12); border-color: rgba(255,107,53,.3); }
+  .cbo-star    { color: var(--green); background: rgba(0,255,136,.1); border-color: rgba(0,255,136,.3); }
+  .cert-footer { padding: 12px 14px 14px; border-top: 1px solid var(--border); flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .cert-name { font-size: 0.82rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .cert-org { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--accent); letter-spacing: 0.07em; margin-top: 2px; }
+
+  .tools-band { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .tool-item { background: var(--bg); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; transition: background 0.2s; text-align: center; }
+  .tool-item:hover { background: var(--bg2); }
+  .tool-emoji { font-size: 1.6rem; }
+  .tool-name { font-size: 0.78rem; font-weight: 600; }
+  .tool-cat { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
+
+  /* ── CONTACT ── */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field label { font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field textarea, .field select { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 0.8rem 1rem; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem; transition: border-color 0.2s, box-shadow 0.2s; resize: none; width: 100%; box-sizing: border-box; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+  .field textarea { min-height: 130px; }
+  .contact-info { display: flex; flex-direction: column; gap: 1.2rem; }
+  .contact-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--r); background: var(--card); transition: border-color 0.2s, background 0.2s; }
+  .contact-item:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.04); }
+  .c-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .c-i-1 { background: rgba(0,212,255,0.1); } .c-i-2 { background: rgba(123,47,255,0.1); } .c-i-3 { background: rgba(0,255,136,0.1); } .c-i-4 { background: rgba(255,107,53,0.1); }
+  .c-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+  .c-value { font-weight: 600; font-size: 0.9rem; }
+
+  /* ── CONTACT FORM UPGRADES ── */
+  @keyframes cfReplyIn { from { opacity:0; transform:translateY(16px) scale(0.98); } to { opacity:1; transform:none; } }
+  .cf-spinner { width:16px; height:16px; flex-shrink:0; border:2px solid rgba(0,212,255,0.2); border-top-color:var(--accent); border-radius:50%; animation:cfSpin 0.7s linear infinite; display:inline-block; vertical-align:middle; margin-right:6px; }
+  @keyframes cfSpin { to { transform:rotate(360deg); } }
+  #cf-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  #cf-error { display:none; color:#ff6b6b; font-size:0.82rem; padding:0.65rem 1rem; border:1px solid rgba(255,107,107,0.25); border-radius:6px; background:rgba(255,107,107,0.06); }
+  #cf-loading { display:none; align-items:center; gap:0.7rem; font-size:0.84rem; color:var(--muted); margin-top:0.5rem; }
+  #cf-loading.show { display:flex !important; }
+  #cf-reply-card { display:none; margin-top:1.5rem; border:1px solid rgba(0,212,255,0.3); border-radius:14px; padding:1.6rem; background:linear-gradient(135deg,rgba(0,212,255,0.04),rgba(123,47,255,0.03)); animation:cfReplyIn 0.5s cubic-bezier(.23,1,.32,1) both; }
+  #cf-saved-badge { display:none; align-items:center; gap:0.4rem; font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--green); letter-spacing:0.06em; }
+  #cf-saved-badge.show { display:flex !important; }
+
+  .refs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; }
+  .ref-card { border: 1px solid var(--border); border-radius: var(--r); padding: 1.5rem; background: var(--card); transition: border-color 0.25s, background 0.25s; }
+  .ref-card:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.03); }
+  .ref-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .ref-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.3rem; font-weight: 500; }
+  .ref-org { font-size: 0.78rem; color: var(--muted); }
+
+  .social-strip { position: fixed; left: 2rem; bottom: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; z-index: 50; }
+  .social-strip::after { content: ''; display: block; width: 1px; height: 70px; background: linear-gradient(to bottom, var(--muted), transparent); margin-top: 0.5rem; }
+  .s-icon { width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; background: var(--card); color: var(--muted); transition: border-color 0.2s, background 0.2s, transform 0.2s, color 0.2s; }
+  .s-icon:hover { border-color: var(--accent); background: rgba(0,212,255,0.1); transform: translateY(-2px); color: var(--accent); }
+
+  footer { padding: 2rem 5vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  @keyframes fade-up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  .reveal { opacity:0; transform:translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity:1; transform:none; }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  .highlight-box { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 1.5rem; background: rgba(0,212,255,0.04); margin-bottom: 3rem; }
+  .highlight-box p { font-size: 0.9rem; color: var(--text); line-height: 1.8; }
+  .highlight-box strong { color: var(--accent); }
+
+  #cert-lb { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.92); backdrop-filter: blur(12px); z-index: 2000; align-items: center; justify-content: center; padding: 24px; }
+  #cert-lb.on { display: flex; }
+  .clb-box { position: relative; max-width: 820px; width: 100%; animation: clbIn .22s cubic-bezier(.23,1,.32,1); }
+  @keyframes clbIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+  #clb-img { width: 100%; max-height: 82vh; object-fit: contain; border-radius: 10px; display: block; box-shadow: 0 30px 100px rgba(0,0,0,.8), 0 0 40px rgba(0,212,255,0.08); transition: opacity .13s; border: 1px solid rgba(0,212,255,0.15); }
+  #clb-cap { text-align: center; margin-top: 14px; font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .08em; color: rgba(255,255,255,.45); text-transform: uppercase; }
+  #clb-counter { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(255,255,255,.3); background: rgba(255,255,255,.06); padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+  .clb-close { position: absolute; top: -14px; right: -14px; width: 36px; height: 36px; border-radius: 50%; background: #0b0e1a; border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .15s, box-shadow .15s; line-height: 1; box-shadow: 0 0 12px rgba(0,212,255,0.15); }
+  .clb-close:hover { background: rgba(0,212,255,0.15); box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+  .clb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 50%; background: rgba(11,14,26,.95); border: 1px solid rgba(0,212,255,0.25); color: var(--accent); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .15s, box-shadow .15s; }
+  .clb-nav:hover { background: rgba(0,212,255,0.1); box-shadow: 0 0 16px rgba(0,212,255,0.2); }
+  .clb-prev { left: -56px; }
+  .clb-next { right: -56px; }
+
+  /* CHATBOT */
+  #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.3); transition: transform 0.25s, box-shadow 0.25s; animation: fab-pulse 3s ease-in-out infinite; }
+  @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
+  #chat-fab:hover { transform: scale(1.1); }
+  #chat-fab svg { width: 26px; height: 26px; fill: #060810; }
+  #chat-fab .fab-badge { position: absolute; top: -3px; right: -3px; width: 14px; height: 14px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg); animation: pulse-dot 2s ease-in-out infinite; }
+  #chat-window { position: fixed; bottom: 6.5rem; right: 2rem; z-index: 499; width: 370px; max-width: calc(100vw - 2rem); background: rgba(11,14,26,0.97); border: 1px solid rgba(0,212,255,0.2); border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 40px rgba(0,212,255,0.07); backdrop-filter: blur(24px); display: flex; flex-direction: column; overflow: hidden; transform: scale(0.88) translateY(20px); opacity: 0; pointer-events: none; transition: transform 0.3s cubic-bezier(.23,1,.32,1), opacity 0.3s ease; transform-origin: bottom right; }
+  #chat-window.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+  .chat-header { padding: 1rem 1.1rem 0.85rem; background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.7rem; }
+  .chat-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
+  .chat-header-info { flex: 1; }
+  .chat-header-name { font-size: 0.88rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .chat-header-status { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--green); letter-spacing: 0.06em; display: flex; align-items: center; gap: 0.35rem; margin-top: 2px; }
+  .chat-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+  .chat-close-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: var(--muted); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; cursor: none; transition: background 0.2s, color 0.2s; }
+  .chat-close-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+  .chat-powered { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: center; padding: 0.35rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.2); }
+  .chat-powered span { color: rgba(0,212,255,0.6); }
+  #chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; min-height: 280px; max-height: 340px; scroll-behavior: smooth; }
+  #chat-messages::-webkit-scrollbar { width: 3px; }
+  #chat-messages::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 2px; }
+  .chat-msg { display: flex; gap: 0.5rem; align-items: flex-end; animation: msg-in 0.25s cubic-bezier(.23,1,.32,1); }
+  @keyframes msg-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  .chat-msg.user { flex-direction: row-reverse; }
+  .msg-bubble { max-width: 82%; padding: 0.6rem 0.85rem; border-radius: 14px; font-size: 0.84rem; line-height: 1.55; }
+  .chat-msg.bot .msg-bubble { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.07); color: var(--text); border-bottom-left-radius: 4px; }
+  .chat-msg.user .msg-bubble { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #060810; font-weight: 600; border-bottom-right-radius: 4px; }
+  .msg-micro-avatar { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+  .chat-typing { display: flex; align-items: center; gap: 4px; padding: 0.55rem 0.85rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; border-bottom-left-radius: 4px; width: fit-content; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: typing-bounce 1.2s ease-in-out infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing-bounce { 0%,60%,100% { transform:translateY(0); opacity:0.4; } 30% { transform:translateY(-5px); opacity:1; } }
+  .chat-suggestions { display: flex; gap: 0.4rem; flex-wrap: wrap; padding: 0 1rem 0.6rem; }
+  .chat-suggestion { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.04em; padding: 0.3rem 0.65rem; border-radius: 20px; border: 1px solid rgba(0,212,255,0.25); color: var(--accent); background: rgba(0,212,255,0.06); cursor: none; transition: background 0.2s, border-color 0.2s; white-space: nowrap; }
+  .chat-suggestion:hover { background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.5); }
+  .chat-input-row { display: flex; gap: 0.5rem; padding: 0.75rem 1rem 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.2); }
+  #chat-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.55rem 0.85rem; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.85rem; outline: none; resize: none; height: 40px; line-height: 1.4; transition: border-color 0.2s, box-shadow 0.2s; }
+  #chat-input:focus { border-color: rgba(0,212,255,0.4); box-shadow: 0 0 0 3px rgba(0,212,255,0.08); }
+  #chat-input::placeholder { color: var(--muted); }
+  #chat-send { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: none; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s, transform 0.2s; }
+  #chat-send:hover { opacity: 0.85; transform: scale(1.05); }
+  #chat-send:disabled { opacity: 0.35; transform: none; }
+  #chat-send svg { width: 16px; height: 16px; fill: #060810; }
+
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-profile { display: flex; justify-content: center; order: -1; margin-bottom: 2rem; } .profile-frame { width: 200px; height: 240px; } }
+  @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="social-strip">
+  <a href="https://linktr.ee/MPDIGITALSOLUTIONS" class="s-icon" title="Linktree" target="_blank">🌿</a>
+  <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" class="s-icon" title="Book a Call" target="_blank">📅</a>
+  <a href="mailto:marlon@mpalomaresdigitalsolutions.site" class="s-icon" title="Email">✉</a>
+</div>
+
+<nav>
+  <div class="logo">MP<span>.dev</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li class="nav-dropdown">
+      <a href="#more-work">More Work <span class="nav-dropdown-arrow">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="meta.html" target="_blank"><span class="dm-icon">📘</span> Meta Ads Work</a>
+        <a href="ghl-work-samples.html" target="_blank"><span class="dm-icon">🤖</span> GHL Work Samples</a>
+        <a href="zapier-automation-workflow.html" target="_blank"><span class="dm-icon">⚡</span> Zapier Automation</a>
+        <hr>
+        <a href="resilience-therapy-case-study.html" target="_blank"><span class="dm-icon">🧠</span> Resilience Therapy</a>
+        <a href="certifications.html" target="_blank"><span class="dm-icon">🏆</span> All Certifications</a>
+      </div>
+    </li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+</nav>
+
+<div class="wrapper">
+
+  <section class="hero" id="about">
+    <div class="hero-content">
+      <div class="hero-badge"><div class="badge-dot"></div> Available for freelance & full-time</div>
+      <div class="hero-eyebrow">Marlon Palomares · Manila, Philippines 🇵🇭</div>
+      <h1 class="hero-title">
+        <span class="name">AI Automation</span>
+        <span class="role">& Ads Specialist</span>
+      </h1>
+      <p class="hero-sub">I scale service businesses with <strong>high-intent leads</strong> and <strong>AI-driven automation</strong>. Specialized in Google Ads, GHL &amp; Zapier workflows, and Claude Code — turning clicks into <strong>booked jobs</strong>.</p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary">View My Work <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-ghost">📅 Book a Free Call</a>
+        <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="btn-ghost">Case Study →</a>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-item"><div class="meta-num">$10K+</div><div class="meta-label">Monthly Ad Budget Managed</div></div>
+        <div class="meta-item"><div class="meta-num">2+ Yrs</div><div class="meta-label">US Client Experience</div></div>
+        <div class="meta-item"><div class="meta-num">8</div><div class="meta-label">Professional Certifications</div></div>
+        <div class="meta-item"><div class="meta-num">Top 1</div><div class="meta-label">AI Automation Expert 🇵🇭</div></div>
+      </div>
+    </div>
+    <div class="hero-profile">
+      <div class="profile-glow"></div>
+      <div class="profile-frame">
+        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;\'>👤</div>';" alt="Marlon Palomares">
+      </div>
+      <div class="profile-badge"><div class="pb-dot"></div><div class="pb-text">Top 1 AI Expert 🇵🇭</div></div>
+    </div>
+    <div class="scroll-indicator"><div class="scroll-line"></div> Scroll to explore</div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <div class="marquee-item"><span class="dot">◆</span> Google Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> GoHighLevel</div>
+      <div class="marquee-item"><span class="dot">◆</span> Zapier</div>
+      <div class="marquee-item"><span class="dot">◆</span> Claude Code</div>
+      <div class="marquee-item"><span class="dot">◆</span> AI Automation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Analytics</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Tag Manager</div>
+      <div class="marquee-item"><span class="dot">◆</span> Lead Generation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Meta Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> Funnel Building</div>
+      <div class="marquee-item"><span class="dot">◆</span> Conversion Tracking</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> GoHighLevel</div>
+      <div class="marquee-item"><span class="dot">◆</span> Zapier</div>
+      <div class="marquee-item"><span class="dot">◆</span> Claude Code</div>
+      <div class="marquee-item"><span class="dot">◆</span> AI Automation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Analytics</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Tag Manager</div>
+      <div class="marquee-item"><span class="dot">◆</span> Lead Generation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Meta Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> Funnel Building</div>
+      <div class="marquee-item"><span class="dot">◆</span> Conversion Tracking</div>
+    </div>
+  </div>
+
+  <section style="padding-top:0;">
+    <div class="highlight-box reveal">
+      <p>I help service businesses — junk removal, plumbing, home services, and more — generate <strong>high-intent leads from Google</strong> while automating follow-ups with <strong>GoHighLevel (GHL) & Zapier</strong> so no lead slips through the cracks. I was personally trained by <strong>Ian Baillo</strong>, one of the Philippines' top Google Ads experts, and certified as the <strong>Top 1 AI Automation Expert</strong> by Technical Virtual Assistants.ph. I also build intelligent AI workflows using <strong>Claude Code</strong> to supercharge marketing operations.</p>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="section-tag">What I do</div>
+    <h2 class="section-title reveal">Services &<br>Expertise</h2>
+    <p class="section-sub reveal">Full-funnel specialist: from ad click to booked appointment, I handle the entire lead journey.</p>
+    <div class="services-grid reveal">
+      <div class="service-card"><div class="service-num">01</div><div class="service-icon si-1">🎯</div><div class="service-name">Google Ads Management</div><div class="service-desc">Search, Display, Shopping & Video campaigns optimized for maximum ROI. Managing up to $10K+/month budgets for service businesses.</div><div class="service-tools"><span class="tool-tag">Google Ads</span><span class="tool-tag">Keyword Research</span><span class="tool-tag">Ad Copy</span><span class="tool-tag">Bidding Strategy</span></div></div>
+      <div class="service-card"><div class="service-num">02</div><div class="service-icon si-2">🤖</div><div class="service-name">AI Automation (GHL + Zapier)</div><div class="service-desc">Build intelligent lead nurturing funnels, automated follow-up sequences, and multi-step Zaps that turn enquiries into conversions on autopilot.</div><div class="service-tools"><span class="tool-tag">GoHighLevel</span><span class="tool-tag">Zapier</span><span class="tool-tag">Funnels</span><span class="tool-tag">Workflows</span></div></div>
+      <div class="service-card"><div class="service-num">03</div><div class="service-icon si-3">⚡</div><div class="service-name">Claude Code Automation</div><div class="service-desc">Leverage AI with Claude Code to automate repetitive marketing tasks, build custom scripts, and create AI-powered reporting dashboards.</div><div class="service-tools"><span class="tool-tag">Claude Code</span><span class="tool-tag">Anthropic API</span><span class="tool-tag">Custom Scripts</span></div></div>
+      <div class="service-card"><div class="service-num">04</div><div class="service-icon si-4">📊</div><div class="service-name">Conversion Tracking & Analytics</div><div class="service-desc">Precise GTM setup, Google Analytics 4 configuration, and conversion tracking to ensure you know exactly what's working and why.</div><div class="service-tools"><span class="tool-tag">GTM</span><span class="tool-tag">GA4</span><span class="tool-tag">Conversion Tracking</span></div></div>
+      <div class="service-card"><div class="service-num">05</div><div class="service-icon si-5">✍️</div><div class="service-name">Ad Copywriting</div><div class="service-desc">High-converting ad copy crafted for US audiences. 2+ years writing copy that resonates with American consumers for service-based businesses.</div><div class="service-tools"><span class="tool-tag">Search Ads</span><span class="tool-tag">Meta Ads</span><span class="tool-tag">Landing Pages</span></div></div>
+      <div class="service-card"><div class="service-num">06</div><div class="service-icon si-6">🔮</div><div class="service-name">Lead Generation Funnels</div><div class="service-desc">End-to-end funnel design from ad to booked appointment — optimized for junk removal, plumbing, HVAC, and other home service businesses.</div><div class="service-tools"><span class="tool-tag">GHL Funnels</span><span class="tool-tag">Lead Nurturing</span><span class="tool-tag">CRM Setup</span></div></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="section-tag">Tech Stack</div>
+    <h2 class="section-title reveal">Tools I Use<br>Daily</h2>
+    <div class="tools-band reveal">
+      <div class="tool-item"><div class="tool-emoji">🎯</div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+      <div class="tool-item"><div class="tool-emoji">🤖</div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
+      <div class="tool-item"><div class="tool-emoji">⚡</div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+      <div class="tool-item"><div class="tool-emoji">🧠</div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+      <div class="tool-item"><div class="tool-emoji">📊</div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+      <div class="tool-item"><div class="tool-emoji">🏷️</div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+      <div class="tool-item"><div class="tool-emoji">🔍</div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
+      <div class="tool-item"><div class="tool-emoji">📘</div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-tag">Featured Work</div>
+    <h2 class="section-title reveal">Case Studies<br>& Projects</h2>
+    <p class="section-sub reveal">Real campaigns, real results. Built for service businesses that need leads — not just impressions.</p>
+    <div class="projects-grid">
+      <div class="project-card"><div class="project-thumb p-t-1">🗑️</div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-2">🔧</div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-3">🌱</div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Sustainable Living Campaigns</div><div class="project-desc">Developed and optimized Google Ads search campaigns for Sustainable Living Association via Catchafire, generating consistent volunteer and donor leads within tight budgets.</div><div class="project-result">Consistent lead flow with Google Grants optimization</div><div class="project-links"><a href="#contact" class="proj-link">Learn More →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-4">🧠</div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-purple">AI</span></div><div class="project-name">AI Marketing Automation</div><div class="project-desc">Leveraged Claude Code and Anthropic API to build custom AI scripts for automated ad performance reporting, keyword clustering, and copy generation workflows.</div><div class="project-result">Hours of manual reporting automated with AI</div><div class="project-links"><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-5">💆</div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-1" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);">📘</div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
+    </div>
+  </section>
+
+  <section id="more-work" style="padding-top:0;">
+    <div class="section-tag">Portfolio Pages</div>
+    <h2 class="section-title reveal">More Work<br>& Samples</h2>
+    <p class="section-sub reveal">Explore individual portfolio pages for each specialty area.</p>
+    <div class="portfolio-links-grid">
+      <a href="meta.html" target="_blank" class="pl-card"><div class="pl-icon">📘</div><div class="pl-name">Meta Ads Work</div><div class="pl-desc">Facebook & Instagram ad campaigns — creative strategy, audience targeting, and campaign results across multiple verticals.</div><div class="pl-arrow">Open Page →</div></a>
+      <a href="resilience-therapy-case-study.html" target="_blank" class="pl-card"><div class="pl-icon">🧠</div><div class="pl-name">Resilience Therapy Case Study</div><div class="pl-desc">In-depth Google Ads case study for a therapy clinic — strategy, execution, and measurable outcomes for healthcare lead generation.</div><div class="pl-arrow">Open Case Study →</div></a>
+      <a href="zapier-automation-workflow.html" target="_blank" class="pl-card"><div class="pl-icon">⚡</div><div class="pl-name">Zapier Automation Workflow</div><div class="pl-desc">Multi-step Zapier automation samples — from lead capture to CRM entry, SMS follow-up, and booking confirmation workflows.</div><div class="pl-arrow">Open Workflow →</div></a>
+      <a href="certifications.html" target="_blank" class="pl-card"><div class="pl-icon">🏆</div><div class="pl-name">All Certifications</div><div class="pl-desc">Full credentials page — Google Ads, Analytics, Display, Video, Shopping, Apps, SEMrush, and GHL/Zapier automation certifications.</div><div class="pl-arrow">View Credentials →</div></a>
+      <a href="ghl-work-samples.html" target="_blank" class="pl-card"><div class="pl-icon">🤖</div><div class="pl-name">GHL Work Samples</div><div class="pl-desc">GoHighLevel CRM samples — funnel builds, pipeline setups, automation sequences, and lead nurturing workflows for service businesses.</div><div class="pl-arrow">Open Samples →</div></a>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="section-tag">Career</div>
+    <h2 class="section-title reveal">Work<br>Experience</h2>
+    <p class="section-sub reveal">Built expertise across paid ads, AI automation, and client services over 5+ years.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2023 — Present</div><div class="tl-role">Google Ads Campaign Manager</div><div class="tl-company">Sustainable Living Association · Catchafire Freelance · Remote</div><div class="tl-desc"><ul><li>Develop & optimize Google Search campaigns generating consistent high-value leads</li><li>Conduct keyword research using advanced local lead generation strategies from Ian Baillo</li><li>Monitor daily metrics (CTR, CPC, conversion rates) and make data-driven optimizations</li><li>Create detailed ROI performance reports and actionable insights</li><li>Deploy GHL for lead nurturing funnels and automated follow-up sequences</li></ul></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2024 — Present</div><div class="tl-role">Google Ads Manager & Copywriter</div><div class="tl-company">Humanity Impacts Institute · Catchafire Freelance · Remote</div><div class="tl-desc"><ul><li>Specialized in Google Ads campaign creation and full management lifecycle</li><li>Conducted comprehensive keyword research across multiple industries</li><li>Developed ad copy that measurably improved CTR and conversion rates</li><li>Implemented API integrations for enhanced campaign tracking accuracy</li></ul></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2020 — 2022</div><div class="tl-role">Customer Service & Technical Support</div><div class="tl-company">Concentrix Dash Inc · Philippines</div><div class="tl-desc">Managed high-volume client communications for US-based businesses. Developed strong relationship management and communication skills working with diverse American clientele in a fast-paced environment.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-period">2018 — 2020</div><div class="tl-role">Collection Specialist</div><div class="tl-company">Admerex Solution Inc · Philippines</div><div class="tl-desc">Exceeded collection targets through strategic communication and negotiation. Built expertise in customer relationship management, performance analytics, and problem resolution.</div></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="section-tag">Education & Training</div>
+    <h2 class="section-title reveal">Mentored by<br>the Best</h2>
+    <div class="timeline reveal">
+      <div class="tl-item in-view"><div class="tl-dot"></div><div class="tl-period">2026</div><div class="tl-role">GHL & Zapier AI Automation Mastery — <span style="color:var(--accent)">Top 1 AI Automation Expert 🇵🇭</span></div><div class="tl-company">Technical Virtual Assistants.ph · Coach RJ Villmer</div><div class="tl-desc">Advanced certification in GoHighLevel CRM, Zapier automation workflows, and AI integration. Recognized as the Top 1 AI Automation Expert in the Philippines.</div></div>
+      <div class="tl-item in-view"><div class="tl-dot"></div><div class="tl-period">2025</div><div class="tl-role">Facebook Ads Mastery Training</div><div class="tl-company">Negosyo Network Academy · Coach Jay Gregorio (CEO/Founder)</div><div class="tl-desc">Comprehensive Meta/Facebook Ads strategy, targeting, and campaign optimization for lead generation and e-commerce.</div></div>
+      <div class="tl-item in-view"><div class="tl-dot"></div><div class="tl-period">2024</div><div class="tl-role">Advanced Google Ads Training — Local Lead Generation Specialist</div><div class="tl-company">Pass Academy Philippines · Ian Baillo (Top Google Ads Expert 🇵🇭)</div><div class="tl-desc">Personally trained by Ian Baillo — one of the Philippines' foremost Google Ads authorities — in advanced local lead generation and maximizing ad spend for service businesses.</div></div>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <div class="section-tag">Credentials</div>
+    <h2 class="section-title reveal">8 Professional<br>Certifications</h2>
+    <p class="section-sub reveal">Google-certified across Search, Display, Video, Shopping, Analytics, Apps & more — plus SEMrush Academy.</p>
+    <div class="certs-grid">
+      <div class="cert-card" onclick="openCertLb(0)"><div class="cert-thumb"><img src="certificates images/Certificate.jpg" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Ads Professional Certificate" loading="lazy"><span class="cert-badge-overlay cbo-star">⭐ Featured</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Ads Professional</div><div class="cert-org">Certificate of Accomplishment · Ian Baillo</div></div></div>
+      <div class="cert-card" onclick="openCertLb(1)"><div class="cert-thumb"><img src="certificates images/Google Analytics.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Analytics.png'" alt="Google Analytics Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Analytics Certified</div><div class="cert-org">Google Certified · Analytics</div></div></div>
+      <div class="cert-card" onclick="openCertLb(2)"><div class="cert-thumb"><img src="certificates images/Google display.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20display.png'" alt="Google Display Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Display Ads Certified</div><div class="cert-org">Google Certified · Display</div></div></div>
+      <div class="cert-card" onclick="openCertLb(3)"><div class="cert-thumb"><img src="certificates images/Google Search.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Search Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Search Ads Certified</div><div class="cert-org">Google Certified · Search</div></div></div>
+      <div class="cert-card" onclick="openCertLb(4)"><div class="cert-thumb"><img src="certificates images/Google Shopping.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Shopping.png'" alt="Google Shopping Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Shopping Ads Certified</div><div class="cert-org">Google Certified · AI-Powered Shopping</div></div></div>
+      <div class="cert-card" onclick="openCertLb(5)"><div class="cert-thumb"><img src="certificates images/Google Video.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Video.png'" alt="Google Video Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Video Ads Certified</div><div class="cert-org">Google Certified · Video</div></div></div>
+      <div class="cert-card" onclick="openCertLb(6)"><div class="cert-thumb"><img src="certificates images/Gooogle Apps.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Apps Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Apps Certified</div><div class="cert-org">Google Certified · Apps</div></div></div>
+      <div class="cert-card" onclick="openCertLb(7)"><div class="cert-thumb"><img src="certificates images/Semrush.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Semrush.png'" alt="SEMrush Certification" loading="lazy"><span class="cert-badge-overlay cbo-semrush">SEMrush</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">SEMrush Certification</div><div class="cert-org">SEMrush Academy · SEO Strategy</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:2rem;"><a href="certifications.html" target="_blank" class="btn-ghost" style="display:inline-flex;">View All Certifications →</a></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CONTACT — UPGRADED WITH AI REPLY + SHEETS
+  ════════════════════════════════════════ -->
+  <section id="contact">
+    <div class="section-tag">Get in touch</div>
+    <h2 class="section-title reveal">Let's Grow<br>Your Business</h2>
+    <p class="section-sub reveal">Have a project in mind? Whether it's Google Ads, automation, or AI workflows — let's talk.</p>
+
+    <div class="contact-grid reveal">
+      <!-- FORM -->
+      <div>
+        <div class="contact-form" id="cf-form-body">
+          <div class="form-row">
+            <div class="field"><label>First Name</label><input type="text" id="cf-fname" placeholder="John"></div>
+            <div class="field"><label>Last Name</label><input type="text" id="cf-lname" placeholder="Smith"></div>
+          </div>
+          <div class="field"><label>Email</label><input type="email" id="cf-email" placeholder="john@example.com"></div>
+          <div class="field">
+            <label>Service Needed</label>
+            <select id="cf-service">
+              <option>Google Ads Management</option>
+              <option>GHL / Zapier Automation</option>
+              <option>Claude Code AI Workflow</option>
+              <option>Conversion Tracking Setup</option>
+              <option>Full-Funnel Lead Generation</option>
+              <option>Meta / Facebook Ads</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field"><label>Message</label><textarea id="cf-message" placeholder="Tell me about your business and goals..."></textarea></div>
+          <div id="cf-error"></div>
+          <button class="btn-primary" id="cf-btn" onclick="submitContactForm()" style="align-self:flex-start;border:none;cursor:pointer;font-family:inherit;">
+            Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div id="cf-loading"><span class="cf-spinner"></span><span id="cf-loading-text">Generating your personalized reply…</span></div>
+        </div>
+
+        <!-- AI INSTANT REPLY CARD -->
+        <div id="cf-reply-card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.1rem;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;box-shadow:0 0 16px rgba(0,212,255,0.3);">🤖</div>
+            <div>
+              <div style="font-size:0.88rem;font-weight:700;color:var(--text);">Marlon's AI Assistant</div>
+              <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--green);letter-spacing:0.07em;display:flex;align-items:center;gap:0.35rem;margin-top:2px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse-dot 2s ease-in-out infinite;"></span>
+                INSTANT REPLY · Powered by DeepSeek AI
+              </div>
+            </div>
+            <div style="margin-left:auto;font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0.2rem 0.5rem;">JUST NOW</div>
+          </div>
+          <div id="cf-reply-text" style="font-size:0.9rem;color:var(--text);line-height:1.8;padding:1rem;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.06);"></div>
+          <div style="margin-top:1.1rem;display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+            <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.55rem 1.2rem;">📅 Book a Free Call</a>
+            <button onclick="resetContactForm()" style="background:transparent;border:1px solid var(--border);border-radius:4px;padding:0.55rem 1.1rem;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.82rem;cursor:pointer;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor='rgba(0,212,255,0.4)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↩ Send Another</button>
+            <div id="cf-saved-badge"><span>✓</span> Saved to Sheets</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO SIDEBAR -->
+      <div class="contact-info">
+        <div class="contact-item"><div class="c-icon c-i-1">📍</div><div><div class="c-label">Location</div><div class="c-value">Manila, Philippines 🇵🇭</div></div></div>
+        <div class="contact-item"><div class="c-icon c-i-2">⏰</div><div><div class="c-label">Timezone</div><div class="c-value">PST +8 · Open to US hours</div></div></div>
+        <div class="contact-item"><div class="c-icon c-i-3">🌐</div><div><div class="c-label">Language</div><div class="c-value">English (Fluent) · Tagalog (Native)</div></div></div>
+        <div class="contact-item"><div class="c-icon c-i-4">📅</div><div><div class="c-label">Book a Free Strategy Call</div><div class="c-value" style="margin-top:0.5rem;"><a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.6rem 1.3rem;">Book Now →</a></div></div></div>
+        <div class="contact-item" style="flex-direction:column;gap:0.8rem;"><div class="c-label">Connect with me</div><div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank" class="btn-ghost" style="padding:0.45rem 1rem;font-size:0.8rem;">Linktree</a>
+          <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="btn-ghost" style="padding:0.45rem 1rem;font-size:0.8rem;">Case Study</a>
+          <a href="https://mpalomaresdigitalsolutions.site" target="_blank" class="btn-ghost" style="padding:0.45rem 1rem;font-size:0.8rem;">Old Portfolio</a>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="section-tag">Mentors & References</div>
+    <h2 class="section-title reveal">Trained by<br>Industry Leaders</h2>
+    <div class="refs-grid reveal">
+      <div class="ref-card"><div class="ref-name">Ian Baillo</div><div class="ref-title">Top Google Ads Expert in the Philippines</div><div class="ref-org">CEO/Founder · Pass Academy Philippines · Google Ads Training & Mentorship</div></div>
+      <div class="ref-card"><div class="ref-name">Coach RJ Villmer</div><div class="ref-title">Top 1 AI GHL & Zapier Automation Expert 🇵🇭</div><div class="ref-org">CEO/Founder · Technical Virtual Assistants.ph</div></div>
+      <div class="ref-card"><div class="ref-name">Jay Gregorio</div><div class="ref-title">Facebook Ads & Business Development Expert</div><div class="ref-org">CEO/Founder · Negosyo Network Academy</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2025 Marlon Palomares Digital Solutions · Manila, Philippines</div>
+    <div class="footer-links">
+      <a href="https://mpalomaresdigitalsolutions.site/html/privacy-policy.html" target="_blank">Privacy</a>
+      <a href="certifications.html" target="_blank">Certifications</a>
+      <a href="meta.html" target="_blank">Meta Ads</a>
+      <a href="ghl-work-samples.html" target="_blank">GHL Samples</a>
+      <a href="zapier-automation-workflow.html" target="_blank">Zapier</a>
+      <a href="resilience-therapy-case-study.html" target="_blank">Case Study</a>
+      <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
+      <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank">Book a Call</a>
+    </div>
+  </footer>
+
+</div>
+
+<!-- CERT LIGHTBOX -->
+<div id="cert-lb" onclick="clbBg(event)">
+  <div class="clb-box">
+    <button class="clb-close" onclick="closeCertLb()">✕</button>
+    <button class="clb-nav clb-prev" onclick="clbGo(-1)">←</button>
+    <button class="clb-nav clb-next" onclick="clbGo(1)">→</button>
+    <img id="clb-img" src="" alt="">
+    <div id="clb-cap"></div>
+    <div id="clb-counter"></div>
+  </div>
+</div>
+
+<!-- CHATBOT FAB -->
+<button id="chat-fab" onclick="toggleChat()" title="Chat with Marlon's AI Assistant">
+  <div class="fab-badge"></div>
+  <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-2 10H6V10h12v2zm0-4H6V6h12v2z"/></svg>
+</button>
+
+<!-- CHATBOT WINDOW -->
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Marlon's AI Assistant</div>
+      <div class="chat-header-status"><div class="chat-status-dot"></div> Online · Powered by DeepSeek</div>
+    </div>
+    <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-powered">AI · <span>DeepSeek-Chat</span> · Portfolio Assistant</div>
+  <div id="chat-messages">
+    <div class="chat-msg bot">
+      <div class="msg-micro-avatar">🤖</div>
+      <div class="msg-bubble">👋 Hi! I'm Marlon's AI assistant. I can answer questions about his services, experience, Google Ads, GHL automation, pricing, and more. How can I help you?</div>
+    </div>
+  </div>
+  <div class="chat-suggestions" id="chat-suggestions">
+    <button class="chat-suggestion" onclick="sendSuggestion(this)">What services do you offer?</button>
+    <button class="chat-suggestion" onclick="sendSuggestion(this)">Google Ads pricing?</button>
+    <button class="chat-suggestion" onclick="sendSuggestion(this)">GHL automation?</button>
+    <button class="chat-suggestion" onclick="sendSuggestion(this)">Book a call</button>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chat-input" placeholder="Ask me anything…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+    <button id="chat-send" onclick="sendChat()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   ⚠️  CONFIGURATION — UPDATE THESE TWO VALUES
+   1. Replace DS_KEY with your NEW DeepSeek key
+      (rotate at platform.deepseek.com first!)
+   2. After deploying google-apps-script.js,
+      paste the Web App URL as SHEET_URL
+════════════════════════════════════════ */
+const DS_KEY    = 'sk-205c9b0e26a447be8d3fdb75aed8001c';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzOYfvpSglmmA5QhX6nvrJPlvuQ1zDR-MpxWt1VfnJHOv_DI3PkismvsK1nlegniwQ/exec';
+
+/* ── SERVICE-SPECIFIC AI CONTEXT ── */
+const SVC_CTX = {
+  'Google Ads Management':      'Marlon manages Google Search, Display, Shopping & Video campaigns up to $10K+/month for US service businesses. Trained by Ian Baillo, top Google Ads expert in PH. Benefits: high-intent leads, transparent ROI reporting, bid & keyword optimization.',
+  'GHL / Zapier Automation':    'Marlon builds GoHighLevel CRM pipelines and Zapier workflows — automated lead capture, SMS/email follow-ups, and booking confirmations. Certified Top 1 AI Automation Expert in the Philippines by Technical Virtual Assistants.ph.',
+  'Claude Code AI Workflow':    'Marlon uses Claude Code + Anthropic API to build custom AI scripts: ad performance reporting, keyword clustering, copy generation pipelines. One of very few PH specialists combining AI dev with paid ads.',
+  'Conversion Tracking Setup':  'Marlon sets up Google Tag Manager, GA4, and conversion tracking so every click, call, and form fill is attributed correctly — no wasted ad spend.',
+  'Full-Funnel Lead Generation':'Marlon builds end-to-end systems: Google Ads → landing page → GHL CRM → automated follow-up → booked appointment. Specialized for junk removal, plumbing, HVAC, therapy, and US home services.',
+  'Meta / Facebook Ads':        'Marlon creates Facebook & Instagram campaigns for lead gen, retargeting, and awareness. Trained by Jay Gregorio (CEO, Negosyo Network Academy) in Meta Ads Mastery.',
+  'Other':                      'Marlon is an AI Automation & Google Ads Specialist from Manila, PH — offering Google Ads, Meta Ads, GHL/Zapier automation, Claude Code AI workflows, and full-funnel lead generation.'
+};
+
+const buildSystem = (svc) => `You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist, Manila, Philippines.
+
+A client just submitted a contact form. Write a warm, personalized reply (60-90 words max).
+
+Service context for "${svc}": ${SVC_CTX[svc] || SVC_CTX['Other']}
+
+Rules:
+- Address client by first name
+- Reference their specific message in 1 sentence
+- Highlight 1-2 key benefits of Marlon's "${svc}" service
+- End EXACTLY with: "Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9"
+- Plain text only — no asterisks, no markdown, no bullet points
+- Sound human, warm, and professional`;
+
+/* ── CONTACT FORM SUBMIT ── */
+async function submitContactForm() {
+  const fname   = document.getElementById('cf-fname').value.trim();
+  const lname   = document.getElementById('cf-lname').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const service = document.getElementById('cf-service').value;
+  const message = document.getElementById('cf-message').value.trim();
+  const btn     = document.getElementById('cf-btn');
+  const errBox  = document.getElementById('cf-error');
+  const loading = document.getElementById('cf-loading');
+
+  errBox.style.display = 'none';
+  if (!fname)                        return showCfErr('Please enter your first name.');
+  if (!/\S+@\S+\.\S+/.test(email))   return showCfErr('Please enter a valid email address.');
+  if (!message)                      return showCfErr('Please write a short message so Marlon can help you better!');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="cf-spinner"></span> Sending…';
+  loading.classList.add('show');
+
+  let aiReply = '';
+  try {
+    const r = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DS_KEY}` },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: buildSystem(service) },
+          { role: 'user',   content: `Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.` }
+        ],
+        max_tokens: 200, temperature: 0.72, stream: false
+      })
+    });
+    if (!r.ok) throw new Error('API ' + r.status);
+    const d = await r.json();
+    aiReply = d.choices?.[0]?.message?.content?.trim() || '';
+  } catch(e) {
+    console.warn('DeepSeek error — fallback used:', e);
+    aiReply = `Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9`;
+  }
+
+  loading.classList.remove('show');
+  btn.disabled = false;
+  btn.innerHTML = 'Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+
+  document.getElementById('cf-reply-text').innerHTML = fmtReply(aiReply);
+  document.getElementById('cf-reply-card').style.display = 'block';
+  document.getElementById('cf-form-body').style.opacity = '0.4';
+  document.getElementById('cf-form-body').style.pointerEvents = 'none';
+  document.getElementById('cf-reply-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  saveToSheet({ fname, lname, email, service, message, aiReply });
+}
+
+/* ── GOOGLE SHEETS SAVE ── */
+async function saveToSheet(d) {
+  if (!SHEET_URL || SHEET_URL.includes('PASTE_')) return;
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        timestamp: new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' }),
+        firstName: d.fname, lastName: d.lname, email: d.email,
+        service: d.service, message: d.message, aiReply: d.aiReply
+      })
+    });
+    const badge = document.getElementById('cf-saved-badge');
+    if (badge) badge.classList.add('show');
+  } catch(e) { console.warn('Sheet save (non-critical):', e); }
+}
+
+function showCfErr(msg) { const e=document.getElementById('cf-error'); e.textContent=msg; e.style.display='block'; }
+function fmtReply(t) { return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>'); }
+function resetContactForm() {
+  document.getElementById('cf-reply-card').style.display='none';
+  document.getElementById('cf-form-body').style.opacity='1';
+  document.getElementById('cf-form-body').style.pointerEvents='auto';
+  ['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cf-error').style.display='none';
+  document.getElementById('cf-saved-badge').classList.remove('show');
+}
+
+/* ── CURSOR ── */
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;});
+document.querySelectorAll('a,button,.service-card,.project-card,.cert-card,.pl-card').forEach(el=>{el.addEventListener('mouseenter',()=>{ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='rgba(0,255,136,0.6)';});el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(0,212,255,0.5)';});});
+
+/* ── PARTICLE CANVAS ── */
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let W,H,particles=[];
+const mouse={x:-1000,y:-1000};
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Particle{constructor(){this.reset(true);}reset(init){this.x=Math.random()*W;this.y=init?Math.random()*H:H+10;this.size=Math.random()*1.2+0.3;this.speedY=-(Math.random()*0.5+0.1);this.speedX=(Math.random()-0.5)*0.15;this.opacity=Math.random()*0.6+0.1;const r=Math.random();this.hue=r<0.5?195:(r<0.75?270:20);}update(){const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){this.x+=dx/d*0.7;this.y+=dy/d*0.7;}this.x+=this.speedX;this.y+=this.speedY;if(this.y<-10)this.reset(false);}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},90%,65%,${this.opacity})`;ctx.fill();}}
+for(let i=0;i<100;i++)particles.push(new Particle());
+function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(0,212,255,${(1-d/80)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}}requestAnimationFrame(animate);}
+animate();
+
+/* ── INTERSECTION OBSERVER ── */
+const io=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('in-view'),80*i);io.unobserve(entry.target);}});},{threshold:0.08});
+document.querySelectorAll('.reveal,.project-card,.tl-item,.cert-card,.pl-card').forEach(el=>io.observe(el));
+
+/* ── CERT LIGHTBOX ── */
+const CERTS=[
+  {src:'certificates images/Certificate.jpg',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Ads Professional — Certificate of Accomplishment'},
+  {src:'certificates images/Google Analytics.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Analytics.png',cap:'Google Analytics Certified'},
+  {src:'certificates images/Google display.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20display.png',cap:'Google Display Ads Certified'},
+  {src:'certificates images/Google Search.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Search Ads Certified'},
+  {src:'certificates images/Google Shopping.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Shopping.png',cap:'Google Shopping Ads Certified — AI-Powered'},
+  {src:'certificates images/Google Video.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Video.png',cap:'Google Video Ads Certified'},
+  {src:'certificates images/Gooogle Apps.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Apps Certified'},
+  {src:'certificates images/Semrush.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Semrush.png',cap:'SEMrush Certification — Crafting a Winning SEO Strategy'},
+];
+let clbCur=0;
+const certLb=document.getElementById('cert-lb'),clbImg=document.getElementById('clb-img'),clbCap=document.getElementById('clb-cap'),clbCnt=document.getElementById('clb-counter');
+function setClbSlide(i){const c=CERTS[i];clbImg.onerror=()=>{clbImg.src=c.fb;clbImg.onerror=null;};clbImg.src=c.src;clbImg.alt=c.cap;clbCap.textContent=c.cap;clbCnt.textContent=`${i+1} / ${CERTS.length}`;}
+function openCertLb(i){clbCur=i;setClbSlide(i);certLb.classList.add('on');document.body.style.overflow='hidden';}
+function closeCertLb(){certLb.classList.remove('on');document.body.style.overflow='';}
+function clbBg(e){if(e.target===certLb)closeCertLb();}
+function clbGo(d){clbCur=(clbCur+d+CERTS.length)%CERTS.length;clbImg.style.opacity='0';setTimeout(()=>{setClbSlide(clbCur);clbImg.style.opacity='1';},130);}
+clbImg.style.transition='opacity .13s';
+document.addEventListener('keydown',e=>{if(!certLb.classList.contains('on'))return;if(e.key==='Escape')closeCertLb();if(e.key==='ArrowLeft')clbGo(-1);if(e.key==='ArrowRight')clbGo(1);});
+
+/* ── CHATBOT ── */
+const CHAT_SYSTEM=`You are a professional AI assistant for Marlon Palomares, an AI Automation & Google Ads Specialist based in Manila, Philippines. Answer questions about: Google Ads management, GHL/Zapier automation, Claude Code AI workflows, Meta Ads, conversion tracking, lead generation. Experience: 2+ years US clients, $10K+/month budgets, Top 1 AI Automation Expert PH. 8 certs: Google Search, Display, Video, Shopping, Analytics, Apps, SEMrush. Mentors: Ian Baillo, Coach RJ Villmer, Jay Gregorio. Book calls: https://calendar.app.google/1tWXCAJSd3f1BDed9. Be concise, professional, friendly. Under 120 words unless asked for detail.`;
+let chatHistory=[],chatOpen=false;
+function toggleChat(){chatOpen=!chatOpen;document.getElementById('chat-window').classList.toggle('open',chatOpen);if(chatOpen)setTimeout(()=>document.getElementById('chat-input').focus(),320);}
+function sendSuggestion(btn){document.getElementById('chat-input').value=btn.textContent;document.getElementById('chat-suggestions').style.display='none';sendChat();}
+function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${text}</div>`:`<div class="msg-bubble">${text}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
+function showTyping(){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className='chat-msg bot';div.id='typing-indicator';div.innerHTML='<div class="msg-micro-avatar">🤖</div><div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
+function hideTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
+async function sendChat(){const input=document.getElementById('chat-input'),send=document.getElementById('chat-send'),text=input.value.trim();if(!text)return;input.value='';input.style.height='auto';document.getElementById('chat-suggestions').style.display='none';appendMsg('user',text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));chatHistory.push({role:'user',content:text});send.disabled=true;showTyping();try{const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});if(!res.ok)throw new Error('API '+res.status);const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));}catch(err){hideTyping();appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');console.warn('Chat error:',err);}finally{send.disabled=false;input.focus();}}
+document.getElementById('chat-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+</script>
+</body>
+</html>

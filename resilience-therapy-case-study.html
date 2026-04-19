@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resilience Therapy Case Study — Marlon Palomares</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060810;
+    --bg2:     #0b0e1a;
+    --bg3:     #0f1322;
+    --accent:  #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --green:   #00ff88;
+    --text:    #e8eeff;
+    --muted:   #6b7299;
+    --card:    rgba(255,255,255,0.03);
+    --border:  rgba(255,255,255,0.07);
+    --r:       12px;
+    --glow:    0 0 40px rgba(0,212,255,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--accent); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    box-shadow: 0 0 12px var(--accent);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(0,212,255,0.5); border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.3s cubic-bezier(.23,1,.32,1), width 0.2s, height 0.2s, border-color 0.2s;
+  }
+
+  /* ── CANVAS ── */
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ── GRID ── */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ── ORBS ── */
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(130px); opacity: 0.12;
+    pointer-events: none; z-index: 0;
+    animation: orb-drift 20s ease-in-out infinite alternate;
+  }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -8s; }
+  .orb-3 { width: 350px; height: 350px; background: var(--accent3); top: 50%; left: 55%; animation-delay: -14s; }
+  @keyframes orb-drift {
+    0%   { transform: translate(0,0) scale(1); }
+    50%  { transform: translate(30px,-50px) scale(1.1); }
+    100% { transform: translate(-40px,30px) scale(0.9); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 5vw;
+    backdrop-filter: blur(20px);
+    background: rgba(6,8,16,0.75);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem; color: var(--accent); letter-spacing: 0.05em;
+  }
+  .logo span { color: var(--text); }
+  .nav-right { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .nav-back {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; padding: 0.5rem 1.1rem;
+    border: 1px solid var(--border); border-radius: 4px;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s, border-color 0.2s; letter-spacing: 0.06em;
+  }
+  .nav-back:hover { color: var(--text); border-color: rgba(0,212,255,0.3); }
+  .nav-cta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem; padding: 0.55rem 1.3rem;
+    border: 1px solid var(--accent); border-radius: 4px;
+    color: var(--accent); text-decoration: none;
+    letter-spacing: 0.06em;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover {
+    background: rgba(0,212,255,0.1);
+    box-shadow: 0 0 20px rgba(0,212,255,0.25);
+    transform: translateY(-1px);
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper { position: relative; z-index: 1; }
+
+  /* ── PAGE HERO ── */
+  .page-hero {
+    padding: 9rem 5vw 4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    border: 1px solid rgba(0,212,255,0.3);
+    background: rgba(0,212,255,0.06);
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; color: var(--accent);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.5);}50%{box-shadow:0 0 0 6px rgba(0,212,255,0);} }
+
+  .page-title {
+    font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+    font-weight: 900; line-height: 1.05;
+    letter-spacing: -1.5px; margin-bottom: 1rem;
+  }
+  .page-title .grad {
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 55%, var(--accent3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-sub {
+    font-size: 1rem; color: var(--muted);
+    max-width: 620px; line-height: 1.85; margin-bottom: 2rem;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em;
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb span { opacity: 0.4; }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    opacity: 0.2;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 5rem 5vw; }
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  .section-title {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.5px; margin-bottom: 0.6rem;
+  }
+  .section-sub {
+    color: var(--muted); max-width: 560px;
+    line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.92rem;
+  }
+
+  /* ── GALLERY GRID ── */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  .gallery-grid.two-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .gallery-grid.single {
+    grid-template-columns: 1fr;
+    max-width: 700px;
+  }
+
+  /* ── GALLERY CARD ── */
+  .gallery-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    background: var(--card);
+    cursor: zoom-in;
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+  .gallery-card.in-view { opacity: 1; transform: none; }
+  .gallery-card:hover {
+    border-color: rgba(0,212,255,0.35);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow);
+    transform: translateY(-4px) !important;
+  }
+
+  .card-img-wrap { overflow: hidden; position: relative; }
+  .card-img-wrap::after {
+    content: '🔍';
+    position: absolute; bottom: 0.75rem; right: 0.75rem;
+    font-size: 0.85rem;
+    background: rgba(6,8,16,0.8);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .gallery-card:hover .card-img-wrap::after { opacity: 1; }
+
+  .card-img {
+    width: 100%; aspect-ratio: 16/9;
+    object-fit: cover; object-position: top;
+    display: block; background: var(--bg2);
+    transition: transform 0.4s ease;
+  }
+  .gallery-card:hover .card-img { transform: scale(1.02); }
+
+  .card-body { padding: 1.3rem 1.4rem; }
+  .card-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem; padding: 0.2rem 0.65rem;
+    border-radius: 2px; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-block; margin-bottom: 0.75rem;
+  }
+  .ct-blue   { background: rgba(0,212,255,0.1);  color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
+  .ct-purple { background: rgba(123,47,255,0.1); color: #a78bfa;        border: 1px solid rgba(123,47,255,0.2); }
+  .ct-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .ct-green  { background: rgba(0,255,136,0.1);  color: var(--green);   border: 1px solid rgba(0,255,136,0.2); }
+
+  .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .card-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── RESULT BADGE ── */
+  .result-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--green); margin-top: 0.75rem;
+  }
+  .result-badge::before { content: '▲'; font-size: 0.6rem; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 3.5rem;
+  }
+  .stat-box {
+    background: var(--bg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: background 0.25s;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease, background 0.25s;
+  }
+  .stat-box.in-view { opacity: 1; transform: none; }
+  .stat-box:hover { background: var(--bg2); }
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem; font-weight: 700;
+    line-height: 1; margin-bottom: 0.4rem;
+  }
+  .stat-num.up   { color: var(--green); }
+  .stat-num.down { color: var(--accent3); }
+  .stat-num.blue { color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); }
+
+  /* ── INSIGHT BOX ── */
+  .insight-box {
+    border: 1px solid rgba(0,212,255,0.18);
+    border-radius: var(--r);
+    padding: 2rem 2.2rem;
+    background: rgba(0,212,255,0.04);
+    margin-bottom: 3rem;
+  }
+  .insight-box h3 {
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 0.7rem;
+    color: var(--accent);
+  }
+  .insight-box p {
+    font-size: 0.88rem; color: var(--muted);
+    line-height: 1.8;
+  }
+  .insight-box p strong { color: var(--text); }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    margin: 0 5vw 4rem;
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: var(--r);
+    padding: 3rem 2.5rem;
+    background: rgba(0,212,255,0.04);
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+  }
+  .cta-band h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .cta-band p  { font-size: 0.9rem; color: var(--muted); max-width: 420px; line-height: 1.7; }
+  .cta-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: var(--accent); color: var(--bg);
+    font-weight: 700; font-size: 0.9rem;
+    text-decoration: none; border-radius: 4px;
+    border: none; cursor: pointer; font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.25s;
+    box-shadow: 0 0 30px rgba(0,212,255,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.5); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    border: 1px solid var(--border);
+    color: var(--text); font-weight: 500; font-size: 0.9rem;
+    text-decoration: none; border-radius: 4px; background: var(--card);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(6,8,16,0.96);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(16px);
+    padding: 2rem;
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lightbox img {
+    max-width: 90vw; max-height: 85vh;
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    object-fit: contain;
+    transform: scale(0.92); transition: transform 0.3s;
+  }
+  .lightbox.open img { transform: scale(1); }
+  .lb-caption {
+    position: absolute; bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; color: var(--muted);
+    letter-spacing: 0.08em; text-align: center;
+    background: rgba(6,8,16,0.8); padding: 0.45rem 1.2rem;
+    border-radius: 4px; border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .lb-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--text); font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .lb-close:hover { border-color: var(--accent); background: rgba(0,212,255,0.1); }
+  .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--text); font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .lb-nav:hover { border-color: var(--accent); background: rgba(0,212,255,0.1); }
+  .lb-prev { left: 1.5rem; }
+  .lb-next { right: 1.5rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 5vw;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ── ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: none; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .gallery-grid.two-col { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .cta-band { flex-direction: column; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">✕</button>
+  <button class="lb-nav lb-prev" id="lb-prev">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lb-nav lb-next" id="lb-next">›</button>
+  <div class="lb-caption" id="lb-caption"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">MP<span>.dev</span></div>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← Portfolio</a>
+    <a href="marlon-case-study.html" class="nav-back">← Case Study</a>
+    <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <!-- ── PAGE HERO ── -->
+  <div class="page-hero">
+    <div class="hero-badge"><div class="badge-dot"></div> Google Ads · Case Study</div>
+    <h1 class="page-title">Resilience Therapy<br><span class="grad">Case Study</span></h1>
+    <p class="page-sub">
+      Here's a look at how we helped Resilience Therapy really shine online. We focused on getting their message in front of the right people — those actively seeking support. By tweaking their ads and optimizing their landing pages, we made it super easy for potential clients to find them and book appointments. The results speak for themselves: more visibility, better engagement, and a steady stream of new clients.
+    </p>
+    <div class="breadcrumb">
+      <a href="marlon-portfolio.html">Portfolio</a>
+      <span>/</span>
+      <a href="marlon-case-study.html">Case Study</a>
+      <span>/</span>
+      Resilience Therapy
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ── RESULTS STATS ── -->
+  <section style="padding-bottom: 2rem;">
+    <div class="section-tag">Campaign Results</div>
+    <h2 class="section-title reveal">Performance at<br>a Glance</h2>
+    <p class="section-sub reveal">Key metrics achieved through targeted Google Ads optimization for a mental health therapy practice.</p>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num up">↑ CTR</div>
+        <div class="stat-label">Click-Through Rate Improved</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num blue">More</div>
+        <div class="stat-label">Visibility & Reach</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num up">Better</div>
+        <div class="stat-label">Lead Engagement</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num up">Steady</div>
+        <div class="stat-label">Stream of New Clients</div>
+      </div>
+    </div>
+
+    <div class="insight-box reveal">
+      <h3>💡 The Strategy</h3>
+      <p>
+        We focused on <strong>precision targeting</strong> — getting Resilience Therapy's ads in front of people actively searching for mental health support in their area. Combined with landing page optimization and tight conversion tracking, every ad dollar was directed toward <strong>high-intent prospects</strong> ready to book an appointment.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── CAMPAIGN SCREENSHOTS ── -->
+  <section id="screenshots">
+    <div class="section-tag">Section 01</div>
+    <h2 class="section-title reveal">Campaign Overview<br>& Performance Metrics</h2>
+    <p class="section-sub reveal">Real Google Ads dashboard screenshots showing campaign structure, performance data, and optimization results.</p>
+
+    <!-- Row 1: Overview + Metrics (2-col) -->
+    <div class="gallery-grid two-col reveal" style="margin-bottom: 1.5rem;">
+
+      <div class="gallery-card"
+           data-src="https://mpalomaresdigitalsolutions.site/Resilience therapy/first.png"
+           data-caption="Campaign Overview — Resilience Therapy Google Ads">
+        <div class="card-img-wrap">
+          <img class="card-img"
+               src="https://mpalomaresdigitalsolutions.site/Resilience therapy/first.png"
+               alt="Campaign Overview" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-blue">Campaign Overview</span>
+          <div class="card-title">Campaign Overview</div>
+          <div class="card-desc">High-level view of the Google Ads campaign structure and account setup for Resilience Therapy, showing targeting configuration and campaign organization.</div>
+          <div class="result-badge">Optimized campaign architecture</div>
+        </div>
+      </div>
+
+      <div class="gallery-card"
+           data-src="https://mpalomaresdigitalsolutions.site/Resilience therapy/second.png"
+           data-caption="Performance Metrics — Resilience Therapy Google Ads">
+        <div class="card-img-wrap">
+          <img class="card-img"
+               src="https://mpalomaresdigitalsolutions.site/Resilience therapy/second.png"
+               alt="Performance Metrics" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-green">Performance Metrics</span>
+          <div class="card-title">Performance Metrics</div>
+          <div class="card-desc">Key performance indicators showing improvements in impressions, clicks, CTR, and cost-per-click after campaign optimization. Data-driven results measured and tracked.</div>
+          <div class="result-badge">Improved visibility & engagement</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Row 2: Engagement + Conversion (2-col) -->
+    <div class="gallery-grid two-col reveal" style="margin-bottom: 1.5rem;">
+
+      <div class="gallery-card"
+           data-src="https://mpalomaresdigitalsolutions.site/Resilience therapy/third.png"
+           data-caption="Ad Engagement — Resilience Therapy Google Ads">
+        <div class="card-img-wrap">
+          <img class="card-img"
+               src="https://mpalomaresdigitalsolutions.site/Resilience therapy/third.png"
+               alt="Ad Engagement" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-purple">Ad Engagement</span>
+          <div class="card-title">Ad Engagement</div>
+          <div class="card-desc">Detailed ad performance data showing how users interacted with the ads — click patterns, ad copy effectiveness, and engagement rates across different ad groups.</div>
+          <div class="result-badge">Higher quality ad interactions</div>
+        </div>
+      </div>
+
+      <div class="gallery-card"
+           data-src="https://mpalomaresdigitalsolutions.site/Resilience therapy/fourth.png"
+           data-caption="Conversion Tracking — Resilience Therapy Google Ads">
+        <div class="card-img-wrap">
+          <img class="card-img"
+               src="https://mpalomaresdigitalsolutions.site/Resilience therapy/fourth.png"
+               alt="Conversion Tracking" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-orange">Conversion Tracking</span>
+          <div class="card-title">Conversion Tracking</div>
+          <div class="card-desc">Appointment booking conversions tracked precisely through Google Tag Manager, ensuring every lead action is captured and attributed correctly for accurate ROI measurement.</div>
+          <div class="result-badge">Steady stream of new client bookings</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Row 3: Optimization Details (single centred) -->
+    <div style="max-width: 680px; margin: 0 auto;">
+      <div class="gallery-grid single reveal">
+
+        <div class="gallery-card"
+             data-src="https://mpalomaresdigitalsolutions.site/Resilience therapy/fift.png"
+             data-caption="Optimization Details — Resilience Therapy Google Ads">
+          <div class="card-img-wrap">
+            <img class="card-img"
+                 src="https://mpalomaresdigitalsolutions.site/Resilience therapy/fift.png"
+                 alt="Optimization Details" loading="lazy">
+          </div>
+          <div class="card-body">
+            <span class="card-tag ct-blue">Optimization Details</span>
+            <div class="card-title">Optimization Details</div>
+            <div class="card-desc">Granular view of campaign optimizations — bid adjustments, keyword refinements, negative keyword additions, and device-level performance tuning that drove sustained results for Resilience Therapy.</div>
+            <div class="result-badge">Continuous optimization driving consistent results</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ── WHAT WAS DONE ── -->
+  <section id="strategy">
+    <div class="section-tag">Section 02</div>
+    <h2 class="section-title reveal">What Was Done</h2>
+    <p class="section-sub reveal">A breakdown of the Google Ads optimizations implemented to deliver better reach and more booked appointments.</p>
+
+    <div class="gallery-grid reveal">
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-blue">01</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">🎯 Precision Audience Targeting</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Refined geographic and demographic targeting to reach people actively searching for mental health therapy services in the right locations — eliminating irrelevant impressions and wasted spend.</div>
+        </div>
+      </div>
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-purple">02</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">✍️ Ad Copy Optimization</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Rewrote ad copy to speak directly to people seeking therapy support — empathetic messaging that resonates with the audience's intent, improving click-through rate and quality score.</div>
+        </div>
+      </div>
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-green">03</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">🔍 Keyword Strategy</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Built a focused keyword list targeting high-intent therapy-related searches, paired with a strong negative keyword list to block unqualified traffic and reduce cost-per-click.</div>
+        </div>
+      </div>
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-orange">04</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">📊 Conversion Tracking Setup</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Implemented proper conversion tracking via Google Tag Manager to capture appointment bookings and contact form submissions — giving clear visibility into what ads were driving real clients.</div>
+        </div>
+      </div>
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-blue">05</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">🖥️ Landing Page Alignment</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Aligned ad messaging with landing page content to improve Quality Score and conversion rate — making it seamless for a potential client to go from ad click to booking confirmation.</div>
+        </div>
+      </div>
+
+      <div class="gallery-card" style="cursor: default;" data-no-lightbox>
+        <div class="card-body" style="padding: 2rem;">
+          <span class="card-tag ct-purple">06</span>
+          <div class="card-title" style="font-size: 1.05rem; margin-top: 0.5rem;">⚙️ Ongoing Optimization</div>
+          <div class="card-desc" style="margin-top: 0.5rem;">Weekly performance reviews with continuous bid adjustments, ad testing, and campaign refinements to ensure a steady and growing stream of new client inquiries and bookings.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CTA BAND ── -->
+  <div class="cta-band reveal">
+    <div>
+      <h3>Get Results Like These</h3>
+      <p>Ready to bring more clients to your practice or service business? Let's build a Google Ads campaign that delivers real, measurable results.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-primary">
+        📅 Book a Free Audit
+      </a>
+      <a href="marlon-case-study.html" class="btn-ghost">
+        Full Case Study →
+      </a>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div>© 2025 Marlon Palomares Digital Solutions · Manila, Philippines 🇵🇭</div>
+    <div class="footer-links">
+      <a href="marlon-portfolio.html">Portfolio</a>
+      <a href="marlon-case-study.html">Case Study</a>
+      <a href="ghl-work-samples.html">GHL Samples</a>
+      <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
+      <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank">Book a Call</a>
+    </div>
+  </footer>
+
+</div><!-- /wrapper -->
+
+<script>
+  /* ── CURSOR ── */
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+    ring.style.transform   = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+  });
+  document.querySelectorAll('a, button, .gallery-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '50px'; ring.style.height = '50px';
+      ring.style.borderColor = 'rgba(0,255,136,0.6)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '32px'; ring.style.height = '32px';
+      ring.style.borderColor = 'rgba(0,212,255,0.5)';
+    });
+  });
+
+  /* ── PARTICLE CANVAS ── */
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const particles = [];
+  const mouse = { x: -1000, y: -1000 };
+  document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : H + 10;
+      this.size   = Math.random() * 1.2 + 0.3;
+      this.speedY = -(Math.random() * 0.5 + 0.1);
+      this.speedX = (Math.random() - 0.5) * 0.15;
+      this.opacity = Math.random() * 0.6 + 0.1;
+      const r = Math.random();
+      this.hue = r < 0.5 ? 195 : (r < 0.75 ? 270 : 20);
+    }
+    update() {
+      const dx = this.x - mouse.x, dy = this.y - mouse.y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < 100) { this.x += dx / d * 0.7; this.y += dy / d * 0.7; }
+      this.x += this.speedX; this.y += this.speedY;
+      if (this.y < -10) this.reset(false);
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue},90%,65%,${this.opacity})`;
+      ctx.fill();
+    }
+  }
+  for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < 80) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,212,255,${(1 - d / 80) * 0.07})`;
+          ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  /* ── INTERSECTION OBSERVER ── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('in-view'), 80 * i);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal, .gallery-card, .stat-box').forEach(el => io.observe(el));
+
+  /* ── LIGHTBOX ── */
+  const lb      = document.getElementById('lightbox');
+  const lbImg   = document.getElementById('lb-img');
+  const lbCap   = document.getElementById('lb-caption');
+  const lbClose = document.getElementById('lb-close');
+  const lbPrev  = document.getElementById('lb-prev');
+  const lbNext  = document.getElementById('lb-next');
+  let cards = [], current = 0;
+
+  function openLightbox(idx) {
+    current = idx;
+    lbImg.src = cards[current].dataset.src;
+    lbCap.textContent = cards[current].dataset.caption || '';
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { lbImg.src = ''; }, 300);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    cards = Array.from(document.querySelectorAll('.gallery-card[data-src]'));
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', () => openLightbox(idx));
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); openLightbox((current - 1 + cards.length) % cards.length); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); openLightbox((current + 1) % cards.length); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   openLightbox((current - 1 + cards.length) % cards.length);
+    if (e.key === 'ArrowRight')  openLightbox((current + 1) % cards.length);
+  });
+</script>
+</body>
+</html>
