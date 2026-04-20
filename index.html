@@ -181,22 +181,164 @@
   .tl-desc ul { padding-left: 1.2rem; margin-top: 0.5rem; }
   .tl-desc li { margin-bottom: 0.3rem; }
 
+  /* ═══════════════════════════════════
+     CERTIFICATIONS — CIRCUIT ANIMATION
+  ═══════════════════════════════════ */
+  #certifications { position: relative; overflow: hidden; }
+  #cert-circuit-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.85;
+  }
+  #certifications > *:not(#cert-circuit-canvas) { position: relative; z-index: 1; }
+
   .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
-  .cert-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--card); cursor: pointer; transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; opacity: 0; transform: translateY(20px); display: flex; flex-direction: column; }
-  .cert-card.in-view { opacity: 1; transform: none; transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.25s, box-shadow 0.25s; }
-  .cert-card:hover { border-color: rgba(0,212,255,0.45); background: rgba(0,212,255,0.04); transform: translateY(-4px) !important; box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,212,255,0.1); }
-  .cert-thumb { width: 100%; aspect-ratio: 4 / 3; background: #0a0c18; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
-  .cert-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 8px; display: block; transition: transform 0.35s ease; }
-  .cert-card:hover .cert-thumb img { transform: scale(1.06); }
-  .cert-view-hint { position: absolute; bottom: 7px; right: 7px; background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 3px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+
+  /* Enhanced cert card with circuit glow */
+  .cert-card {
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: var(--r);
+    overflow: hidden;
+    background: rgba(6,8,16,0.7);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  /* Circuit trace corners on cert cards */
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--r);
+    background: linear-gradient(135deg,
+      rgba(0,212,255,0.06) 0%,
+      transparent 40%,
+      transparent 60%,
+      rgba(123,47,255,0.04) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .cert-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s cubic-bezier(.23,1,.32,1);
+    z-index: 2;
+  }
+  .cert-card.in-view {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.23,1,.32,1),
+                border-color 0.3s, box-shadow 0.3s;
+  }
+  .cert-card:hover {
+    border-color: rgba(0,212,255,0.6);
+    background: rgba(0,12,24,0.9);
+    transform: translateY(-6px) scale(1.02) !important;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.6),
+      0 0 30px rgba(0,212,255,0.2),
+      inset 0 0 30px rgba(0,212,255,0.03);
+  }
+  .cert-card:hover::before { opacity: 1; }
+  .cert-card:hover::after { transform: scaleX(1); }
+
+  /* Staggered reveal animations */
+  .cert-card:nth-child(1) { transition-delay: 0.05s; }
+  .cert-card:nth-child(2) { transition-delay: 0.1s; }
+  .cert-card:nth-child(3) { transition-delay: 0.15s; }
+  .cert-card:nth-child(4) { transition-delay: 0.2s; }
+  .cert-card:nth-child(5) { transition-delay: 0.25s; }
+  .cert-card:nth-child(6) { transition-delay: 0.3s; }
+  .cert-card:nth-child(7) { transition-delay: 0.35s; }
+  .cert-card:nth-child(8) { transition-delay: 0.4s; }
+
+  .cert-thumb { width: 100%; aspect-ratio: 4 / 3; background: #050810; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; z-index: 1; }
+  .cert-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 8px; display: block; transition: transform 0.4s cubic-bezier(.23,1,.32,1), filter 0.4s; }
+  .cert-card:hover .cert-thumb img { transform: scale(1.08); filter: brightness(1.1) saturate(1.2); }
+
+  /* Scan line effect on hover */
+  .cert-thumb::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.8), transparent);
+    transition: none;
+  }
+  .cert-card:hover .cert-thumb::after {
+    animation: cert-scan 0.8s linear forwards;
+  }
+  @keyframes cert-scan {
+    0%  { top: -2px; opacity: 1; }
+    100%{ top: 100%; opacity: 0; }
+  }
+
+  .cert-view-hint { position: absolute; bottom: 7px; right: 7px; background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 3px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 2; }
   .cert-card:hover .cert-view-hint { opacity: 1; }
-  .cert-badge-overlay { position: absolute; top: 7px; left: 7px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; border: 1px solid; font-family: 'Space Mono', monospace; }
+  .cert-badge-overlay { position: absolute; top: 7px; left: 7px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; border: 1px solid; font-family: 'Space Mono', monospace; z-index: 2; }
   .cbo-google  { color: #4fc3f7; background: rgba(79,195,247,.12); border-color: rgba(79,195,247,.3); }
   .cbo-semrush { color: #ff6b35; background: rgba(255,107,53,.12); border-color: rgba(255,107,53,.3); }
   .cbo-star    { color: var(--green); background: rgba(0,255,136,.1); border-color: rgba(0,255,136,.3); }
-  .cert-footer { padding: 12px 14px 14px; border-top: 1px solid var(--border); flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .cert-footer { padding: 12px 14px 14px; border-top: 1px solid rgba(0,212,255,0.1); flex: 1; display: flex; flex-direction: column; gap: 3px; background: rgba(0,0,0,0.3); z-index: 1; }
   .cert-name { font-size: 0.82rem; font-weight: 600; color: var(--text); line-height: 1.35; }
   .cert-org { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--accent); letter-spacing: 0.07em; margin-top: 2px; }
+
+  /* Floating binary overlay in certs section */
+  .binary-rain-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0.4;
+  }
+  .binary-col {
+    position: absolute;
+    top: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(0,212,255,0.5);
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+    animation: bin-fall linear infinite;
+    letter-spacing: 4px;
+    text-shadow: 0 0 6px rgba(0,212,255,0.8);
+  }
+  @keyframes bin-fall {
+    0%  { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    100%{ transform: translateY(120%); opacity: 0; }
+  }
+
+  /* Circuit node pulse keyframes */
+  @keyframes node-ping {
+    0%   { transform: scale(1); opacity: 1; }
+    70%  { transform: scale(2.5); opacity: 0; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  @keyframes trace-flow {
+    0%   { stroke-dashoffset: 1000; }
+    100% { stroke-dashoffset: 0; }
+  }
 
   .tools-band { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
   .tool-item { background: var(--bg); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; transition: background 0.2s; text-align: center; }
@@ -205,7 +347,6 @@
   .tool-name { font-size: 0.78rem; font-weight: 600; }
   .tool-cat { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
 
-  /* ── CONTACT ── */
   .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
   .contact-form { display: flex; flex-direction: column; gap: 1rem; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -222,7 +363,6 @@
   .c-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
   .c-value { font-weight: 600; font-size: 0.9rem; }
 
-  /* ── CONTACT FORM UPGRADES ── */
   @keyframes cfReplyIn { from { opacity:0; transform:translateY(16px) scale(0.98); } to { opacity:1; transform:none; } }
   .cf-spinner { width:16px; height:16px; flex-shrink:0; border:2px solid rgba(0,212,255,0.2); border-top-color:var(--accent); border-radius:50%; animation:cfSpin 0.7s linear infinite; display:inline-block; vertical-align:middle; margin-right:6px; }
   @keyframes cfSpin { to { transform:rotate(360deg); } }
@@ -277,7 +417,6 @@
   .clb-prev { left: -56px; }
   .clb-next { right: -56px; }
 
-  /* CHATBOT */
   #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.3); transition: transform 0.25s, box-shadow 0.25s; animation: fab-pulse 3s ease-in-out infinite; }
   @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
   #chat-fab:hover { transform: scale(1.1); }
@@ -510,7 +649,14 @@
     </div>
   </section>
 
+  <!-- ═══ CERTIFICATIONS — CIRCUIT BOARD ANIMATED SECTION ═══ -->
   <section id="certifications">
+    <!-- Circuit board canvas background -->
+    <canvas id="cert-circuit-canvas"></canvas>
+
+    <!-- Binary rain overlay -->
+    <div class="binary-rain-overlay" id="binary-rain"></div>
+
     <div class="section-tag">Credentials</div>
     <h2 class="section-title reveal">8 Professional<br>Certifications</h2>
     <p class="section-sub reveal">Google-certified across Search, Display, Video, Shopping, Analytics, Apps & more — plus SEMrush Academy.</p>
@@ -524,19 +670,15 @@
       <div class="cert-card" onclick="openCertLb(6)"><div class="cert-thumb"><img src="certificates images/Gooogle Apps.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Apps Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Apps Certified</div><div class="cert-org">Google Certified · Apps</div></div></div>
       <div class="cert-card" onclick="openCertLb(7)"><div class="cert-thumb"><img src="certificates images/Semrush.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Semrush.png'" alt="SEMrush Certification" loading="lazy"><span class="cert-badge-overlay cbo-semrush">SEMrush</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">SEMrush Certification</div><div class="cert-org">SEMrush Academy · SEO Strategy</div></div></div>
     </div>
-    <div style="text-align:center;margin-top:2rem;"><a href="certifications.html" target="_blank" class="btn-ghost" style="display:inline-flex;">View All Certifications →</a></div>
+    <div style="text-align:center;margin-top:2rem;position:relative;z-index:1;"><a href="certifications.html" target="_blank" class="btn-ghost" style="display:inline-flex;">View All Certifications →</a></div>
   </section>
 
-  <!-- ═══════════════════════════════════════
-       CONTACT — UPGRADED WITH AI REPLY + SHEETS
-  ════════════════════════════════════════ -->
   <section id="contact">
     <div class="section-tag">Get in touch</div>
     <h2 class="section-title reveal">Let's Grow<br>Your Business</h2>
     <p class="section-sub reveal">Have a project in mind? Whether it's Google Ads, automation, or AI workflows — let's talk.</p>
 
     <div class="contact-grid reveal">
-      <!-- FORM -->
       <div>
         <div class="contact-form" id="cf-form-body">
           <div class="form-row">
@@ -564,7 +706,6 @@
           <div id="cf-loading"><span class="cf-spinner"></span><span id="cf-loading-text">Generating your personalized reply…</span></div>
         </div>
 
-        <!-- AI INSTANT REPLY CARD -->
         <div id="cf-reply-card">
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.1rem;">
             <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;box-shadow:0 0 16px rgba(0,212,255,0.3);">🤖</div>
@@ -586,7 +727,6 @@
         </div>
       </div>
 
-      <!-- INFO SIDEBAR -->
       <div class="contact-info">
         <div class="contact-item"><div class="c-icon c-i-1">📍</div><div><div class="c-label">Location</div><div class="c-value">Manila, Philippines 🇵🇭</div></div></div>
         <div class="contact-item"><div class="c-icon c-i-2">⏰</div><div><div class="c-label">Timezone</div><div class="c-value">PST +8 · Open to US hours</div></div></div>
@@ -675,147 +815,473 @@
 </div>
 
 <script>
-/* ═══════════════════════════════════════
-   ⚠️  CONFIGURATION — UPDATE THESE TWO VALUES
-   1. Replace DS_KEY with your NEW DeepSeek key
-      (rotate at platform.deepseek.com first!)
-   2. After deploying google-apps-script.js,
-      paste the Web App URL as SHEET_URL
-════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
 const DS_KEY    = 'sk-205c9b0e26a447be8d3fdb75aed8001c';
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzOYfvpSglmmA5QhX6nvrJPlvuQ1zDR-MpxWt1VfnJHOv_DI3PkismvsK1nlegniwQ/exec';
 
-/* ── SERVICE-SPECIFIC AI CONTEXT ── */
-const SVC_CTX = {
-  'Google Ads Management':      'Marlon manages Google Search, Display, Shopping & Video campaigns up to $10K+/month for US service businesses. Trained by Ian Baillo, top Google Ads expert in PH. Benefits: high-intent leads, transparent ROI reporting, bid & keyword optimization.',
-  'GHL / Zapier Automation':    'Marlon builds GoHighLevel CRM pipelines and Zapier workflows — automated lead capture, SMS/email follow-ups, and booking confirmations. Certified Top 1 AI Automation Expert in the Philippines by Technical Virtual Assistants.ph.',
-  'Claude Code AI Workflow':    'Marlon uses Claude Code + Anthropic API to build custom AI scripts: ad performance reporting, keyword clustering, copy generation pipelines. One of very few PH specialists combining AI dev with paid ads.',
-  'Conversion Tracking Setup':  'Marlon sets up Google Tag Manager, GA4, and conversion tracking so every click, call, and form fill is attributed correctly — no wasted ad spend.',
-  'Full-Funnel Lead Generation':'Marlon builds end-to-end systems: Google Ads → landing page → GHL CRM → automated follow-up → booked appointment. Specialized for junk removal, plumbing, HVAC, therapy, and US home services.',
-  'Meta / Facebook Ads':        'Marlon creates Facebook & Instagram campaigns for lead gen, retargeting, and awareness. Trained by Jay Gregorio (CEO, Negosyo Network Academy) in Meta Ads Mastery.',
-  'Other':                      'Marlon is an AI Automation & Google Ads Specialist from Manila, PH — offering Google Ads, Meta Ads, GHL/Zapier automation, Claude Code AI workflows, and full-funnel lead generation.'
-};
+/* ══════════════════════════════════════════
+   GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
+   (replaces old particle system)
+══════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, nodes = [], edges = [], pulses = [];
+  const mouse = { x: -1000, y: -1000 };
 
-const buildSystem = (svc) => `You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist, Manila, Philippines.
+  document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-A client just submitted a contact form. Write a warm, personalized reply (60-90 words max).
-
-Service context for "${svc}": ${SVC_CTX[svc] || SVC_CTX['Other']}
-
-Rules:
-- Address client by first name
-- Reference their specific message in 1 sentence
-- Highlight 1-2 key benefits of Marlon's "${svc}" service
-- End EXACTLY with: "Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9"
-- Plain text only — no asterisks, no markdown, no bullet points
-- Sound human, warm, and professional`;
-
-/* ── CONTACT FORM SUBMIT ── */
-async function submitContactForm() {
-  const fname   = document.getElementById('cf-fname').value.trim();
-  const lname   = document.getElementById('cf-lname').value.trim();
-  const email   = document.getElementById('cf-email').value.trim();
-  const service = document.getElementById('cf-service').value;
-  const message = document.getElementById('cf-message').value.trim();
-  const btn     = document.getElementById('cf-btn');
-  const errBox  = document.getElementById('cf-error');
-  const loading = document.getElementById('cf-loading');
-
-  errBox.style.display = 'none';
-  if (!fname)                        return showCfErr('Please enter your first name.');
-  if (!/\S+@\S+\.\S+/.test(email))   return showCfErr('Please enter a valid email address.');
-  if (!message)                      return showCfErr('Please write a short message so Marlon can help you better!');
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="cf-spinner"></span> Sending…';
-  loading.classList.add('show');
-
-  let aiReply = '';
-  try {
-    const r = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DS_KEY}` },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: buildSystem(service) },
-          { role: 'user',   content: `Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.` }
-        ],
-        max_tokens: 200, temperature: 0.72, stream: false
-      })
-    });
-    if (!r.ok) throw new Error('API ' + r.status);
-    const d = await r.json();
-    aiReply = d.choices?.[0]?.message?.content?.trim() || '';
-  } catch(e) {
-    console.warn('DeepSeek error — fallback used:', e);
-    aiReply = `Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9`;
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    buildCircuit();
   }
 
-  loading.classList.remove('show');
-  btn.disabled = false;
-  btn.innerHTML = 'Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  function buildCircuit() {
+    nodes = [];
+    edges = [];
+    pulses= [];
+    const COLS  = Math.ceil(W / 90) + 1;
+    const ROWS  = Math.ceil(H / 90) + 1;
+    const jitter = 22;
 
-  document.getElementById('cf-reply-text').innerHTML = fmtReply(aiReply);
-  document.getElementById('cf-reply-card').style.display = 'block';
-  document.getElementById('cf-form-body').style.opacity = '0.4';
-  document.getElementById('cf-form-body').style.pointerEvents = 'none';
-  document.getElementById('cf-reply-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    // Scatter nodes on a grid with jitter
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        nodes.push({
+          x: c * 90 + (Math.random() - 0.5) * jitter,
+          y: r * 90 + (Math.random() - 0.5) * jitter,
+          r: Math.random() * 2 + 1,
+          alpha: Math.random() * 0.5 + 0.2,
+          pulsePhase: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.02 + Math.random() * 0.02
+        });
+      }
+    }
 
-  saveToSheet({ fname, lname, email, service, message, aiReply });
-}
+    // Manhattan-style edges (horizontal + vertical only, like circuit traces)
+    for (let i = 0; i < nodes.length; i++) {
+      const candidates = [];
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[j].x - nodes[i].x;
+        const dy = nodes[j].y - nodes[i].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < 140 && Math.random() < 0.25) {
+          candidates.push({ j, d });
+        }
+      }
+      // Pick up to 2 connections per node
+      candidates.sort((a, b) => a.d - b.d);
+      candidates.slice(0, 2).forEach(({ j }) => {
+        edges.push({ a: i, b: j, alpha: Math.random() * 0.08 + 0.03 });
+      });
+    }
 
-/* ── GOOGLE SHEETS SAVE ── */
-async function saveToSheet(d) {
-  if (!SHEET_URL || SHEET_URL.includes('PASTE_')) return;
-  try {
-    await fetch(SHEET_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        timestamp: new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' }),
-        firstName: d.fname, lastName: d.lname, email: d.email,
-        service: d.service, message: d.message, aiReply: d.aiReply
-      })
+    // Spawn initial pulses
+    for (let i = 0; i < 18; i++) spawnPulse();
+  }
+
+  function spawnPulse() {
+    if (!edges.length) return;
+    const edge = edges[Math.floor(Math.random() * edges.length)];
+    pulses.push({
+      edge,
+      t:     Math.random(),
+      speed: 0.002 + Math.random() * 0.004,
+      size:  Math.random() * 2.5 + 1,
+      color: Math.random() < 0.7
+        ? `rgba(0,212,255,`
+        : Math.random() < 0.5
+          ? `rgba(123,47,255,`
+          : `rgba(0,255,136,`,
+      hue: Math.random() < 0.7 ? 195 : (Math.random() < 0.5 ? 270 : 150)
     });
-    const badge = document.getElementById('cf-saved-badge');
-    if (badge) badge.classList.add('show');
-  } catch(e) { console.warn('Sheet save (non-critical):', e); }
-}
+  }
 
-function showCfErr(msg) { const e=document.getElementById('cf-error'); e.textContent=msg; e.style.display='block'; }
-function fmtReply(t) { return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>'); }
-function resetContactForm() {
-  document.getElementById('cf-reply-card').style.display='none';
-  document.getElementById('cf-form-body').style.opacity='1';
-  document.getElementById('cf-form-body').style.pointerEvents='auto';
-  ['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('cf-error').style.display='none';
-  document.getElementById('cf-saved-badge').classList.remove('show');
-}
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
 
-/* ── CURSOR ── */
+    // Draw edges
+    edges.forEach(e => {
+      const a = nodes[e.a], b = nodes[e.b];
+      ctx.beginPath();
+      // Manhattan routing: go horizontal then vertical
+      const mx = b.x;
+      const my = a.y;
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(mx, my);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = `rgba(0,212,255,${e.alpha})`;
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    });
+
+    // Draw nodes
+    nodes.forEach(n => {
+      const pulse = 0.5 + 0.5 * Math.sin(t * n.pulseSpeed + n.pulsePhase);
+      const alpha = n.alpha * (0.6 + 0.4 * pulse);
+      // Mouse proximity glow
+      const dx = n.x - mouse.x, dy = n.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const boost = dist < 120 ? (1 - dist / 120) * 0.8 : 0;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,212,255,${Math.min(1, alpha + boost)})`;
+      ctx.fill();
+      if (boost > 0.1) {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,212,255,${boost * 0.3})`;
+        ctx.fill();
+      }
+    });
+
+    // Draw & move pulses
+    pulses.forEach((p, i) => {
+      p.t += p.speed;
+      if (p.t >= 1) {
+        p.t = 0;
+        // Pick new edge
+        p.edge = edges[Math.floor(Math.random() * edges.length)];
+      }
+      const a = nodes[p.edge.a], b = nodes[p.edge.b];
+      // Manhattan position
+      let px, py;
+      if (p.t < 0.5) {
+        const tt = p.t * 2;
+        px = a.x + (b.x - a.x) * tt;
+        py = a.y;
+      } else {
+        const tt = (p.t - 0.5) * 2;
+        px = b.x;
+        py = a.y + (b.y - a.y) * tt;
+      }
+      // Glow trail
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, p.size * 5);
+      grad.addColorStop(0, p.color + '0.9)');
+      grad.addColorStop(0.4, p.color + '0.3)');
+      grad.addColorStop(1, p.color + '0)');
+      ctx.beginPath();
+      ctx.arc(px, py, p.size * 5, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(px, py, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + '1)';
+      ctx.fill();
+    });
+
+    // Keep pulse count steady
+    while (pulses.length < 20) spawnPulse();
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
+
+
+/* ══════════════════════════════════════════
+   CERTIFICATIONS SECTION — CIRCUIT CANVAS
+   Inspired by the circuit board humanoid image
+══════════════════════════════════════════ */
+(function() {
+  const certSection = document.getElementById('certifications');
+  const canvas = document.getElementById('cert-circuit-canvas');
+  const ctx = canvas.getContext('2d');
+
+  let W, H, nodes = [], traces = [], pulses = [], particles = [];
+  let animId;
+
+  function resize() {
+    const rect = certSection.getBoundingClientRect();
+    W = canvas.width  = certSection.offsetWidth;
+    H = canvas.height = certSection.offsetHeight;
+    buildCertCircuit();
+  }
+
+  function buildCertCircuit() {
+    nodes   = [];
+    traces  = [];
+    pulses  = [];
+    particles = [];
+
+    // Dense circuit grid for cert section
+    const COLS = Math.ceil(W / 55) + 2;
+    const ROWS = Math.ceil(H / 55) + 2;
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const jitter = 10;
+        nodes.push({
+          x: c * 55 + (Math.random() - 0.5) * jitter,
+          y: r * 55 + (Math.random() - 0.5) * jitter,
+          r: Math.random() < 0.15 ? 3 : (Math.random() < 0.4 ? 2 : 1.2),
+          isHub: Math.random() < 0.12,
+          glow: Math.random() * 0.6 + 0.15,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.015 + Math.random() * 0.025,
+          color: Math.random() < 0.75
+            ? [0,212,255]
+            : (Math.random() < 0.5 ? [123,47,255] : [0,255,136])
+        });
+      }
+    }
+
+    // Build traces between nearby nodes
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[j].x - nodes[i].x;
+        const dy = nodes[j].y - nodes[i].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 90 && Math.random() < 0.18) {
+          traces.push({
+            a: i, b: j,
+            alpha: Math.random() * 0.12 + 0.04,
+            manhattan: Math.random() < 0.6
+          });
+        }
+      }
+    }
+
+    // Spawn pulses
+    for (let i = 0; i < 30; i++) spawnCertPulse();
+
+    // Floating particles (like the glowing particles in the image)
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.4 + 0.1,
+        color: Math.random() < 0.7 ? [0,212,255] : [0,255,136]
+      });
+    }
+  }
+
+  function spawnCertPulse() {
+    if (!traces.length) return;
+    const trace = traces[Math.floor(Math.random() * traces.length)];
+    const colors = [
+      { base: [0,212,255], glow: 'rgba(0,212,255,' },
+      { base: [123,47,255], glow: 'rgba(123,47,255,' },
+      { base: [0,255,136], glow: 'rgba(0,255,136,' },
+    ];
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    pulses.push({
+      trace,
+      t: Math.random(),
+      speed: 0.003 + Math.random() * 0.006,
+      size: Math.random() * 3 + 1.5,
+      glow: c.glow,
+      rev: Math.random() < 0.5
+    });
+  }
+
+  let t = 0;
+  function drawCertCircuit() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.016;
+
+    // Draw traces (Manhattan routing for circuit board look)
+    traces.forEach(tr => {
+      const a = nodes[tr.a], b = nodes[tr.b];
+      ctx.beginPath();
+      if (tr.manhattan) {
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, a.y); // horizontal first
+        ctx.lineTo(b.x, b.y); // then vertical
+      } else {
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(a.x, b.y); // vertical first
+        ctx.lineTo(b.x, b.y); // then horizontal
+      }
+      const [r,g,bl] = a.color;
+      ctx.strokeStyle = `rgba(${r},${g},${bl},${tr.alpha})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    });
+
+    // Draw nodes
+    nodes.forEach(n => {
+      const pulse = 0.5 + 0.5 * Math.sin(t * n.speed + n.phase);
+      const [r,g,b] = n.color;
+      const alpha = n.glow * (0.5 + 0.5 * pulse);
+
+      if (n.isHub) {
+        // Hub nodes: larger with ring glow
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 8);
+        grad.addColorStop(0, `rgba(${r},${g},${b},${alpha * 0.8})`);
+        grad.addColorStop(0.4, `rgba(${r},${g},${b},${alpha * 0.3})`);
+        grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 8, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        // Ring
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + 2, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha * 0.6})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fill();
+    });
+
+    // Draw pulse runners
+    pulses.forEach(p => {
+      p.t += p.speed * (p.rev ? -1 : 1);
+      if (p.t > 1) { p.t = 0; p.trace = traces[Math.floor(Math.random() * traces.length)]; }
+      if (p.t < 0) { p.t = 1; p.trace = traces[Math.floor(Math.random() * traces.length)]; }
+
+      const a = nodes[p.trace.a], b = nodes[p.trace.b];
+      let px, py;
+
+      // Manhattan path position
+      if (p.trace.manhattan) {
+        if (p.t < 0.5) {
+          const tt = p.t * 2;
+          px = a.x + (b.x - a.x) * tt;
+          py = a.y;
+        } else {
+          const tt = (p.t - 0.5) * 2;
+          px = b.x;
+          py = a.y + (b.y - a.y) * tt;
+        }
+      } else {
+        if (p.t < 0.5) {
+          const tt = p.t * 2;
+          px = a.x;
+          py = a.y + (b.y - a.y) * tt;
+        } else {
+          const tt = (p.t - 0.5) * 2;
+          px = a.x + (b.x - a.x) * tt;
+          py = b.y;
+        }
+      }
+
+      // Glow halo
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, p.size * 7);
+      grad.addColorStop(0, p.glow + '1)');
+      grad.addColorStop(0.3, p.glow + '0.5)');
+      grad.addColorStop(1, p.glow + '0)');
+      ctx.beginPath();
+      ctx.arc(px, py, p.size * 7, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Core
+      ctx.beginPath();
+      ctx.arc(px, py, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.glow + '1)';
+      ctx.fill();
+    });
+
+    // Floating particles
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      const [r,g,b] = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`;
+      ctx.fill();
+    });
+
+    // Keep pulses populated
+    while (pulses.length < 35) spawnCertPulse();
+
+    animId = requestAnimationFrame(drawCertCircuit);
+  }
+
+  // Use IntersectionObserver to start/stop animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!animId) drawCertCircuit();
+      } else {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    });
+  }, { threshold: 0.05 });
+
+  observer.observe(certSection);
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    animId = null;
+    resize();
+    drawCertCircuit();
+  });
+
+  resize();
+  drawCertCircuit();
+})();
+
+
+/* ══════════════════════════════════════════
+   BINARY RAIN for Certifications Section
+══════════════════════════════════════════ */
+(function() {
+  const container = document.getElementById('binary-rain');
+  const COUNT = 14;
+  for (let i = 0; i < COUNT; i++) {
+    const col = document.createElement('div');
+    col.className = 'binary-col';
+    // Generate random binary/hex string
+    let str = '';
+    for (let j = 0; j < 30; j++) {
+      str += Math.random() < 0.7 ? (Math.random() < 0.5 ? '0' : '1') : (Math.floor(Math.random()*16).toString(16).toUpperCase());
+      str += ' ';
+    }
+    col.textContent = str;
+    col.style.left = (5 + i * (90 / COUNT) + Math.random() * 4) + '%';
+    const dur = 8 + Math.random() * 10;
+    col.style.animationDuration = dur + 's';
+    col.style.animationDelay = -(Math.random() * dur) + 's';
+    // Alternating colors
+    if (i % 3 === 1) col.style.color = 'rgba(123,47,255,0.4)';
+    if (i % 3 === 2) col.style.color = 'rgba(0,255,136,0.35)';
+    container.appendChild(col);
+  }
+})();
+
+
+/* ══════════════════════════════════════════
+   CURSOR
+══════════════════════════════════════════ */
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 document.addEventListener('mousemove',e=>{cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;});
 document.querySelectorAll('a,button,.service-card,.project-card,.cert-card,.pl-card').forEach(el=>{el.addEventListener('mouseenter',()=>{ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='rgba(0,255,136,0.6)';});el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(0,212,255,0.5)';});});
 
-/* ── PARTICLE CANVAS ── */
-const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
-let W,H,particles=[];
-const mouse={x:-1000,y:-1000};
-document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-resize();window.addEventListener('resize',resize);
-class Particle{constructor(){this.reset(true);}reset(init){this.x=Math.random()*W;this.y=init?Math.random()*H:H+10;this.size=Math.random()*1.2+0.3;this.speedY=-(Math.random()*0.5+0.1);this.speedX=(Math.random()-0.5)*0.15;this.opacity=Math.random()*0.6+0.1;const r=Math.random();this.hue=r<0.5?195:(r<0.75?270:20);}update(){const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){this.x+=dx/d*0.7;this.y+=dy/d*0.7;}this.x+=this.speedX;this.y+=this.speedY;if(this.y<-10)this.reset(false);}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},90%,65%,${this.opacity})`;ctx.fill();}}
-for(let i=0;i<100;i++)particles.push(new Particle());
-function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(0,212,255,${(1-d/80)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}}requestAnimationFrame(animate);}
-animate();
 
-/* ── INTERSECTION OBSERVER ── */
+/* ══════════════════════════════════════════
+   INTERSECTION OBSERVER (scroll reveals)
+══════════════════════════════════════════ */
 const io=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('in-view'),80*i);io.unobserve(entry.target);}});},{threshold:0.08});
 document.querySelectorAll('.reveal,.project-card,.tl-item,.cert-card,.pl-card').forEach(el=>io.observe(el));
 
-/* ── CERT LIGHTBOX ── */
+
+/* ══════════════════════════════════════════
+   CERT LIGHTBOX
+══════════════════════════════════════════ */
 const CERTS=[
   {src:'certificates images/Certificate.jpg',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Ads Professional — Certificate of Accomplishment'},
   {src:'certificates images/Google Analytics.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Analytics.png',cap:'Google Analytics Certified'},
@@ -836,7 +1302,75 @@ function clbGo(d){clbCur=(clbCur+d+CERTS.length)%CERTS.length;clbImg.style.opaci
 clbImg.style.transition='opacity .13s';
 document.addEventListener('keydown',e=>{if(!certLb.classList.contains('on'))return;if(e.key==='Escape')closeCertLb();if(e.key==='ArrowLeft')clbGo(-1);if(e.key==='ArrowRight')clbGo(1);});
 
-/* ── CHATBOT ── */
+
+/* ══════════════════════════════════════════
+   CONTACT FORM
+══════════════════════════════════════════ */
+const SVC_CTX = {
+  'Google Ads Management':      'Marlon manages Google Search, Display, Shopping & Video campaigns up to $10K+/month for US service businesses. Trained by Ian Baillo, top Google Ads expert in PH.',
+  'GHL / Zapier Automation':    'Marlon builds GoHighLevel CRM pipelines and Zapier workflows — automated lead capture, SMS/email follow-ups, and booking confirmations. Top 1 AI Automation Expert Philippines.',
+  'Claude Code AI Workflow':    'Marlon uses Claude Code + Anthropic API to build custom AI scripts: ad performance reporting, keyword clustering, copy generation pipelines.',
+  'Conversion Tracking Setup':  'Marlon sets up Google Tag Manager, GA4, and conversion tracking so every click, call, and form fill is attributed correctly.',
+  'Full-Funnel Lead Generation':'Marlon builds end-to-end systems: Google Ads → landing page → GHL CRM → automated follow-up → booked appointment.',
+  'Meta / Facebook Ads':        'Marlon creates Facebook & Instagram campaigns for lead gen, retargeting, and awareness.',
+  'Other':                      'Marlon is an AI Automation & Google Ads Specialist from Manila, PH.'
+};
+
+const buildSystem=(svc)=>`You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist, Manila, Philippines. A client just submitted a contact form. Write a warm, personalized reply (60-90 words max). Service context for "${svc}": ${SVC_CTX[svc]||SVC_CTX['Other']}. Rules: Address client by first name. Reference their specific message in 1 sentence. Highlight 1-2 key benefits. End EXACTLY with: "Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9". Plain text only.`;
+
+async function submitContactForm(){
+  const fname=document.getElementById('cf-fname').value.trim();
+  const lname=document.getElementById('cf-lname').value.trim();
+  const email=document.getElementById('cf-email').value.trim();
+  const service=document.getElementById('cf-service').value;
+  const message=document.getElementById('cf-message').value.trim();
+  const btn=document.getElementById('cf-btn');
+  const errBox=document.getElementById('cf-error');
+  const loading=document.getElementById('cf-loading');
+  errBox.style.display='none';
+  if(!fname)return showCfErr('Please enter your first name.');
+  if(!/\S+@\S+\.\S+/.test(email))return showCfErr('Please enter a valid email address.');
+  if(!message)return showCfErr('Please write a short message so Marlon can help you better!');
+  btn.disabled=true;
+  btn.innerHTML='<span class="cf-spinner"></span> Sending…';
+  loading.classList.add('show');
+  let aiReply='';
+  try{
+    const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
+    if(!r.ok)throw new Error('API '+r.status);
+    const d=await r.json();
+    aiReply=d.choices?.[0]?.message?.content?.trim()||'';
+  }catch(e){
+    aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9`;
+  }
+  loading.classList.remove('show');
+  btn.disabled=false;
+  btn.innerHTML='Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  document.getElementById('cf-reply-text').innerHTML=fmtReply(aiReply);
+  document.getElementById('cf-reply-card').style.display='block';
+  document.getElementById('cf-form-body').style.opacity='0.4';
+  document.getElementById('cf-form-body').style.pointerEvents='none';
+  document.getElementById('cf-reply-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+  saveToSheet({fname,lname,email,service,message,aiReply});
+}
+
+async function saveToSheet(d){
+  if(!SHEET_URL||SHEET_URL.includes('PASTE_'))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),firstName:d.fname,lastName:d.lname,email:d.email,service:d.service,message:d.message,aiReply:d.aiReply})});
+    const badge=document.getElementById('cf-saved-badge');
+    if(badge)badge.classList.add('show');
+  }catch(e){console.warn('Sheet save:',e);}
+}
+
+function showCfErr(msg){const e=document.getElementById('cf-error');e.textContent=msg;e.style.display='block';}
+function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>');}
+function resetContactForm(){document.getElementById('cf-reply-card').style.display='none';document.getElementById('cf-form-body').style.opacity='1';document.getElementById('cf-form-body').style.pointerEvents='auto';['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');document.getElementById('cf-error').style.display='none';document.getElementById('cf-saved-badge').classList.remove('show');}
+
+
+/* ══════════════════════════════════════════
+   CHATBOT
+══════════════════════════════════════════ */
 const CHAT_SYSTEM=`You are a professional AI assistant for Marlon Palomares, an AI Automation & Google Ads Specialist based in Manila, Philippines. Answer questions about: Google Ads management, GHL/Zapier automation, Claude Code AI workflows, Meta Ads, conversion tracking, lead generation. Experience: 2+ years US clients, $10K+/month budgets, Top 1 AI Automation Expert PH. 8 certs: Google Search, Display, Video, Shopping, Analytics, Apps, SEMrush. Mentors: Ian Baillo, Coach RJ Villmer, Jay Gregorio. Book calls: https://calendar.app.google/1tWXCAJSd3f1BDed9. Be concise, professional, friendly. Under 120 words unless asked for detail.`;
 let chatHistory=[],chatOpen=false;
 function toggleChat(){chatOpen=!chatOpen;document.getElementById('chat-window').classList.toggle('open',chatOpen);if(chatOpen)setTimeout(()=>document.getElementById('chat-input').focus(),320);}
