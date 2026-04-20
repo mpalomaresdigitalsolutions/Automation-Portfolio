@@ -816,10 +816,31 @@
 
 <script>
 /* ══════════════════════════════════════════
-   CONFIG
+   CONFIG - Environment Variables
+   Load from .env file or use fallback values
 ══════════════════════════════════════════ */
-const DS_KEY    = 'sk-205c9b0e26a447be8d3fdb75aed8001c';
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzOYfvpSglmmA5QhX6nvrJPlvuQ1zDR-MpxWt1VfnJHOv_DI3PkismvsK1nlegniwQ/exec';
+// Configuration object with environment variable support
+const CONFIG = (function() {
+  // Try to get values from environment (for deployment platforms)
+  // or use hardcoded fallbacks for local development
+  const env = typeof process !== 'undefined' && process.env ? process.env : {};
+  
+  // For browser environment, check for globally defined variables
+  // (set by deployment platforms like Netlify, Vercel, etc.)
+  const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
+  
+  return {
+    // DeepSeek API Key - priority: env var > browser env > fallback
+    DS_KEY: env.DS_KEY || browserEnv.DS_KEY || 'sk-205c9b0e26a447be8d3fdb75aed8001c',
+    
+    // Google Apps Script URL - priority: env var > browser env > fallback
+    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL || 'https://script.google.com/macros/s/AKfycbzOYfvpSglmmA5QhX6nvrJPlvuQ1zDR-MpxWt1VfnJHOv_DI3PkismvsK1nlegniwQ/exec'
+  };
+})();
+
+// Backward compatibility - export as global constants
+const DS_KEY = CONFIG.DS_KEY;
+const SHEET_URL = CONFIG.SHEET_URL;
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1355,7 +1376,8 @@ async function submitContactForm(){
 }
 
 async function saveToSheet(d){
-  if(!SHEET_URL||SHEET_URL.includes('PASTE_'))return;
+  // Check if SHEET_URL is configured (not a placeholder or empty)
+  if(!SHEET_URL||SHEET_URL.includes('PASTE_')||SHEET_URL.includes('your_google_apps_script_url'))return;
   try{
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),firstName:d.fname,lastName:d.lname,email:d.email,service:d.service,message:d.message,aiReply:d.aiReply})});
     const badge=document.getElementById('cf-saved-badge');
