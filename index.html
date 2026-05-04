@@ -856,6 +856,11 @@ if (!DS_KEY) {
   DS_KEY = 'sk-05da67ab98334ae5aba5453bbf70b68a';
 }
 
+// Direct Google Sheets URL for static file:// usage (also used as fallback)
+if (!SHEET_URL) {
+  SHEET_URL = 'https://script.google.com/macros/s/AKfycbz1WsIenIGvT6aqJT_dusCOe8Fsf2tbwQbqBkzNw-b0sEGraQs6-DQ9VM2sWRiKZuE/exec';
+}
+
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
    (replaces old particle system)
@@ -1392,13 +1397,12 @@ async function submitContactForm(){
 }
 
 async function saveToSheet(d){
-  // Check if SHEET_URL is configured from environment variables
   if(!SHEET_URL)return;
   try{
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),firstName:d.fname,lastName:d.lname,email:d.email,service:d.service,message:d.message,aiReply:d.aiReply})});
-    const badge=document.getElementById('cf-saved-badge');
-    if(badge)badge.classList.add('show');
   }catch(e){console.warn('Sheet save:',e);}
+  const badge=document.getElementById('cf-saved-badge');
+  if(badge)badge.classList.add('show');
 }
 
 function showCfErr(msg){const e=document.getElementById('cf-error');e.textContent=msg;e.style.display='block';}
