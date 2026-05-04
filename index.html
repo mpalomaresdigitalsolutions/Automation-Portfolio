@@ -519,7 +519,7 @@
       <div class="hero-ctas">
         <a href="#projects" class="btn-primary">View My Work <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-ghost">📅 Book a Free Call</a>
-        <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="btn-ghost">Case Study →</a>
+        <a href="resilience-therapy-case-study.html" class="btn-ghost">Case Study →</a>
       </div>
       <div class="hero-meta">
         <div class="meta-item"><div class="meta-num">$10K+</div><div class="meta-label">Monthly Ad Budget Managed</div></div>
@@ -816,13 +816,12 @@
 
 <script>
 /* ══════════════════════════════════════════
-   CONFIG - Environment Variables
-   Load from .env file or use fallback values
+   CONFIG - Environment Variables ONLY
+   Load from .env file or deployment platform environment variables
 ══════════════════════════════════════════ */
 // Configuration object with environment variable support
 const CONFIG = (function() {
-  // Try to get values from environment (for deployment platforms)
-  // or use hardcoded fallbacks for local development
+  // Get values from environment (for deployment platforms)
   const env = typeof process !== 'undefined' && process.env ? process.env : {};
   
   // For browser environment, check for globally defined variables
@@ -830,11 +829,11 @@ const CONFIG = (function() {
   const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
   
   return {
-    // DeepSeek API Key - priority: env var > browser env > fallback
-    DS_KEY: env.DS_KEY || browserEnv.DS_KEY || 'sk-205c9b0e26a447be8d3fdb75aed8001c',
+    // DeepSeek API Key - ONLY from environment variables
+    DS_KEY: env.DS_KEY || browserEnv.DS_KEY,
     
-    // Google Apps Script URL - priority: env var > browser env > fallback
-    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL || 'https://script.google.com/macros/s/AKfycbzOYfvpSglmmA5QhX6nvrJPlvuQ1zDR-MpxWt1VfnJHOv_DI3PkismvsK1nlegniwQ/exec'
+    // Google Apps Script URL - ONLY from environment variables
+    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL
   };
 })();
 
@@ -1376,8 +1375,8 @@ async function submitContactForm(){
 }
 
 async function saveToSheet(d){
-  // Check if SHEET_URL is configured (not a placeholder or empty)
-  if(!SHEET_URL||SHEET_URL.includes('PASTE_')||SHEET_URL.includes('your_google_apps_script_url'))return;
+  // Check if SHEET_URL is configured from environment variables
+  if(!SHEET_URL)return;
   try{
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),firstName:d.fname,lastName:d.lname,email:d.email,service:d.service,message:d.message,aiReply:d.aiReply})});
     const badge=document.getElementById('cf-saved-badge');
