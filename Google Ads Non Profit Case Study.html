@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nonprofit Google Ads Case Study — Humanity Impact Institute · Marlon Palomares</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060810;
+    --bg2:     #0b0e1a;
+    --bg3:     #0f1322;
+    --accent:  #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --green:   #00ff88;
+    --text:    #e8eeff;
+    --muted:   #6b7299;
+    --card:    rgba(255,255,255,0.03);
+    --border:  rgba(255,255,255,0.07);
+    --r:       12px;
+    --glow:    0 0 40px rgba(0,212,255,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px var(--accent); }
+  .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(0,212,255,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: transform 0.3s cubic-bezier(.23,1,.32,1), width 0.2s, height 0.2s; }
+
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+  .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -8s; }
+  .orb-3 { width: 350px; height: 350px; background: var(--accent3); top: 50%; left: 55%; animation-delay: -14s; }
+  @keyframes orb-drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-50px) scale(1.1); } 100% { transform: translate(-40px,30px) scale(0.9); } }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5vw; backdrop-filter: blur(20px); background: rgba(6,8,16,0.7); border-bottom: 1px solid var(--border); animation: slide-down 0.6s ease both; }
+  @keyframes slide-down { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+  .logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); letter-spacing: 0.05em; text-decoration: none; }
+  .logo span { color: var(--text); }
+  .nav-back { font-family: 'Space Mono', monospace; font-size: 0.78rem; padding: 0.55rem 1.3rem; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); text-decoration: none; transition: border-color 0.2s, color 0.2s, background 0.2s; letter-spacing: 0.06em; }
+  .nav-back:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.06); }
+  .nav-cta { font-family: 'Space Mono', monospace; font-size: 0.78rem; padding: 0.55rem 1.3rem; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; letter-spacing: 0.06em; }
+  .nav-cta:hover { background: rgba(0,212,255,0.1); box-shadow: 0 0 20px rgba(0,212,255,0.25); transform: translateY(-1px); }
+  .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+  .social-strip { position: fixed; left: 2rem; bottom: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; z-index: 50; }
+  .social-strip::after { content: ''; display: block; width: 1px; height: 70px; background: linear-gradient(to bottom, var(--muted), transparent); margin-top: 0.5rem; }
+  .s-icon { width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.85rem; background: var(--card); color: var(--muted); transition: border-color 0.2s, background 0.2s, transform 0.2s, color 0.2s; }
+  .s-icon:hover { border-color: var(--accent); background: rgba(0,212,255,0.1); transform: translateY(-2px); color: var(--accent); }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .case-hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 10rem 5vw 6rem; position: relative; max-width: 1100px; margin: 0 auto; }
+  .hero-breadcrumb { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; animation: fade-up 0.6s ease 0.2s both; }
+  .hero-breadcrumb a { color: var(--accent); text-decoration: none; }
+  .hero-breadcrumb a:hover { text-decoration: underline; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; border: 1px solid rgba(0,255,136,0.3); background: rgba(0,255,136,0.06); border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; animation: fade-up 0.7s ease 0.3s both; width: fit-content; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); } }
+
+  .case-hero h1 { font-size: clamp(2.4rem, 6vw, 5.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 1.5rem; animation: fade-up 0.7s ease 0.4s both; }
+  .case-hero h1 .line1 { display: block; color: var(--text); }
+  .case-hero h1 .line2 { display: block; background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200%; animation: fade-up 0.7s ease 0.4s both, grad-shift 4s ease infinite; }
+  @keyframes grad-shift { 0%,100% { background-position:0%; } 50% { background-position:100%; } }
+  .case-hero-sub { font-size: clamp(1rem, 1.8vw, 1.15rem); color: var(--muted); max-width: 640px; line-height: 1.8; margin-bottom: 2.5rem; animation: fade-up 0.7s ease 0.55s both; }
+  .case-hero-sub strong { color: var(--text); font-weight: 600; }
+
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; animation: fade-up 0.7s ease 0.7s both; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; background: var(--accent); color: var(--bg); font-weight: 700; font-size: 0.9rem; text-decoration: none; border-radius: 4px; transition: transform 0.2s, box-shadow 0.25s; box-shadow: 0 0 30px rgba(0,212,255,0.3); border: none; cursor: none; font-family: 'Outfit', sans-serif; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.5); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: 1px solid var(--border); color: var(--text); font-weight: 500; font-size: 0.9rem; text-decoration: none; border-radius: 4px; background: var(--card); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+  .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
+
+  /* KPI Strip */
+  .kpi-strip { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--bg2); margin: 3.5rem 0; animation: fade-up 0.7s ease 0.85s both; }
+  .kpi-item { flex: 1; padding: 1.8rem 1.5rem; border-right: 1px solid var(--border); text-align: center; position: relative; overflow: hidden; transition: background 0.3s; }
+  .kpi-item:last-child { border-right: none; }
+  .kpi-item::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+  .kpi-item:nth-child(1)::before { background: linear-gradient(135deg, rgba(0,255,136,0.06), transparent); }
+  .kpi-item:nth-child(2)::before { background: linear-gradient(135deg, rgba(0,212,255,0.06), transparent); }
+  .kpi-item:nth-child(3)::before { background: linear-gradient(135deg, rgba(123,47,255,0.06), transparent); }
+  .kpi-item:nth-child(4)::before { background: linear-gradient(135deg, rgba(255,107,53,0.06), transparent); }
+  .kpi-item:hover::before { opacity: 1; }
+  .kpi-item:hover { background: rgba(255,255,255,0.02); }
+  .kpi-num { font-family: 'Space Mono', monospace; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; line-height: 1; margin-bottom: 0.35rem; }
+  .kpi-label { font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+  .kpi-arrow { font-size: 0.7rem; margin-right: 0.3rem; }
+  .kn-green { color: var(--green); }
+  .kn-blue  { color: var(--accent); }
+  .kn-purple{ color: #a78bfa; }
+  .kn-orange{ color: var(--accent3); }
+
+  .scroll-indicator { position: absolute; bottom: 2.5rem; left: 0; display: flex; align-items: center; gap: 0.8rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); animation: fade-up 0.7s ease 1.1s both; }
+  .scroll-line { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, var(--muted)); animation: scroll-pulse 2s ease-in-out infinite; }
+  @keyframes scroll-pulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 5vw; max-width: 1100px; margin: 0 auto; }
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.8rem; }
+  .section-sub { color: var(--muted); font-weight: 400; max-width: 600px; line-height: 1.75; margin-bottom: 2.5rem; }
+
+  @keyframes fade-up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  .reveal { opacity:0; transform:translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity:1; transform:none; }
+
+  /* ── CHALLENGE SECTION ── */
+  .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  .challenge-card { border: 1px solid var(--border); border-radius: var(--r); padding: 1.8rem; background: var(--card); position: relative; overflow: hidden; transition: border-color 0.3s, background 0.3s; }
+  .challenge-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; transition: transform 0.4s cubic-bezier(.23,1,.32,1); transform: scaleX(0); transform-origin: left; }
+  .challenge-card:nth-child(1)::before { background: var(--accent3); }
+  .challenge-card:nth-child(2)::before { background: var(--accent2); }
+  .challenge-card:nth-child(3)::before { background: var(--accent); }
+  .challenge-card:nth-child(4)::before { background: var(--green); }
+  .challenge-card:hover::before { transform: scaleX(1); }
+  .challenge-card:hover { border-color: rgba(0,212,255,0.25); background: rgba(0,212,255,0.03); }
+  .challenge-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .challenge-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .challenge-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+  .challenge-desc strong { color: var(--text); }
+
+  /* ── BEFORE/AFTER ── */
+  .ba-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  .ba-card { border-radius: var(--r); padding: 2rem; position: relative; overflow: hidden; }
+  .ba-before { border: 1px solid rgba(255,107,53,0.3); background: rgba(255,107,53,0.04); }
+  .ba-after  { border: 1px solid rgba(0,255,136,0.3); background: rgba(0,255,136,0.04); }
+  .ba-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .ba-badge { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 2px; font-weight: 700; }
+  .ba-before .ba-badge { color: var(--accent3); border: 1px solid rgba(255,107,53,0.4); background: rgba(255,107,53,0.1); }
+  .ba-after  .ba-badge { color: var(--green);   border: 1px solid rgba(0,255,136,0.4);  background: rgba(0,255,136,0.1); }
+  .ba-title { font-size: 0.9rem; font-weight: 700; }
+  .ba-metrics { display: flex; flex-direction: column; gap: 1rem; }
+  .ba-metric { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 6px; }
+  .ba-before .ba-metric { background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.15); }
+  .ba-after  .ba-metric { background: rgba(0,255,136,0.07);  border: 1px solid rgba(0,255,136,0.15); }
+  .ba-metric-label { font-size: 0.82rem; color: var(--muted); }
+  .ba-metric-val { font-family: 'Space Mono', monospace; font-size: 1rem; font-weight: 700; }
+  .ba-before .ba-metric-val { color: var(--accent3); }
+  .ba-after  .ba-metric-val { color: var(--green); }
+  .ba-note { font-size: 0.78rem; color: var(--muted); margin-top: 1.2rem; font-style: italic; line-height: 1.5; }
+  .ba-result-bar { margin-top: 2rem; border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 1.5rem 2rem; background: rgba(0,212,255,0.04); text-align: center; }
+  .ba-result-headline { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; color: var(--green); margin-bottom: 0.5rem; }
+  .ba-result-sub { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── DATA TABLE ── */
+  .data-table-wrap { overflow-x: auto; border-radius: var(--r); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg2); }
+  thead th { font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 1rem 1.2rem; text-align: left; font-weight: 400; border-bottom: 1px solid var(--border); }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,212,255,0.03); }
+  tbody td { padding: 1rem 1.2rem; font-size: 0.88rem; }
+  .td-metric { color: var(--text); font-weight: 600; }
+  .td-before { font-family: 'Space Mono', monospace; color: var(--accent3); }
+  .td-after  { font-family: 'Space Mono', monospace; color: var(--green); font-weight: 700; }
+  .td-improvement { font-family: 'Space Mono', monospace; font-size: 0.82rem; }
+  .imp-green { color: var(--green); }
+  .imp-blue  { color: var(--accent); }
+
+  /* ── FRAMEWORK STEPS ── */
+  .framework-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-top: 1.5rem; }
+  .fw-card { background: var(--bg); padding: 2rem; position: relative; overflow: hidden; transition: background 0.3s; }
+  .fw-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+  .fw-card:nth-child(1)::before { background: linear-gradient(135deg, rgba(255,107,53,0.07), transparent); }
+  .fw-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .fw-card:nth-child(3)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .fw-card:nth-child(4)::before { background: linear-gradient(135deg, rgba(0,255,136,0.07), transparent); }
+  .fw-card:nth-child(5)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .fw-card:nth-child(6)::before { background: linear-gradient(135deg, rgba(255,107,53,0.07), transparent); }
+  .fw-card:nth-child(7)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .fw-card:hover::before { opacity: 1; }
+  .fw-card:hover { background: var(--bg2); }
+  .fw-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+  .fw-icon { font-size: 2rem; margin-bottom: 0.9rem; }
+  .fw-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .fw-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+  .fw-desc strong { color: var(--text); }
+
+  /* ── PARADOX BOX ── */
+  .paradox-box { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 2.5rem; background: rgba(0,212,255,0.03); margin-top: 2rem; position: relative; overflow: hidden; }
+  .paradox-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+  .paradox-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.8rem; }
+  .paradox-subtitle { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+  .paradox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .paradox-item { padding: 1.4rem; border-radius: 8px; }
+  .paradox-before { background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.2); }
+  .paradox-after  { background: rgba(0,255,136,0.07);  border: 1px solid rgba(0,255,136,0.2); }
+  .paradox-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .paradox-before .paradox-label { color: var(--accent3); }
+  .paradox-after  .paradox-label { color: var(--green); }
+  .paradox-stat { font-size: 1.5rem; font-weight: 800; }
+  .paradox-before .paradox-stat { color: var(--accent3); }
+  .paradox-after  .paradox-stat { color: var(--green); }
+  .paradox-text { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+
+  /* ── TESTIMONIAL ── */
+  .testimonial-card { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 2.5rem; background: linear-gradient(135deg, rgba(0,212,255,0.04), rgba(123,47,255,0.03)); position: relative; margin-top: 2rem; }
+  .testimonial-card::before { content: '"'; position: absolute; top: 1.5rem; left: 2rem; font-size: 6rem; line-height: 1; color: rgba(0,212,255,0.12); font-family: Georgia, serif; }
+  .testimonial-text { font-size: clamp(1rem, 1.8vw, 1.2rem); font-style: italic; line-height: 1.75; color: var(--text); margin-bottom: 1.5rem; padding-top: 1.5rem; }
+  .testimonial-author { display: flex; align-items: center; gap: 1rem; }
+  .t-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
+  .t-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .t-title { font-size: 0.8rem; color: var(--accent); font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.06em; }
+
+  /* ── CTA SECTION ── */
+  .cta-section { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 4rem; background: linear-gradient(135deg, rgba(0,212,255,0.04), rgba(123,47,255,0.03)); text-align: center; margin: 2rem 0 4rem; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent); }
+  .cta-section h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
+  .cta-section p { font-size: 1rem; color: var(--muted); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.75; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap { overflow: hidden; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(0,212,255,0.02); }
+  .marquee { display: flex; gap: 3rem; width: max-content; animation: marquee 22s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  .marquee-item { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.8rem; white-space: nowrap; }
+  .marquee-item .dot { color: var(--accent); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  footer { padding: 2rem 5vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* Tags */
+  .tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; font-weight: 400; padding: 0.2rem 0.65rem; border-radius: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .tag-blue   { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-purple { background: rgba(123,47,255,0.1); color: #a78bfa; border: 1px solid rgba(123,47,255,0.2); }
+  .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .tag-green  { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .tag-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+  /* Progress bars */
+  .progress-wrap { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+  .progress-item { display: flex; flex-direction: column; gap: 0.4rem; }
+  .progress-label-row { display: flex; justify-content: space-between; align-items: center; }
+  .progress-label { font-size: 0.82rem; color: var(--text); font-weight: 600; }
+  .progress-val { font-family: 'Space Mono', monospace; font-size: 0.78rem; color: var(--green); }
+  .progress-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transform: scaleX(0); transform-origin: left; transition: transform 1.2s cubic-bezier(.23,1,.32,1); }
+  .progress-fill.animated { transform: scaleX(1); }
+  .pf-green  { background: linear-gradient(90deg, var(--green), rgba(0,255,136,0.6)); }
+  .pf-blue   { background: linear-gradient(90deg, var(--accent), rgba(0,212,255,0.6)); }
+  .pf-purple { background: linear-gradient(90deg, var(--accent2), rgba(123,47,255,0.6)); }
+  .pf-orange { background: linear-gradient(90deg, var(--accent3), rgba(255,107,53,0.6)); }
+
+  /* ── IMAGE GALLERY ── */
+  .img-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+  .img-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; cursor: pointer; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; background: var(--card); position: relative; }
+  .img-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,212,255,0.1); }
+  .img-card img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .img-card:hover img { transform: scale(1.03); }
+  .img-card .view-hint { position: absolute; bottom: 0.75rem; right: 0.75rem; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(6,8,16,0.8); padding: 0.3rem 0.7rem; border-radius: 2px; border: 1px solid rgba(0,212,255,0.2); opacity: 0; transition: opacity 0.3s; }
+  .img-card:hover .view-hint { opacity: 1; }
+  .img-card-caption { padding: 0.8rem 1rem; font-size: 0.78rem; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--border); }
+
+  /* ── LIGHTBOX ── */
+  .lb-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(6,8,16,0.95); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; }
+  .lb-overlay.active { display: flex; }
+  .lb-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2rem; color: var(--muted); cursor: pointer; transition: color 0.2s, transform 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; z-index: 10; }
+  .lb-close:hover { color: var(--text); transform: rotate(90deg); }
+  .lb-img-wrap { max-width: 90vw; max-height: 80vh; display: flex; align-items: center; justify-content: center; }
+  .lb-img-wrap img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 0 60px rgba(0,212,255,0.1); }
+  .lb-caption { margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); text-align: center; max-width: 600px; }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.5rem; color: var(--muted); cursor: pointer; transition: color 0.2s, transform 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; padding: 1rem; }
+  .lb-nav:hover { color: var(--accent); }
+  .lb-prev { left: 1rem; }
+  .lb-next { right: 1rem; }
+  .lb-counter { position: absolute; bottom: 1.5rem; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  @media (max-width: 768px) {
+    .challenge-grid { grid-template-columns: 1fr; }
+    .ba-container    { grid-template-columns: 1fr; }
+    .paradox-grid    { grid-template-columns: 1fr; }
+    .kpi-strip       { flex-wrap: wrap; }
+    .kpi-item        { flex: 1 1 calc(50% - 1px); }
+    .social-strip    { display: none; }
+    nav              { padding: 1rem 4vw; }
+    .case-hero       { padding: 8rem 4vw 4rem; }
+    section          { padding: 3.5rem 4vw; }
+    .cta-section     { padding: 2.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="social-strip">
+  <a href="https://linktr.ee/MPDIGITALSOLUTIONS" class="s-icon" title="Linktree" target="_blank">🌿</a>
+  <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" class="s-icon" title="Book a Call" target="_blank">📅</a>
+  <a href="mailto:marlon@mpalomaresdigitalsolutions.site" class="s-icon" title="Email">✉</a>
+</div>
+
+<nav>
+  <a href="index.html" class="logo">MP<span>.dev</span></a>
+  <div class="nav-actions">
+    <a href="index.html" class="nav-back">← Portfolio</a>
+    <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="case-hero">
+    <div class="hero-breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="index.html#projects">Case Studies</a>
+      <span>›</span>
+      <span>Humanity Impact Institute</span>
+    </div>
+    <div class="hero-badge"><div class="badge-dot"></div> Google Ads · Nonprofit · Lead Generation</div>
+    <h1>
+      <span class="line1">How I Cut Wasted</span>
+      <span class="line2">Ad Spend by 67%</span>
+    </h1>
+    <p class="case-hero-sub">
+      A <strong>data-driven Google Ads transformation</strong> for Humanity Impact Institute — eliminating $847 in wasted budget, tripling conversion quality, and realigning campaign architecture to actual internship application objectives.
+    </p>
+    <div class="hero-ctas">
+      <a href="#results" class="btn-primary">See the Results ↓</a>
+      <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-ghost">📅 Book a Free Audit</a>
+    </div>
+
+    <div class="kpi-strip">
+      <div class="kpi-item">
+        <div class="kpi-num kn-green"><span class="kpi-arrow">↓</span>67%</div>
+        <div class="kpi-label">Wasted Ad Spend Eliminated</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-num kn-blue"><span class="kpi-arrow">↑</span>211%</div>
+        <div class="kpi-label">Conversion Rate Improvement</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-num kn-purple"><span class="kpi-arrow">↓</span>58%</div>
+        <div class="kpi-label">Cost Per Acquisition Reduced</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-num kn-orange">$847</div>
+        <div class="kpi-label">Budget Reallocated to Quality</div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator"><div class="scroll-line"></div> Scroll to explore</div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <div class="marquee-item"><span class="dot">◆</span> Google Search Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> Conversion Tracking</div>
+      <div class="marquee-item"><span class="dot">◆</span> Keyword Architecture</div>
+      <div class="marquee-item"><span class="dot">◆</span> Negative Keywords</div>
+      <div class="marquee-item"><span class="dot">◆</span> Geographic Targeting</div>
+      <div class="marquee-item"><span class="dot">◆</span> GoHighLevel CRM</div>
+      <div class="marquee-item"><span class="dot">◆</span> Zapier Automation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Lead Quality Optimization</div>
+      <div class="marquee-item"><span class="dot">◆</span> ROI Measurement</div>
+      <div class="marquee-item"><span class="dot">◆</span> Campaign Architecture</div>
+      <div class="marquee-item"><span class="dot">◆</span> Google Search Ads</div>
+      <div class="marquee-item"><span class="dot">◆</span> Conversion Tracking</div>
+      <div class="marquee-item"><span class="dot">◆</span> Keyword Architecture</div>
+      <div class="marquee-item"><span class="dot">◆</span> Negative Keywords</div>
+      <div class="marquee-item"><span class="dot">◆</span> Geographic Targeting</div>
+      <div class="marquee-item"><span class="dot">◆</span> GoHighLevel CRM</div>
+      <div class="marquee-item"><span class="dot">◆</span> Zapier Automation</div>
+      <div class="marquee-item"><span class="dot">◆</span> Lead Quality Optimization</div>
+      <div class="marquee-item"><span class="dot">◆</span> ROI Measurement</div>
+      <div class="marquee-item"><span class="dot">◆</span> Campaign Architecture</div>
+    </div>
+  </div>
+
+  <!-- CHALLENGE -->
+  <section id="challenge">
+    <div class="section-tag">The Problem</div>
+    <h2 class="section-title reveal">The Challenge:<br>Flying Blind & Burning Money</h2>
+    <p class="section-sub reveal">Humanity Impact Institute faced critical inefficiencies in their Google Ads campaign architecture. Four systemic problems were draining budget and preventing accurate performance measurement.</p>
+
+    <div class="challenge-grid reveal">
+      <div class="challenge-card">
+        <div class="challenge-icon">🌍</div>
+        <div class="challenge-name">Geographic Targeting Mismatch</div>
+        <div class="challenge-desc">Ads were serving to <strong>geographically irrelevant audiences</strong> — like advertising Philippine internships to people in Europe. Budget was spent on users who could never apply for the programs.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">🔍</div>
+        <div class="challenge-name">Keyword Strategy Failures</div>
+        <div class="challenge-desc">Broad-match keywords were attracting <strong>non-qualified traffic</strong> — people searching for unrelated topics who had zero intent to apply for internship programs.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">📊</div>
+        <div class="challenge-name">Flawed Conversion Tracking</div>
+        <div class="challenge-desc">The most critical flaw: <strong>tracking donations instead of internship applications</strong>. The campaign had no idea if it was actually driving the right conversions. Completely flying blind.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">💸</div>
+        <div class="challenge-name">Substantial Budget Waste</div>
+        <div class="challenge-desc">The combined effect: <strong>$847+ in wasted ad spend</strong> with no mechanism to identify what was working. Every optimization decision was made on misleading data.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <section id="results">
+    <div class="section-tag">The Transformation</div>
+    <h2 class="section-title reveal">Before vs. After:<br>Dramatic Shift in Performance</h2>
+    <p class="section-sub reveal">Witness the dramatic shift from inefficient broad targeting to precision-driven campaign performance.</p>
+
+    <div class="ba-container reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-header">
+          <span class="ba-badge">❌ Before</span>
+          <span class="ba-title">Inefficient Targeting</span>
+        </div>
+        <div class="ba-metrics">
+          <div class="ba-metric">
+            <span class="ba-metric-label">Cost Per Acquisition</span>
+            <span class="ba-metric-val">$45.20</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Conversion Rate</span>
+            <span class="ba-metric-val">2.8%</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Click-Through Rate</span>
+            <span class="ba-metric-val">1.2%</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Traffic Quality</span>
+            <span class="ba-metric-val">Low</span>
+          </div>
+        </div>
+        <p class="ba-note">Broad targeting, wasted ad spend, incorrect conversion tracking, geographic misalignment</p>
+      </div>
+
+      <div class="ba-card ba-after">
+        <div class="ba-header">
+          <span class="ba-badge">✅ After</span>
+          <span class="ba-title">Strategic Precision</span>
+        </div>
+        <div class="ba-metrics">
+          <div class="ba-metric">
+            <span class="ba-metric-label">Cost Per Acquisition</span>
+            <span class="ba-metric-val">$18.90</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Conversion Rate</span>
+            <span class="ba-metric-val">8.7%</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Click-Through Rate</span>
+            <span class="ba-metric-val">3.4%</span>
+          </div>
+          <div class="ba-metric">
+            <span class="ba-metric-label">Traffic Quality</span>
+            <span class="ba-metric-val">High Intent</span>
+          </div>
+        </div>
+        <p class="ba-note">Targeted approach, proper attribution to internship applications, geographic precision, eliminated waste</p>
+      </div>
+    </div>
+
+    <div class="ba-result-bar reveal">
+      <div class="ba-result-headline">🚀 67% reduction in wasted spend · 3.2× improvement in conversion quality · 340% more internship applications</div>
+      <div class="ba-result-sub">All measured against internship application submissions — not vanity metrics</div>
+    </div>
+
+    <!-- Campaign Screenshots -->
+    <div class="section-tag reveal" style="margin-top: 3rem;">Campaign Screenshots</div>
+    <h2 class="section-title reveal">Visual Evidence:<br>Before & After Results</h2>
+    <p class="section-sub reveal">Real screenshots from the Google Ads account showing the transformation from inefficient targeting to precision-driven performance.</p>
+
+    <div class="img-gallery reveal">
+      <div class="img-card" onclick="openLb(0)">
+        <img src="Non Profit/Before.jpg" alt="Google Ads campaign before optimization" loading="lazy">
+        <span class="view-hint">View image</span>
+        <div class="img-card-caption">Before: Inefficient targeting with broad keywords, geographic mismatch, and incorrect conversion tracking leading to wasted ad spend.</div>
+      </div>
+      <div class="img-card" onclick="openLb(1)">
+        <img src="Non Profit/After.jpg" alt="Google Ads campaign after optimization" loading="lazy">
+        <span class="view-hint">View image</span>
+        <div class="img-card-caption">After: Precision targeting with refined keywords, geographic alignment, and proper conversion tracking — driving qualified internship applications.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PERFORMANCE TABLE -->
+  <section id="data" style="padding-top:0;">
+    <div class="section-tag">Quantified Results</div>
+    <h2 class="section-title reveal">Performance Transformation:<br>The Numbers</h2>
+    <p class="section-sub reveal">Every metric moved in the right direction. Here's the full breakdown of what changed and by how much.</p>
+
+    <div class="data-table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Improvement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-metric">Cost Per Acquisition</td>
+            <td class="td-before">$45.20</td>
+            <td class="td-after">$18.90</td>
+            <td class="td-improvement imp-green">↓ 58% Decrease</td>
+          </tr>
+          <tr>
+            <td class="td-metric">Conversion Rate</td>
+            <td class="td-before">2.8%</td>
+            <td class="td-after">8.7%</td>
+            <td class="td-improvement imp-green">↑ 211% Increase</td>
+          </tr>
+          <tr>
+            <td class="td-metric">Click-Through Rate</td>
+            <td class="td-before">1.2%</td>
+            <td class="td-after">3.4%</td>
+            <td class="td-improvement imp-green">↑ 183% Increase</td>
+          </tr>
+          <tr>
+            <td class="td-metric">Wasted Ad Spend Eliminated</td>
+            <td class="td-before">—</td>
+            <td class="td-after">$847</td>
+            <td class="td-improvement imp-blue">67% Budget Reallocation</td>
+          </tr>
+          <tr>
+            <td class="td-metric">Internship Applications</td>
+            <td class="td-before">Unmeasured</td>
+            <td class="td-after">↑ 340%</td>
+            <td class="td-improvement imp-green">↑ 340% Increase</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Progress Bars -->
+    <div class="progress-wrap reveal" style="margin-top: 3rem;">
+      <div class="progress-item">
+        <div class="progress-label-row">
+          <span class="progress-label">Conversion Rate Improvement</span>
+          <span class="progress-val">211%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill pf-green" style="width:100%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label-row">
+          <span class="progress-label">Click-Through Rate Improvement</span>
+          <span class="progress-val">183%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill pf-blue" style="width:87%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label-row">
+          <span class="progress-label">CPA Reduction</span>
+          <span class="progress-val">58%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill pf-purple" style="width:58%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-label-row">
+          <span class="progress-label">Wasted Spend Eliminated</span>
+          <span class="progress-val">67%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill pf-orange" style="width:67%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAMEWORK -->
+  <section id="framework" style="padding-top:0;">
+    <div class="section-tag">Implementation</div>
+    <h2 class="section-title reveal">Optimization Framework:<br>7-Step Methodology</h2>
+    <p class="section-sub reveal">Executed comprehensive campaign restructuring through targeted optimization initiatives — each addressing a specific inefficiency in the original account.</p>
+    <div class="tag-row reveal">
+      <span class="tag tag-blue">Google Ads</span>
+      <span class="tag tag-orange">Zapier</span>
+      <span class="tag tag-purple">GoHighLevel</span>
+      <span class="tag tag-green">Lead Gen</span>
+    </div>
+
+    <div class="framework-grid reveal">
+      <div class="fw-card">
+        <div class="fw-num">01 / 07</div>
+        <div class="fw-icon">📉</div>
+        <div class="fw-name">Geographic Targeting Refinement</div>
+        <div class="fw-desc">Eliminated geographic inefficiencies by implementing <strong>precise location targeting</strong>, removing international traffic waste, and optimizing for qualified regional audiences aligned with internship availability.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">02 / 07</div>
+        <div class="fw-icon">💡</div>
+        <div class="fw-name">Precision Keyword Architecture</div>
+        <div class="fw-desc">Replaced broad-match inefficiencies with <strong>targeted long-tail keywords</strong> focused on specific internship verticals, reducing irrelevant impressions while improving qualification rates.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">03 / 07</div>
+        <div class="fw-icon">🚫</div>
+        <div class="fw-name">Traffic Quality Enhancement</div>
+        <div class="fw-desc">Implemented strategic <strong>negative keyword expansion</strong> and network exclusions to eliminate low-intent traffic sources, improving overall campaign efficiency and spend quality.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">04 / 07</div>
+        <div class="fw-icon">📍</div>
+        <div class="fw-name">Audience Segmentation Optimization</div>
+        <div class="fw-desc">Established precise <strong>demographic and behavioral targeting parameters</strong> to ensure ad delivery only to qualified internship candidates within the operational geography.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">05 / 07</div>
+        <div class="fw-icon">🔍</div>
+        <div class="fw-name">Conversion Attribution Framework</div>
+        <div class="fw-desc">Developed comprehensive tracking infrastructure <strong>aligned to internship application submissions</strong>, enabling accurate performance measurement and strategic optimization instead of measuring donations.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">06 / 07</div>
+        <div class="fw-icon">⚙️</div>
+        <div class="fw-name">Continuous Optimization Protocol</div>
+        <div class="fw-desc">Established systematic performance monitoring with <strong>weekly optimization cycles</strong>, keyword refinement, and bid strategy adjustments for sustained, compounding performance improvement.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">07 / 07</div>
+        <div class="fw-icon">🔗</div>
+        <div class="fw-name">Automation & CRM Integration</div>
+        <div class="fw-desc">Implemented <strong>Zapier automation workflows</strong> to streamline lead processing and deployed <strong>GoHighLevel</strong> for enhanced lead management — so no qualified applicant ever falls through the cracks.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARADOX -->
+  <section style="padding-top:0;">
+    <div class="section-tag">Key Insight</div>
+    <h2 class="section-title reveal">The Click Volume Paradox:<br>Why Fewer Clicks = Better Results</h2>
+    <p class="section-sub reveal">More is not always better. This counterintuitive insight is at the heart of what made the transformation work.</p>
+
+    <div class="paradox-box reveal">
+      <div class="paradox-subtitle">The Core Insight</div>
+      <div class="paradox-title">Quality Always Beats Quantity in Paid Search</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.75;margin-bottom:1.5rem;">By eliminating 500+ irrelevant clicks from international bots and unqualified traffic, we redirected that budget to high-intent internship applicants. Would you rather have 1,000 random visitors who never apply, or 100 qualified candidates ready to join your program?</p>
+      <div class="paradox-grid">
+        <div class="paradox-item paradox-before">
+          <div class="paradox-label">❌ Before — Vanity Volume</div>
+          <div class="paradox-stat">500+ Clicks</div>
+          <div class="paradox-text">International visitors, bots, irrelevant searches — zero of whom could ever apply for the Philippine internship program</div>
+        </div>
+        <div class="paradox-item paradox-after">
+          <div class="paradox-label">✅ After — Qualified Intent</div>
+          <div class="paradox-stat">50 Applications</div>
+          <div class="paradox-text">High-intent candidates actively searching for the exact internship program — budget reallocated from waste to genuine opportunity</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section style="padding-top:0;">
+    <div class="section-tag">Client Feedback</div>
+    <h2 class="section-title reveal">What the Client Says</h2>
+
+    <div class="testimonial-card reveal">
+      <p class="testimonial-text">"Marlon completely transformed our Google Ads strategy and took our campaign performance to the next level. His data-driven approach eliminated over $800 in wasted ad spend while dramatically improving our conversion quality. Every dollar now works harder for our mission."</p>
+      <div class="testimonial-author">
+        <div class="t-avatar"><img src="Non Profit/Alvaro.jpg" alt="Alvaro Valencia" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,212,255,0.3);"></div>
+        <div>
+          <div class="t-name">Alvaro Valencia</div>
+          <div class="t-title">CEO · Humanity Impact Institute</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding-top:0;">
+    <div class="cta-section reveal">
+      <h2>Ready to Transform<br>Your Google Ads?</h2>
+      <p>Don't let another dollar go to waste. Get a comprehensive audit of your Google Ads campaigns and discover hidden opportunities to improve performance and reduce costs.</p>
+      <div class="cta-btns">
+        <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-primary">📅 Book Free Audit Call</a>
+        <a href="index.html#projects" class="btn-ghost">View More Case Studies →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lb-overlay" id="lbOverlay">
+    <button class="lb-close" onclick="closeLb()">✕</button>
+    <button class="lb-nav lb-prev" onclick="prevLb()">‹</button>
+    <button class="lb-nav lb-next" onclick="nextLb()">›</button>
+    <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-caption" id="lbCaption"></div>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+
+  <footer>
+    <div>© 2025 Marlon Palomares Digital Solutions · Manila, Philippines</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="resilience-therapy-case-study.html" target="_blank">Resilience Therapy</a>
+      <a href="meta.html" target="_blank">Meta Ads</a>
+      <a href="certifications.html" target="_blank">Certifications</a>
+      <a href="index.html#projects" target="_blank">More Case Studies</a>
+      <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank">Book a Call</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* ══ LIGHTBOX ══ */
+const IMGS = [
+  ['Non Profit/Before.jpg', 'Before Optimization — Inefficient Targeting & Wasted Ad Spend'],
+  ['Non Profit/After.jpg',  'After Optimization — Precision Targeting & Improved Performance'],
+];
+let lbIdx = 0;
+function openLb(i) {
+  lbIdx = i;
+  document.getElementById('lbImg').src = IMGS[i][0];
+  document.getElementById('lbCaption').textContent = IMGS[i][1];
+  document.getElementById('lbCounter').textContent = (i+1) + ' / ' + IMGS.length;
+  document.getElementById('lbOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  document.getElementById('lbOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function prevLb() {
+  lbIdx = (lbIdx - 1 + IMGS.length) % IMGS.length;
+  openLb(lbIdx);
+}
+function nextLb() {
+  lbIdx = (lbIdx + 1) % IMGS.length;
+  openLb(lbIdx);
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lbOverlay').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLb();
+  if (e.key === 'ArrowLeft') prevLb();
+  if (e.key === 'ArrowRight') nextLb();
+});
+
+/* ══ CURSOR ══ */
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{
+  cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;
+  ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;
+});
+document.querySelectorAll('a,button,.challenge-card,.ba-card,.fw-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='rgba(0,255,136,0.6)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(0,212,255,0.5)';});
+});
+
+/* ══ CIRCUIT BOARD BACKGROUND ══ */
+(function(){
+  const canvas=document.getElementById('bg-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,nodes=[],edges=[],pulses=[];
+  const mouse={x:-1000,y:-1000};
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;build();}
+  function build(){
+    nodes=[];edges=[];pulses=[];
+    const COLS=Math.ceil(W/90)+1,ROWS=Math.ceil(H/90)+1;
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)nodes.push({x:c*90+(Math.random()-.5)*22,y:r*90+(Math.random()-.5)*22,r:Math.random()*2+1,alpha:Math.random()*.5+.2,phase:Math.random()*Math.PI*2,speed:.02+Math.random()*.02});
+    for(let i=0;i<nodes.length;i++){const cands=[];for(let j=i+1;j<nodes.length;j++){const dx=nodes[j].x-nodes[i].x,dy=nodes[j].y-nodes[i].y,d=Math.sqrt(dx*dx+dy*dy);if(d<140&&Math.random()<.25)cands.push({j,d});}cands.sort((a,b)=>a.d-b.d);cands.slice(0,2).forEach(({j})=>edges.push({a:i,b:j,alpha:Math.random()*.08+.03}));}
+    for(let i=0;i<18;i++)spawn();
+  }
+  function spawn(){if(!edges.length)return;const e=edges[Math.floor(Math.random()*edges.length)];pulses.push({edge:e,t:Math.random(),speed:.002+Math.random()*.004,size:Math.random()*2.5+1,color:Math.random()<.7?'rgba(0,212,255,':Math.random()<.5?'rgba(123,47,255,':'rgba(0,255,136,'});}
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    edges.forEach(e=>{const a=nodes[e.a],b=nodes[e.b];ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(0,212,255,${e.alpha})`;ctx.lineWidth=.6;ctx.stroke();});
+    nodes.forEach(n=>{const p=.5+.5*Math.sin(t*n.speed+n.phase),al=n.alpha*(.6+.4*p),dx=n.x-mouse.x,dy=n.y-mouse.y,dist=Math.sqrt(dx*dx+dy*dy),boost=dist<120?(1-dist/120)*.8:0;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,212,255,${Math.min(1,al+boost)})`;ctx.fill();});
+    pulses.forEach(p=>{p.t+=p.speed;if(p.t>=1){p.t=0;p.edge=edges[Math.floor(Math.random()*edges.length)];}const a=nodes[p.edge.a],b=nodes[p.edge.b];let px,py;if(p.t<.5){px=a.x+(b.x-a.x)*p.t*2;py=a.y;}else{px=b.x;py=a.y+(b.y-a.y)*(p.t-.5)*2;}const g=ctx.createRadialGradient(px,py,0,px,py,p.size*5);g.addColorStop(0,p.color+'0.9)');g.addColorStop(.4,p.color+'0.3)');g.addColorStop(1,p.color+'0)');ctx.beginPath();ctx.arc(px,py,p.size*5,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(px,py,p.size,0,Math.PI*2);ctx.fillStyle=p.color+'1)';ctx.fill();});
+    while(pulses.length<20)spawn();
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
+
+/* ══ INTERSECTION OBSERVER ══ */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){
+      setTimeout(()=>{
+        entry.target.classList.add('in-view');
+        // Animate progress bars when they come into view
+        entry.target.querySelectorAll('.progress-fill').forEach(bar=>{bar.classList.add('animated');});
+      },80*i);
+      io.unobserve(entry.target);
+    }
+  });
+},{threshold:0.08});
+document.querySelectorAll('.reveal,.challenge-card,.fw-card').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
