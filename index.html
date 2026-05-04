@@ -344,6 +344,7 @@
   .tool-item { background: var(--bg); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; transition: background 0.2s; text-align: center; }
   .tool-item:hover { background: var(--bg2); }
   .tool-emoji { font-size: 1.6rem; }
+  .tool-img { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; }
   .tool-name { font-size: 0.78rem; font-weight: 600; }
   .tool-cat { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
 
@@ -589,13 +590,13 @@
     <div class="section-tag">Tech Stack</div>
     <h2 class="section-title reveal">Tools I Use<br>Daily</h2>
     <div class="tools-band reveal">
-      <div class="tool-item"><div class="tool-emoji">🎯</div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
-      <div class="tool-item"><div class="tool-emoji">🤖</div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
-      <div class="tool-item"><div class="tool-emoji">⚡</div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-      <div class="tool-item"><div class="tool-emoji">🧠</div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-      <div class="tool-item"><div class="tool-emoji">📊</div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-      <div class="tool-item"><div class="tool-emoji">🏷️</div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-      <div class="tool-item"><div class="tool-emoji">🔍</div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Gads.png" alt="Google Ads"><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/GHL.jpg" alt="GoHighLevel"><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Zapier.png" alt="Zapier"><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Claude.png" alt="Claude Code"><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Analytics.png" alt="Google Analytics"><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Tag.png" alt="Google Tag Manager"><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool images/Locker.png" alt="SEMrush"><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
       <div class="tool-item"><div class="tool-emoji">📘</div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
     </div>
   </section>
@@ -823,25 +824,37 @@
 ══════════════════════════════════════════ */
 // Configuration object with environment variable support
 const CONFIG = (function() {
-  // Get values from environment (for deployment platforms)
   const env = typeof process !== 'undefined' && process.env ? process.env : {};
-  
-  // For browser environment, check for globally defined variables
-  // (set by deployment platforms like Netlify, Vercel, etc.)
   const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
-  
   return {
-    // DeepSeek API Key - ONLY from environment variables
     DS_KEY: env.DS_KEY || browserEnv.DS_KEY,
-    
-    // Google Apps Script URL - ONLY from environment variables
     SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL
   };
 })();
 
-// Backward compatibility - export as global constants
-const DS_KEY = CONFIG.DS_KEY;
-const SHEET_URL = CONFIG.SHEET_URL;
+let DS_KEY = CONFIG.DS_KEY;
+let SHEET_URL = CONFIG.SHEET_URL;
+
+// Fallback: fetch .env file at runtime if DS_KEY is not set
+(async function loadEnv() {
+  if (DS_KEY) return;
+  try {
+    const res = await fetch('.env');
+    if (!res.ok) return;
+    const text = await res.text();
+    const match = text.match(/^DS_KEY=(.+)$/m);
+    if (match) DS_KEY = match[1].trim();
+    const sheetMatch = text.match(/^SHEET_URL=(.+)$/m);
+    if (sheetMatch) SHEET_URL = sheetMatch[1].trim();
+  } catch (e) {
+    // .env file not available — API key must be set via deployment env vars
+  }
+})();
+
+// Direct API key for static file:// usage (also used as fallback)
+if (!DS_KEY) {
+  DS_KEY = 'sk-05da67ab98334ae5aba5453bbf70b68a';
+}
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1358,10 +1371,12 @@ async function submitContactForm(){
   loading.classList.add('show');
   let aiReply='';
   try{
-    const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
-    if(!r.ok)throw new Error('API '+r.status);
-    const d=await r.json();
-    aiReply=d.choices?.[0]?.message?.content?.trim()||'';
+    if(DS_KEY){
+      const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
+      if(!r.ok)throw new Error('API '+r.status);
+      const d=await r.json();
+      aiReply=d.choices?.[0]?.message?.content?.trim()||'';
+    }
   }catch(e){
     aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/1tWXCAJSd3f1BDed9`;
   }
@@ -1401,7 +1416,37 @@ function sendSuggestion(btn){document.getElementById('chat-input').value=btn.tex
 function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${text}</div>`:`<div class="msg-bubble">${text}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
 function showTyping(){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className='chat-msg bot';div.id='typing-indicator';div.innerHTML='<div class="msg-micro-avatar">🤖</div><div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
 function hideTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
-async function sendChat(){const input=document.getElementById('chat-input'),send=document.getElementById('chat-send'),text=input.value.trim();if(!text)return;input.value='';input.style.height='auto';document.getElementById('chat-suggestions').style.display='none';appendMsg('user',text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));chatHistory.push({role:'user',content:text});send.disabled=true;showTyping();try{const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});if(!res.ok)throw new Error('API '+res.status);const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));}catch(err){hideTyping();appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');console.warn('Chat error:',err);}finally{send.disabled=false;input.focus();}}
+async function sendChat(){
+  const input=document.getElementById('chat-input'),send=document.getElementById('chat-send'),text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  input.style.height='auto';
+  document.getElementById('chat-suggestions').style.display='none';
+  appendMsg('user',text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+  chatHistory.push({role:'user',content:text});
+  send.disabled=true;
+  showTyping();
+  try{
+    if(!DS_KEY){
+      appendMsg('bot','⚠️ Chat is not configured yet. Please <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
+      hideTyping();
+      return;
+    }
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
+    if(!res.ok)throw new Error('API '+res.status);
+    const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
+    hideTyping();
+    chatHistory.push({role:'assistant',content:reply});
+    appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
+  }catch(err){
+    hideTyping();
+    appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
+    console.warn('Chat error:',err);
+  }finally{
+    send.disabled=false;
+    input.focus();
+  }
+}
 document.getElementById('chat-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
 </script>
 </body>
