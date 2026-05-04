@@ -34,7 +34,6 @@
     cursor: none;
   }
 
-  /* ── CURSOR ── */
   .cursor {
     width: 8px; height: 8px;
     background: var(--accent); border-radius: 50%;
@@ -51,10 +50,8 @@
     transition: transform 0.3s cubic-bezier(.23,1,.32,1), width 0.2s, height 0.2s, border-color 0.2s;
   }
 
-  /* ── CANVAS ── */
   #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-  /* ── GRID ── */
   .grid-overlay {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image:
@@ -63,7 +60,6 @@
     background-size: 60px 60px;
   }
 
-  /* ── ORBS ── */
   .orb {
     position: fixed; border-radius: 50%;
     filter: blur(130px); opacity: 0.12;
@@ -79,7 +75,6 @@
     100% { transform: translate(-40px,30px) scale(0.9); }
   }
 
-  /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; justify-content: space-between; align-items: center;
@@ -116,10 +111,8 @@
     transform: translateY(-1px);
   }
 
-  /* ── WRAPPER ── */
   .wrapper { position: relative; z-index: 1; }
 
-  /* ── PAGE HERO ── */
   .page-hero {
     padding: 9rem 5vw 4rem;
     border-bottom: 1px solid var(--border);
@@ -165,14 +158,12 @@
   .breadcrumb a:hover { color: var(--text); }
   .breadcrumb span { opacity: 0.4; }
 
-  /* ── DIVIDER ── */
   .section-divider {
     width: 100%; height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
     opacity: 0.2;
   }
 
-  /* ── SECTION ── */
   section { padding: 5rem 5vw; }
   .section-tag {
     font-family: 'Space Mono', monospace;
@@ -191,7 +182,6 @@
     line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.92rem;
   }
 
-  /* ── GALLERY GRID ── */
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -205,7 +195,6 @@
     max-width: 700px;
   }
 
-  /* ── GALLERY CARD ── */
   .gallery-card {
     border: 1px solid var(--border);
     border-radius: var(--r);
@@ -259,7 +248,6 @@
   .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
   .card-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
 
-  /* ── RESULT BADGE ── */
   .result-badge {
     display: inline-flex; align-items: center; gap: 0.4rem;
     font-size: 0.78rem; font-weight: 600;
@@ -267,7 +255,6 @@
   }
   .result-badge::before { content: '▲'; font-size: 0.6rem; }
 
-  /* ── STATS ROW ── */
   .stats-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -298,7 +285,6 @@
   .stat-num.blue { color: var(--accent); }
   .stat-label { font-size: 0.8rem; color: var(--muted); }
 
-  /* ── INSIGHT BOX ── */
   .insight-box {
     border: 1px solid rgba(0,212,255,0.18);
     border-radius: var(--r);
@@ -317,7 +303,6 @@
   }
   .insight-box p strong { color: var(--text); }
 
-  /* ── CTA BAND ── */
   .cta-band {
     margin: 0 5vw 4rem;
     border: 1px solid rgba(0,212,255,0.2);
@@ -331,7 +316,6 @@
   .cta-band p  { font-size: 0.9rem; color: var(--muted); max-width: 420px; line-height: 1.7; }
   .cta-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  /* ── BUTTONS ── */
   .btn-primary {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.85rem 2rem;
@@ -353,7 +337,6 @@
   }
   .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
 
-  /* ── LIGHTBOX ── */
   .lightbox {
     position: fixed; inset: 0; z-index: 1000;
     background: rgba(6,8,16,0.96);
@@ -404,7 +387,6 @@
   .lb-prev { left: 1.5rem; }
   .lb-next { right: 1.5rem; }
 
-  /* ── FOOTER ── */
   footer {
     padding: 2rem 5vw;
     border-top: 1px solid var(--border);
@@ -417,16 +399,13 @@
   .footer-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--text); }
 
-  /* ── ANIMATIONS ── */
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.in-view { opacity: 1; transform: none; }
 
-  /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     .gallery-grid.two-col { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: 1fr; }
@@ -437,18 +416,15 @@
 </head>
 <body>
 
-<!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursor-ring"></div>
 
-<!-- BACKGROUND -->
 <canvas id="bg-canvas"></canvas>
 <div class="grid-overlay"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
 
-<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lb-close">✕</button>
   <button class="lb-nav lb-prev" id="lb-prev">‹</button>
@@ -457,7 +433,6 @@
   <div class="lb-caption" id="lb-caption"></div>
 </div>
 
-<!-- NAV -->
 <nav>
   <div class="logo">MP<span>.dev</span></div>
   <div class="nav-right">
@@ -469,7 +444,7 @@
 
 <div class="wrapper">
 
-  <!-- ── PAGE HERO ── -->
+  <!-- PAGE HERO -->
   <div class="page-hero">
     <div class="hero-badge"><div class="badge-dot"></div> Google Ads · Case Study</div>
     <h1 class="page-title">Resilience Therapy<br><span class="grad">Case Study</span></h1>
@@ -487,7 +462,7 @@
 
   <div class="section-divider"></div>
 
-  <!-- ── RESULTS STATS ── -->
+  <!-- RESULTS STATS -->
   <section style="padding-bottom: 2rem;">
     <div class="section-tag">Campaign Results</div>
     <h2 class="section-title reveal">Performance at<br>a Glance</h2>
@@ -522,30 +497,14 @@
 
   <div class="section-divider"></div>
 
-  <!-- ── CAMPAIGN SCREENSHOTS ── -->
+  <!-- ── SECTION 01: PERFORMANCE METRICS SCREENSHOTS ── -->
   <section id="screenshots">
     <div class="section-tag">Section 01</div>
-    <h2 class="section-title reveal">Campaign Overview<br>& Performance Metrics</h2>
-    <p class="section-sub reveal">Real Google Ads dashboard screenshots showing campaign structure, performance data, and optimization results.</p>
+    <h2 class="section-title reveal">Performance Metrics<br>& Campaign Data</h2>
+    <p class="section-sub reveal">Real Google Ads dashboard screenshots showing performance data, conversion tracking, and optimization results.</p>
 
-    <!-- Row 1: Overview + Metrics (2-col) -->
+    <!-- Row 1: Performance Metrics + Conversion Tracking -->
     <div class="gallery-grid two-col reveal" style="margin-bottom: 1.5rem;">
-
-      <div class="gallery-card"
-           data-src="Resilience therapy/first.png"
-           data-caption="Campaign Overview — Resilience Therapy Google Ads">
-        <div class="card-img-wrap">
-          <img class="card-img"
-               src="Resilience therapy/first.png"
-               alt="Campaign Overview" loading="lazy">
-        </div>
-        <div class="card-body">
-          <span class="card-tag ct-blue">Campaign Overview</span>
-          <div class="card-title">Campaign Overview</div>
-          <div class="card-desc">High-level view of the Google Ads campaign structure and account setup for Resilience Therapy, showing targeting configuration and campaign organization.</div>
-          <div class="result-badge">Optimized campaign architecture</div>
-        </div>
-      </div>
 
       <div class="gallery-card"
            data-src="Resilience therapy/second.png"
@@ -556,79 +515,73 @@
                alt="Performance Metrics" loading="lazy">
         </div>
         <div class="card-body">
-          <span class="card-tag ct-green">Performance Metrics</span>
-          <div class="card-title">Performance Metrics</div>
+          <span class="card-tag ct-green">Conversion Action</span>
+          <div class="card-title">Conversion Action</div>
           <div class="card-desc">Key performance indicators showing improvements in impressions, clicks, CTR, and cost-per-click after campaign optimization. Data-driven results measured and tracked.</div>
           <div class="result-badge">Improved visibility & engagement</div>
         </div>
       </div>
 
-    </div>
-
-    <!-- Row 2: Engagement + Conversion (2-col) -->
-    <div class="gallery-grid two-col reveal" style="margin-bottom: 1.5rem;">
-
       <div class="gallery-card"
            data-src="Resilience therapy/third.png"
-           data-caption="Ad Engagement — Resilience Therapy Google Ads">
+           data-caption="Conversion Tracking — Resilience Therapy Google Ads">
         <div class="card-img-wrap">
           <img class="card-img"
                src="Resilience therapy/third.png"
-               alt="Ad Engagement" loading="lazy">
+               alt="Conversion Tracking" loading="lazy">
         </div>
         <div class="card-body">
-          <span class="card-tag ct-purple">Ad Engagement</span>
-          <div class="card-title">Ad Engagement</div>
+          <span class="card-tag ct-purple">Conversion Tracking</span>
+          <div class="card-title">Conversion Tracking</div>
           <div class="card-desc">Detailed ad performance data showing how users interacted with the ads — click patterns, ad copy effectiveness, and engagement rates across different ad groups.</div>
           <div class="result-badge">Higher quality ad interactions</div>
         </div>
       </div>
 
+    </div>
+
+    <!-- Row 2: Ad Management + Optimization Details -->
+    <div class="gallery-grid two-col reveal" style="margin-bottom: 1.5rem;">
+
       <div class="gallery-card"
            data-src="Resilience therapy/fourth.png"
-           data-caption="Conversion Tracking — Resilience Therapy Google Ads">
+           data-caption="Ad Management — Resilience Therapy Google Ads">
         <div class="card-img-wrap">
           <img class="card-img"
                src="Resilience therapy/fourth.png"
-               alt="Conversion Tracking" loading="lazy">
+               alt="Ad Management" loading="lazy">
         </div>
         <div class="card-body">
-          <span class="card-tag ct-orange">Conversion Tracking</span>
-          <div class="card-title">Conversion Tracking</div>
+          <span class="card-tag ct-orange">Ad Management</span>
+          <div class="card-title">Ad Management</div>
           <div class="card-desc">Appointment booking conversions tracked precisely through Google Tag Manager, ensuring every lead action is captured and attributed correctly for accurate ROI measurement.</div>
           <div class="result-badge">Steady stream of new client bookings</div>
         </div>
       </div>
 
-    </div>
-
-    <!-- Row 3: Optimization Details (single centred) -->
-    <div style="max-width: 680px; margin: 0 auto;">
-      <div class="gallery-grid single reveal">
-
-        <div class="gallery-card"
-             data-src="Resilience therapy/fift.png"
-             data-caption="Optimization Details — Resilience Therapy Google Ads">
-          <div class="card-img-wrap">
-            <img class="card-img"
-                 src="Resilience therapy/fift.png"
-                 alt="Optimization Details" loading="lazy">
-          </div>
-          <div class="card-body">
-            <span class="card-tag ct-blue">Optimization Details</span>
-            <div class="card-title">Optimization Details</div>
-            <div class="card-desc">Granular view of campaign optimizations — bid adjustments, keyword refinements, negative keyword additions, and device-level performance tuning that drove sustained results for Resilience Therapy.</div>
-            <div class="result-badge">Continuous optimization driving consistent results</div>
-          </div>
+      <div class="gallery-card"
+           data-src="Resilience therapy/fift.png"
+           data-caption="Optimization Details — Resilience Therapy Google Ads">
+        <div class="card-img-wrap">
+          <img class="card-img"
+               src="Resilience therapy/fift.png"
+               alt="Optimization Details" loading="lazy">
         </div>
-
+        <div class="card-body">
+          <span class="card-tag ct-blue">Optimization Details</span>
+          <div class="card-title">Optimization Details</div>
+          <div class="card-desc">Granular view of campaign optimizations — bid adjustments, keyword refinements, negative keyword additions, and device-level performance tuning that drove sustained results for Resilience Therapy.</div>
+          <div class="result-badge">Continuous optimization driving consistent results</div>
+        </div>
       </div>
+
     </div>
+
   </section>
 
   <div class="section-divider"></div>
 
-  <!-- ── WHAT WAS DONE ── -->
+  <!-- WHAT WAS DONE -->
   <section id="strategy">
     <div class="section-tag">Section 02</div>
     <h2 class="section-title reveal">What Was Done</h2>
@@ -687,7 +640,7 @@
     </div>
   </section>
 
-  <!-- ── CTA BAND ── -->
+  <!-- CTA BAND -->
   <div class="cta-band reveal">
     <div>
       <h3>Get Results Like These</h3>
@@ -703,7 +656,7 @@
     </div>
   </div>
 
-  <!-- ── FOOTER ── -->
+  <!-- FOOTER -->
   <footer>
     <div>© 2025 Marlon Palomares Digital Solutions · Manila, Philippines 🇵🇭</div>
     <div class="footer-links">
@@ -715,10 +668,10 @@
     </div>
   </footer>
 
-</div><!-- /wrapper -->
+</div>
 
 <script>
-  /* ── CURSOR ── */
+  /* CURSOR */
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursor-ring');
   document.addEventListener('mousemove', e => {
@@ -736,7 +689,7 @@
     });
   });
 
-  /* ── PARTICLE CANVAS ── */
+  /* PARTICLE CANVAS */
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
   let W, H;
@@ -796,7 +749,7 @@
   }
   animate();
 
-  /* ── INTERSECTION OBSERVER ── */
+  /* INTERSECTION OBSERVER */
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
@@ -807,7 +760,7 @@
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal, .gallery-card, .stat-box').forEach(el => io.observe(el));
 
-  /* ── LIGHTBOX ── */
+  /* LIGHTBOX */
   const lb      = document.getElementById('lightbox');
   const lbImg   = document.getElementById('lb-img');
   const lbCap   = document.getElementById('lb-caption');
