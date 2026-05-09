@@ -468,10 +468,35 @@
 
   @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-profile { display: flex; justify-content: center; order: -1; margin-bottom: 2rem; } .profile-frame { width: 200px; height: 240px; } }
   @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
+
+  /* ═══════ TYPEWRITER ═══════ */
+  .typewriter-text { color: var(--accent); font-weight: 700; }
+  .typewriter-cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--accent); margin-left: 2px; vertical-align: text-bottom; animation: blink-caret 0.75s step-end infinite; }
+  @keyframes blink-caret { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* ═══════ SCROLL PROGRESS ═══════ */
+  #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); z-index: 9999; width: 0%; transition: width 0.1s linear; border-radius: 0 3px 3px 0; box-shadow: 0 0 10px rgba(0,212,255,0.5); }
+
+  /* ═══════ 3D TILT ═══════ */
+  .tilt-container { perspective: 1200px; }
+  .tilt-card { transition: transform 0.1s ease-out; transform-style: preserve-3d; will-change: transform; }
+  .card-glow { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 0.3s; }
+  .tilt-card:hover .card-glow { opacity: 1; }
+
+  /* ═══════ MAGNETIC BUTTON ═══════ */
+  .btn-magnetic { transition: transform 0.3s cubic-bezier(.23,1,.32,1); }
+
+  /* ═══════ RIPPLE ═══════ */
+  .ripple { position: fixed; border-radius: 50%; pointer-events: none; z-index: 9997; animation: ripple-out 0.8s ease-out forwards; }
+  @keyframes ripple-out { 0% { width: 0; height: 0; opacity: 0.5; transform: translate(-50%, -50%) scale(0); } 100% { width: 120px; height: 120px; opacity: 0; transform: translate(-50%, -50%) scale(1); } }
+
+  /* ═══════ COUNT-UP ═══════ */
+  .meta-num { transition: opacity 0.3s; }
 </style>
 </head>
 <body>
 
+<div id="scroll-progress"></div>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursor-ring"></div>
 <canvas id="bg-canvas"></canvas>
@@ -520,7 +545,7 @@
         <span class="name">AI Automation</span>
         <span class="role">& Ads Specialist</span>
       </h1>
-      <p class="hero-sub">I scale service businesses with <strong>high-intent leads</strong> and <strong>AI-driven automation</strong>. Specialized in Google Ads, GHL &amp; Zapier workflows, and Claude Code — turning clicks into <strong>booked jobs</strong>.</p>
+      <p class="hero-sub">I scale service businesses with <strong>high-intent leads</strong> and <strong>AI-driven automation</strong>. Specialized in <span id="typewriter-text" class="typewriter-text"></span><span class="typewriter-cursor">|</span></p>
       <div class="hero-ctas">
         <a href="#projects" class="btn-primary">View My Work <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         <a href="https://calendar.app.google/1tWXCAJSd3f1BDed9" target="_blank" class="btn-ghost">📅 Book a Free Call</a>
@@ -533,10 +558,11 @@
         <div class="meta-item"><div class="meta-num">Top 1</div><div class="meta-label">AI Automation Expert 🇵🇭</div></div>
       </div>
     </div>
-    <div class="hero-profile">
+    <div class="hero-profile tilt-container" id="hero-profile-tilt">
       <div class="profile-glow"></div>
-      <div class="profile-frame">
+      <div class="profile-frame tilt-card" id="profile-tilt-card">
         <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;\'>👤</div>';" alt="Marlon Palomares">
+        <div class="card-glow" id="profile-card-glow"></div>
       </div>
       <div class="profile-badge"><div class="pb-dot"></div><div class="pb-text">Top 1 AI Expert 🇵🇭</div></div>
     </div>
@@ -1456,6 +1482,183 @@ async function sendChat(){
   }
 }
 document.getElementById('chat-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+</script>
+
+<!-- ══════════════════════════════════════════
+     PHASE 1-3: WOW ANIMATIONS
+══════════════════════════════════════════ -->
+<script>
+(function() {
+
+/* ═══════ 1. TYPEWRITER ═══════ */
+const words = [
+  'Google Ads campaigns', 'GoHighLevel workflows', 'Zapier automations',
+  'Claude Code scripts', 'conversion tracking', 'lead generation funnels',
+  'Meta Ads strategies', 'AI-powered CRM systems'
+];
+let twIdx = 0, twChar = 0, twDeleting = false;
+const twEl = document.getElementById('typewriter-text');
+if (twEl) {
+  function typeTick() {
+    const current = words[twIdx];
+    if (twDeleting) {
+      twEl.textContent = current.substring(0, twChar - 1);
+      twChar--;
+    } else {
+      twEl.textContent = current.substring(0, twChar + 1);
+      twChar++;
+    }
+    let speed = twDeleting ? 30 : 70;
+    if (!twDeleting && twChar === current.length) {
+      speed = 1800; // pause at end
+      twDeleting = true;
+    } else if (twDeleting && twChar === 0) {
+      twDeleting = false;
+      twIdx = (twIdx + 1) % words.length;
+      speed = 300;
+    }
+    setTimeout(typeTick, speed);
+  }
+  setTimeout(typeTick, 1200);
+}
+
+/* ═══════ 2. 3D PARALLAX TILT — PROFILE ═══════ */
+const tiltContainer = document.getElementById('hero-profile-tilt');
+const tiltCard = document.getElementById('profile-tilt-card');
+const tiltGlow = document.getElementById('profile-card-glow');
+if (tiltContainer && tiltCard) {
+  tiltContainer.addEventListener('mousemove', function(e) {
+    const rect = tiltContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const rx = ((y - cy) / cy) * -12; // rotateX
+    const ry = ((x - cx) / cx) * 14;  // rotateY
+    tiltCard.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+    if (tiltGlow) {
+      const gx = (x / rect.width) * 100;
+      const gy = (y / rect.height) * 100;
+      tiltGlow.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(0,212,255,0.2) 0%, rgba(123,47,255,0.08) 40%, transparent 70%)`;
+    }
+  });
+  tiltContainer.addEventListener('mouseleave', function() {
+    tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+    if (tiltGlow) tiltGlow.style.background = '';
+  });
+}
+
+/* ═══════ 3. COUNT-UP NUMBERS ═══════ */
+const countUpObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const text = el.getAttribute('data-target') || el.textContent.trim();
+    // Parse: "$10K+" → 10, "2+ Yrs" → skip, "8" → 8, "Top 1" → skip
+    let target;
+    if (text.startsWith('$')) {
+      target = parseFloat(text.replace(/[$,K\+]/g, '')) || 10;
+      if (text.includes('K')) target = parseInt(text.replace(/[^0-9]/g, '')) || 10;
+    } else {
+      target = parseInt(text) || 0;
+    }
+    if (!target || text.includes('+') && text.includes('Yrs')) {
+      countUpObserver.unobserve(el);
+      return;
+    }
+    if (text === 'Top 1') { countUpObserver.unobserve(el); return; }
+    const suffix = text.includes('K+') ? 'K+' : (text.includes('+') ? '+' : '');
+    const prefix = text.includes('$') ? '$' : '';
+    let current = 0;
+    const duration = 1200;
+    const step = Math.max(1, Math.floor(target / (duration / 16)));
+    function tick() {
+      current += step;
+      if (current >= target) { current = target; el.textContent = prefix + target + suffix; return; }
+      el.textContent = prefix + current + suffix;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    countUpObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.meta-num').forEach(el => {
+  el.setAttribute('data-target', el.textContent.trim());
+  countUpObserver.observe(el);
+});
+
+/* ═══════ 4. CARD 3D TILT + GLOW ═══════ */
+document.querySelectorAll('.service-card, .project-card, .cert-card, .pl-card').forEach(card => {
+  card.classList.add('tilt-card');
+  // Add glow layer
+  const glow = document.createElement('div');
+  glow.className = 'card-glow';
+  glow.style.position = 'absolute';
+  glow.style.inset = '0';
+  glow.style.borderRadius = 'inherit';
+  glow.style.pointerEvents = 'none';
+  glow.style.zIndex = '1';
+  glow.style.opacity = '0';
+  glow.style.transition = 'opacity 0.3s';
+  card.style.position = card.style.position || 'relative';
+  card.insertBefore(glow, card.firstChild);
+
+  card.addEventListener('mousemove', function(e) {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const rx = ((y - cy) / cy) * -5;
+    const ry = ((x - cx) / cx) * 5;
+    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    const gx = (x / rect.width) * 100;
+    const gy = (y / rect.height) * 100;
+    glow.style.opacity = '1';
+    glow.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(0,212,255,0.12) 0%, rgba(123,47,255,0.05) 40%, transparent 70%)`;
+  });
+  card.addEventListener('mouseleave', function() {
+    card.style.transform = '';
+    glow.style.opacity = '0';
+  });
+});
+
+/* ═══════ 5. MAGNETIC BUTTONS ═══════ */
+document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
+  btn.classList.add('btn-magnetic');
+  btn.addEventListener('mousemove', function(e) {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+  });
+  btn.addEventListener('mouseleave', function() {
+    btn.style.transform = '';
+  });
+});
+
+/* ═══════ 6. SCROLL PROGRESS ═══════ */
+const progressBar = document.getElementById('scroll-progress');
+if (progressBar) {
+  window.addEventListener('scroll', function() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }, { passive: true });
+}
+
+/* ═══════ 7. RIPPLE ON CLICK ═══════ */
+document.addEventListener('click', function(e) {
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  ripple.style.left = e.clientX + 'px';
+  ripple.style.top = e.clientY + 'px';
+  ripple.style.border = '1px solid rgba(0,212,255,0.3)';
+  ripple.style.background = 'radial-gradient(circle, rgba(0,212,255,0.15), transparent)';
+  document.body.appendChild(ripple);
+  ripple.addEventListener('animationend', function() { ripple.remove(); });
+});
+
+})();
 </script>
 </body>
 </html>

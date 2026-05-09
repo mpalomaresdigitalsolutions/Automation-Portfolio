@@ -33,7 +33,25 @@
       font-size: 15px;
       line-height: 1.6;
       min-height: 100vh;
+      cursor: none;
     }
+
+    /* ─── CURSOR ─── */
+    .cursor { width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .1s;box-shadow:0 0 12px var(--accent); }
+    .cursor-ring { width:32px;height:32px;border:1px solid rgba(88,166,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .3s cubic-bezier(.23,1,.32,1),width .2s,height .2s,border-color .2s; }
+
+    /* ─── CANVAS + ORBS ─── */
+    #bg-canvas { position:fixed;inset:0;z-index:0;pointer-events:none; }
+    .grid-overlay { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(88,166,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.02) 1px,transparent 1px);background-size:60px 60px; }
+    .orb { position:fixed;border-radius:50%;filter:blur(120px);opacity:.08;pointer-events:none;z-index:0;animation:orb-drift 20s ease-in-out infinite alternate; }
+    .orb-1 { width:500px;height:500px;background:#f78166;top:-150px;left:-80px; }
+    .orb-2 { width:400px;height:400px;background:var(--accent);bottom:-80px;right:-80px;animation-delay:-8s; }
+    .orb-3 { width:280px;height:280px;background:#3fb950;top:50%;left:55%;animation-delay:-14s; }
+    @keyframes orb-drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(25px,-40px) scale(1.08)} 100%{transform:translate(-30px,25px) scale(.92)} }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease; }
+    .reveal.in-view { opacity:1;transform:none; }
 
     /* ─── NAV ─── */
     .nav {
@@ -430,6 +448,14 @@
 </head>
 <body>
 
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
 <!-- NAV -->
 <nav class="nav">
   <a href="index.html" class="nav-brand">
@@ -715,6 +741,41 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  go(-1);
   if (e.key === 'ArrowRight') go(1);
 });
+</script>
+
+<!-- ═══════ PARTICLES + CURSOR ═══════ -->
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;});
+document.querySelectorAll('a,button,.img-card,.cert-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='rgba(63,185,80,0.6)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(88,166,255,0.5)';});
+});
+
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let W,H,particles=[];
+const mouse={x:-1000,y:-1000};
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+class Particle{
+  constructor(){this.reset(true);}
+  reset(init){this.x=Math.random()*W;this.y=init?Math.random()*H:H+10;this.size=Math.random()*1.2+0.3;this.speedY=-(Math.random()*.5+.1);this.speedX=(Math.random()-.5)*.15;this.opacity=Math.random()*.6+.1;this.hue=Math.random()<.6?205:(Math.random()<.5?140:20);}
+  update(){const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){this.x+=dx/d*.7;this.y+=dy/d*.7;}this.x+=this.speedX;this.y+=this.speedY;if(this.y<-10)this.reset(false);}
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},80%,60%,${this.opacity})`;ctx.fill();}
+}
+for(let i=0;i<65;i++)particles.push(new Particle());
+function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});
+  for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+    const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(88,166,255,${(1-d/80)*.06})`;ctx.lineWidth=.5;ctx.stroke();}
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+const io=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('in-view'),80*i);io.unobserve(entry.target);}});},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 
 </body>
