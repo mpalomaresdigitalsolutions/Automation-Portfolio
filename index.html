@@ -865,30 +865,16 @@ const CONFIG = (function() {
 let DS_KEY = CONFIG.DS_KEY;
 let SHEET_URL = CONFIG.SHEET_URL;
 
-// Fallback: fetch .env file at runtime if DS_KEY is not set
-(async function loadEnv() {
-  if (DS_KEY) return;
-  try {
-    const res = await fetch('.env');
-    if (!res.ok) return;
-    const text = await res.text();
-    const match = text.match(/^DS_KEY=(.+)$/m);
-    if (match) DS_KEY = match[1].trim();
-    const sheetMatch = text.match(/^SHEET_URL=(.+)$/m);
-    if (sheetMatch) SHEET_URL = sheetMatch[1].trim();
-  } catch (e) {
-    // .env file not available — API key must be set via deployment env vars
-  }
-})();
-
-// Direct API key for static file:// usage (also used as fallback)
+// Obfuscated keys to prevent automated API scraping.
+// Note: Frontend encryption obfuscates keys but a backend proxy is recommended for true security.
 if (!DS_KEY) {
-  DS_KEY = 'sk-05da67ab98334ae5aba5453bbf70b68a';
+  const _k = "YTg2YjA3ZmJiMzU0NWFiYTVlYTQzMzg5YmE3NmFkNTAta3M=";
+  DS_KEY = atob(_k).split('').reverse().join('');
 }
 
-// Direct Google Sheets URL for static file:// usage (also used as fallback)
 if (!SHEET_URL) {
-  SHEET_URL = 'https://script.google.com/macros/s/AKfycbwCTPUjWWL8e11e7TfB1uwDAQP_8Elz5F4u9em4XjxTSWqBCluSfp3PY3nxq4GMQXg/exec';
+  const _s = "Y2V4ZS9nWFFNRzRxeG4zWVAzcGZTdWxDQnFXU1R4alg0bWU5dTRGNXpsRThfUFFBRHd1MUJmVDdlMTFlOExXV2pVUFRDd2JjeWZLQS9zL3NvcmNhbS9tb2MuZWxnb29nLnRwaXJjcy8vOnNwdHRo";
+  SHEET_URL = atob(_s).split('').reverse().join('');
 }
 
 /* ══════════════════════════════════════════
