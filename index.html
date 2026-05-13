@@ -4,7 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marlon Palomares — AI Automation & Google Ads Specialist</title>
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com 'unsafe-inline';
+  style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+  font-src 'self' https://fonts.gstatic.com;
+  connect-src 'self' https://api.deepseek.com https://challenges.cloudflare.com;
+  frame-src https://challenges.cloudflare.com;
+  img-src 'self' data: https://mpalomaresdigitalsolutions.site;
+">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -375,6 +386,7 @@
   #cf-error { display:none; color:#ff6b6b; font-size:0.82rem; padding:0.65rem 1rem; border:1px solid rgba(255,107,107,0.25); border-radius:6px; background:rgba(255,107,107,0.06); }
   #cf-loading { display:none; align-items:center; gap:0.7rem; font-size:0.84rem; color:var(--muted); margin-top:0.5rem; }
   #cf-loading.show { display:flex !important; }
+  #cf-turnstile { margin: 0.75rem 0; min-height: 65px; }
   #cf-reply-card { display:none; margin-top:1.5rem; border:1px solid rgba(0,212,255,0.3); border-radius:14px; padding:1.6rem; background:linear-gradient(135deg,rgba(0,212,255,0.04),rgba(123,47,255,0.03)); animation:cfReplyIn 0.5s cubic-bezier(.23,1,.32,1) both; }
   #cf-saved-badge { display:none; align-items:center; gap:0.4rem; font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--green); letter-spacing:0.06em; }
   #cf-saved-badge.show { display:flex !important; }
@@ -561,7 +573,7 @@
     <div class="hero-profile tilt-container" id="hero-profile-tilt">
       <div class="profile-glow"></div>
       <div class="profile-frame tilt-card" id="profile-tilt-card">
-        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;\'>👤</div>';" alt="Marlon Palomares">
+        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';var fallback=document.createElement('div');fallback.style.cssText='display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;';fallback.textContent='👤';this.parentElement.appendChild(fallback);" alt="Marlon Palomares">
         <div class="card-glow" id="profile-card-glow"></div>
       </div>
       <div class="profile-badge"><div class="pb-dot"></div><div class="pb-text">Top 1 AI Expert 🇵🇭</div></div>
@@ -732,6 +744,7 @@
           </div>
           <div class="field"><label>Message</label><textarea id="cf-message" placeholder="Tell me about your business and goals..."></textarea></div>
           <div id="cf-error"></div>
+          <div id="cf-turnstile" class="cf-turnstile" data-size="normal" data-theme="dark"></div>
           <button class="btn-primary" id="cf-btn" onclick="submitContactForm()" style="align-self:flex-start;border:none;cursor:pointer;font-family:inherit;">
             Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -849,33 +862,19 @@
 
 <script>
 /* ══════════════════════════════════════════
-   CONFIG - Environment Variables ONLY
-   Load from .env file or deployment platform environment variables
+   CONFIG — Backend Proxy URL only
+   API keys live server-side in the Cloudflare Worker (env vars)
+   NEVER hardcode secrets in frontend code
 ══════════════════════════════════════════ */
-// Configuration object with environment variable support
-const CONFIG = (function() {
-  const env = typeof process !== 'undefined' && process.env ? process.env : {};
-  const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
-  return {
-    DS_KEY: env.DS_KEY || browserEnv.DS_KEY,
-    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL
-  };
-})();
+// Set this to your deployed Cloudflare Worker URL
+// Example: https://chat-proxy.your-subdomain.workers.dev
+const PROXY_URL = '';
 
-let DS_KEY = CONFIG.DS_KEY;
-let SHEET_URL = CONFIG.SHEET_URL;
-
-// Obfuscated keys to prevent automated API scraping.
-// Note: Frontend encryption obfuscates keys but a backend proxy is recommended for true security.
-if (!DS_KEY) {
-  const _k = "YTg2YjA3ZmJiMzU0NWFiYTVlYTQzMzg5YmE3NmFkNTAta3M=";
-  DS_KEY = atob(_k).split('').reverse().join('');
-}
-
-if (!SHEET_URL) {
+// Google Sheets web app URL (optional — for saving contact form submissions)
+const SHEET_URL = (function() {
   const _s = "Y2V4ZS9nWFFNRzRxeG4zWVAzcGZTdWxDQnFXU1R4alg0bWU5dTRGNXpsRThfUFFBRHd1MUJmVDdlMTFlOExXV2pVUFRDd2JjeWZLQS9zL3NvcmNhbS9tb2MuZWxnb29nLnRwaXJjcy8vOnNwdHRo";
-  SHEET_URL = atob(_s).split('').reverse().join('');
-}
+  return atob(_s).split('').reverse().join('');
+})();
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1387,13 +1386,22 @@ async function submitContactForm(){
   if(!fname)return showCfErr('Please enter your first name.');
   if(!/\S+@\S+\.\S+/.test(email))return showCfErr('Please enter a valid email address.');
   if(!message)return showCfErr('Please write a short message so Marlon can help you better!');
+
+  const turnstileToken = turnstile.getResponse();
+  if (!turnstileToken) {
+    return showCfErr('Please complete the security check (CAPTCHA) before sending.');
+  }
+
   btn.disabled=true;
   btn.innerHTML='<span class="cf-spinner"></span> Sending…';
   loading.classList.add('show');
   let aiReply='';
   try{
-    if(DS_KEY){
-      const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
+    if(PROXY_URL){
+      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],
+        max_tokens:200,temperature:0.72,turnstile_token:turnstileToken
+      })});
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
       aiReply=d.choices?.[0]?.message?.content?.trim()||'';
@@ -1404,12 +1412,13 @@ async function submitContactForm(){
   loading.classList.remove('show');
   btn.disabled=false;
   btn.innerHTML='Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-  document.getElementById('cf-reply-text').innerHTML=fmtReply(aiReply);
+  document.getElementById('cf-reply-text').innerHTML=DOMPurify.sanitize(fmtReply(aiReply));
   document.getElementById('cf-reply-card').style.display='block';
   document.getElementById('cf-form-body').style.opacity='0.4';
   document.getElementById('cf-form-body').style.pointerEvents='none';
   document.getElementById('cf-reply-card').scrollIntoView({behavior:'smooth',block:'nearest'});
   saveToSheet({fname,lname,email,service,message,aiReply});
+  turnstile.reset();
 }
 
 async function saveToSheet(d){
@@ -1433,7 +1442,7 @@ const CHAT_SYSTEM=`You are a professional AI assistant for Marlon Palomares, an 
 let chatHistory=[],chatOpen=false;
 function toggleChat(){chatOpen=!chatOpen;document.getElementById('chat-window').classList.toggle('open',chatOpen);if(chatOpen)setTimeout(()=>document.getElementById('chat-input').focus(),320);}
 function sendSuggestion(btn){document.getElementById('chat-input').value=btn.textContent;document.getElementById('chat-suggestions').style.display='none';sendChat();}
-function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${text}</div>`:`<div class="msg-bubble">${text}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
+function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;const safeText=DOMPurify.sanitize(text);div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${safeText}</div>`:`<div class="msg-bubble">${safeText}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
 function showTyping(){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className='chat-msg bot';div.id='typing-indicator';div.innerHTML='<div class="msg-micro-avatar">🤖</div><div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
 function hideTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
 async function sendChat(){
@@ -1447,12 +1456,12 @@ async function sendChat(){
   send.disabled=true;
   showTyping();
   try{
-    if(!DS_KEY){
+    if(!PROXY_URL){
       appendMsg('bot','⚠️ Chat is not configured yet. Please <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
       hideTyping();
       return;
     }
-    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
+    const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7})});
     if(!res.ok)throw new Error('API '+res.status);
     const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
     hideTyping();
