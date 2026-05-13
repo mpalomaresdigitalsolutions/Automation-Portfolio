@@ -9,10 +9,14 @@
   script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com 'unsafe-inline';
   style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://api.deepseek.com https://challenges.cloudflare.com;
+  connect-src 'self' https://challenges.cloudflare.com;
   frame-src https://challenges.cloudflare.com;
   img-src 'self' data: https://mpalomaresdigitalsolutions.site;
 ">
+<!--
+  ⚠️ IMPORTANT: When you deploy the Cloudflare Worker proxy, add its domain to connect-src:
+  Example: connect-src 'self' https://challenges.cloudflare.com https://chat-proxy.your-subdomain.workers.dev;
+-->
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -744,7 +748,7 @@
           </div>
           <div class="field"><label>Message</label><textarea id="cf-message" placeholder="Tell me about your business and goals..."></textarea></div>
           <div id="cf-error"></div>
-          <div id="cf-turnstile" class="cf-turnstile" data-size="normal" data-theme="dark"></div>
+          <div id="cf-turnstile"></div>
           <button class="btn-primary" id="cf-btn" onclick="submitContactForm()" style="align-self:flex-start;border:none;cursor:pointer;font-family:inherit;">
             Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -870,10 +874,29 @@
 // Example: https://chat-proxy.your-subdomain.workers.dev
 const PROXY_URL = '';
 
+// Cloudflare Turnstile Site Key (public — safe to include in frontend)
+// Get yours at: https://dash.cloudflare.com/?to=/:account/turnstile
+const TURNSTILE_SITEKEY = '';
+
 // Google Sheets web app URL (optional — for saving contact form submissions)
 const SHEET_URL = (function() {
   const _s = "Y2V4ZS9nWFFNRzRxeG4zWVAzcGZTdWxDQnFXU1R4alg0bWU5dTRGNXpsRThfUFFBRHd1MUJmVDdlMTFlOExXV2pVUFRDd2JjeWZLQS9zL3NvcmNhbS9tb2MuZWxnb29nLnRwaXJjcy8vOnNwdHRo";
   return atob(_s).split('').reverse().join('');
+})();
+
+// Render Turnstile widget when sitekey is configured
+(function initTurnstile() {
+  const container = document.getElementById('cf-turnstile');
+  if (!container) return;
+  if (TURNSTILE_SITEKEY && typeof turnstile !== 'undefined') {
+    turnstile.render('#cf-turnstile', {
+      sitekey: TURNSTILE_SITEKEY,
+      theme: 'dark',
+      size: 'normal'
+    });
+  } else {
+    container.style.display = 'none';
+  }
 })();
 
 /* ══════════════════════════════════════════
@@ -1387,8 +1410,8 @@ async function submitContactForm(){
   if(!/\S+@\S+\.\S+/.test(email))return showCfErr('Please enter a valid email address.');
   if(!message)return showCfErr('Please write a short message so Marlon can help you better!');
 
-  const turnstileToken = turnstile.getResponse();
-  if (!turnstileToken) {
+  const turnstileToken = TURNSTILE_SITEKEY ? turnstile.getResponse() : 'bypass';
+  if (TURNSTILE_SITEKEY && !turnstileToken) {
     return showCfErr('Please complete the security check (CAPTCHA) before sending.');
   }
 
@@ -1418,7 +1441,7 @@ async function submitContactForm(){
   document.getElementById('cf-form-body').style.pointerEvents='none';
   document.getElementById('cf-reply-card').scrollIntoView({behavior:'smooth',block:'nearest'});
   saveToSheet({fname,lname,email,service,message,aiReply});
-  turnstile.reset();
+  if (TURNSTILE_SITEKEY && typeof turnstile !== 'undefined') turnstile.reset();
 }
 
 async function saveToSheet(d){
