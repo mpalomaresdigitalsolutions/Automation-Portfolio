@@ -5,9 +5,12 @@
 //   RATE_LIMIT: max requests per IP per minute (default: 20)
 //
 // Deploy:
-//   1. wrangler deploy workers/chat-proxy.js --name chat-proxy
-//   2. Set env vars: DS_KEY, ALLOWED_ORIGIN
-//   3. Your proxy URL: https://chat-proxy.YOUR_SUBDOMAIN.workers.dev
+//   1. wrangler deploy workers/chat-proxy.js --name portfolio-chat-proxy
+//   2. Set env vars: DS_KEY, ALLOWED_ORIGIN in Cloudflare Dashboard
+//   3. Your proxy URL: https://portfolio-chat-proxy.YOUR_SUBDOMAIN.workers.dev
+
+// In-memory rate limiting (per-worker, resets on cold start)
+const rateStore = new Map();
 
 export default {
   async fetch(request, env) {
@@ -30,24 +33,21 @@ export default {
 
     const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
     const rateLimit = parseInt(env.RATE_LIMIT) || 20;
+    const now = Date.now();
 
-    const rateKey = `rl:${clientIP}`;
-    const count = await env.KV.get(rateKey, 'json') || { count: 0, reset: Date.now() + 60000 };
-
-    if (Date.now() > count.reset) {
-      count.count = 0;
-      count.reset = Date.now() + 60000;
+    let rateData = rateStore.get(clientIP);
+    if (!rateData || now > rateData.reset) {
+      rateData = { count: 0, reset: now + 60000 };
+      rateStore.set(clientIP, rateData);
     }
 
-    count.count += 1;
+    rateData.count += 1;
 
-    if (count.count > rateLimit) {
+    if (rateData.count > rateLimit) {
       return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }), {
         status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
-
-    await env.KV.put(rateKey, JSON.stringify(count), { expirationTtl: 60 });
 
     let body;
     try {

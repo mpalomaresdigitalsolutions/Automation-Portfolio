@@ -3,14 +3,9 @@ main = "workers/chat-proxy.js"
 compatibility_date = "2025-04-01"
 
 # ====================================================
-# Required environment variables — set via Cloudflare Dashboard or .dev.vars
+# Required environment variables — set via Cloudflare Dashboard
 # ====================================================
-# DS_KEY        — DeepSeek API key (required)
-# ALLOWED_ORIGIN — Your portfolio domain, e.g. https://mpalomaresdigitalsolutions.site
-# RATE_LIMIT    — Max requests per IP per minute (default: 20)
+# DS_KEY           — DeepSeek API key (required)
+# ALLOWED_ORIGIN   — Your portfolio domain, e.g. https://mpalomaresdigitalsolutions.site
+# RATE_LIMIT       — Max requests per IP per minute (default: 20)
 # TURNSTILE_SECRET — Cloudflare Turnstile secret key (optional, for CAPTCHA)
-
-# KV namespace for rate limiting
-[[kv_namespaces]]
-binding = "KV"
-id = ""  # Create a KV namespace and paste its ID here
