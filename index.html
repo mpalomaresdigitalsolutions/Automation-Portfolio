@@ -874,15 +874,7 @@
 ══════════════════════════════════════════ */
 // Set this to your deployed Cloudflare Worker URL
 // Example: https://chat-proxy.your-subdomain.workers.dev
-const PROXY_URL = '';
-
-// WARNING: Frontend API keys are never 100% secure. 
-// This key is obfuscated to prevent basic bot scraping, but you should 
-// deploy the Cloudflare Worker (workers/chat-proxy.js) for true security.
-const DS_KEY = (function() {
-  const _k = "ZjcxMGM1Mjk1YmYyNWJkYmE5ZTQ2YzE4ZDQ1YWI3YmIta3M=";
-  return atob(_k).split('').reverse().join('');
-})();
+const PROXY_URL = 'https://portfolio-chat-proxy.mpalomares.workers.dev';
 
 // Cloudflare Turnstile Site Key (public — safe to include in frontend)
 // Get yours at: https://dash.cloudflare.com/?to=/:account/turnstile
@@ -1438,15 +1430,6 @@ async function submitContactForm(){
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
       aiReply=d.choices?.[0]?.message?.content?.trim()||'';
-    } else if(DS_KEY){
-      const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({
-        model:'deepseek-chat',
-        messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],
-        max_tokens:200,temperature:0.72
-      })});
-      if(!r.ok)throw new Error('API '+r.status);
-      const d=await r.json();
-      aiReply=d.choices?.[0]?.message?.content?.trim()||'';
     }
   }catch(e){
     aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/gkfSi1mh93AxrLMC6`;
@@ -1534,13 +1517,6 @@ async function sendChat(){
   try{
     if(PROXY_URL){
       const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7})});
-      if(!res.ok)throw new Error('API '+res.status);
-      const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
-      hideTyping();
-      chatHistory.push({role:'assistant',content:reply});
-      appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
-    } else if (DS_KEY) {
-      const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7})});
       if(!res.ok)throw new Error('API '+res.status);
       const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
       hideTyping();
