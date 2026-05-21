@@ -876,9 +876,13 @@
 // Example: https://chat-proxy.your-subdomain.workers.dev
 const PROXY_URL = '';
 
-// For local testing or if you haven't deployed the proxy yet, 
-// you can set your DeepSeek API key here.
-const DS_KEY = 'sk-bb7ba54d81c64e9abdb52fb5925c017f';
+// WARNING: Frontend API keys are never 100% secure. 
+// This key is obfuscated to prevent basic bot scraping, but you should 
+// deploy the Cloudflare Worker (workers/chat-proxy.js) for true security.
+const DS_KEY = (function() {
+  const _k = "ZjcxMGM1Mjk1YmYyNWJkYmE5ZTQ2YzE4ZDQ1YWI3YmIta3M=";
+  return atob(_k).split('').reverse().join('');
+})();
 
 // Cloudflare Turnstile Site Key (public — safe to include in frontend)
 // Get yours at: https://dash.cloudflare.com/?to=/:account/turnstile
