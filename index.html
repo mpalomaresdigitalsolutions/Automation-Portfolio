@@ -438,8 +438,15 @@
   .clb-prev { left: -56px; }
   .clb-next { right: -56px; }
 
+  /* ═══════ CHAT FAB ATTENTION ANIMATION ═══════ */
   #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.3); transition: transform 0.25s, box-shadow 0.25s; animation: fab-pulse 3s ease-in-out infinite; }
   @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
+  .fab-glow-ring { position: fixed; bottom: 2rem; right: 2rem; z-index: 499; width: 58px; height: 58px; border-radius: 50%; pointer-events: none; border: 2px solid rgba(0,255,136,0.5); animation: fab-ring-expand 2.5s ease-out infinite; }
+  @keyframes fab-ring-expand { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.8); opacity: 0; } }
+  .fab-label { position: fixed; bottom: 4.2rem; right: 4.5rem; z-index: 501; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--text); background: rgba(6,8,16,0.9); border: 1px solid rgba(0,255,136,0.3); padding: 0.5rem 1rem; border-radius: 20px; backdrop-filter: blur(8px); white-space: nowrap; pointer-events: none; animation: fab-label-float 2.5s ease-in-out infinite; box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,136,0.1); display: flex; align-items: center; gap: 0.4rem; }
+  .fab-label .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes fab-label-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  #chat-fab:hover ~ .fab-label { opacity: 0; transition: opacity 0.3s; }
   #chat-fab:hover { transform: scale(1.1); }
   #chat-fab svg { width: 26px; height: 26px; fill: #060810; }
   #chat-fab .fab-badge { position: absolute; top: -3px; right: -3px; width: 14px; height: 14px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg); animation: pulse-dot 2s ease-in-out infinite; }
@@ -836,6 +843,8 @@
   <div class="fab-badge"></div>
   <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-2 10H6V10h12v2zm0-4H6V6h12v2z"/></svg>
 </button>
+<div class="fab-glow-ring"></div>
+<div class="fab-label"><span class="status-dot"></span> Chat with me · I'm online!</div>
 
 <!-- CHATBOT WINDOW -->
 <div id="chat-window">
@@ -851,7 +860,7 @@
   <div id="chat-messages">
     <div class="chat-msg bot">
       <div class="msg-micro-avatar">🤖</div>
-      <div class="msg-bubble">👋 Hi! I'm Marlon's AI assistant. I can answer questions about his services, experience, Google Ads, GHL automation, pricing, and more. How can I help you?</div>
+      <div class="msg-bubble">👋 Hi! I'm Marlon's AI assistant. I can answer questions about his services, pricing, Google Ads, GHL automation, case studies, experience, and more. How can I help you today?</div>
     </div>
   </div>
   <div class="chat-suggestions" id="chat-suggestions">
@@ -1476,6 +1485,13 @@ SERVICES:
 4. Conversion Tracking & Analytics — GTM setup, GA4 configuration, conversion tracking for accurate attribution.
 5. Ad Copywriting — High-converting ad copy for US audiences (2+ years experience with service-based businesses).
 6. Lead Generation Funnels — End-to-end: Google Ads → landing page → GHL CRM → automated follow-up → booked appointment.
+
+PRICING (see Pricing.html for full details):
+- Google Ads Management: $1,000/mo + 15% of ad spend (min. $500/mo ad budget). Includes campaign strategy, build, management & reporting.
+- AI Automation (GHL + Zapier): $750/mo + $500 one-time setup. Includes CRM setup, automated SMS/email sequences, Zapier workflows, funnel build.
+- Full-Funnel Growth (both above combined): $1,500/mo + 15% of ad spend. Includes everything plus priority support.
+- One-Time Add-Ons: Conversion Tracking Setup ($400), Ad Copywriting ($250), Claude Code AI Workflow (from $500), GHL Funnel Build ($350).
+- All plans are month-to-month with no long-term contracts. Book a free strategy call to discuss which plan fits best.
 
 CASE STUDIES & PROJECTS:
 - Junk Removal Lead Machine: Google Search campaigns for US junk removal. High-intent leads at sustainable CPA with $10K/mo budget.
