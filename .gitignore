@@ -125,9 +125,6 @@ coverage.xml
 .pytest_cache/
 
 # Project specific
-.specify/
-.trae/
-specs/
 
 # Environment files (CRITICAL - never commit secrets!)
 .env
