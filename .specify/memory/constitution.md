@@ -2,24 +2,29 @@
 
 ## Core Principles
 
-1. **Code Quality First**: Write clean, maintainable, and well-documented code
-2. **User-Centric Design**: Prioritize user experience and accessibility
-3. **Performance Matters**: Optimize for speed and efficiency
-4. **Security by Design**: Implement security best practices from the start
-5. **Testing is Essential**: Maintain comprehensive test coverage
+### Quality & Performance
+- Every campaign optimization must be data-driven, not based on assumptions
+- Changes are made in layers — never multiple optimizations simultaneously
+- All optimizations are documented with rationale and expected outcomes
 
-## Development Guidelines
+### Transparency
+- Every optimization step has a clear "why" behind it
+- Results are measured against baseline data, not hypotheticals
+- Client budgets are treated with the same care as our own
 
-- Follow semantic versioning
-- Write meaningful commit messages
-- Document all public APIs
-- Keep dependencies up to date
-- Use consistent coding standards
+### Continuous Improvement
+- The 8-Step Framework is executed on a regular cadence (weekly/bi-weekly/monthly)
+- No campaign is ever "done" — there is always room for optimization
+- Learnings from one account are applied to improve all accounts
 
-## Project-Specific Rules
+### User Experience
+- Ads must align with landing page messaging — no bait-and-switch
+- Search terms that don't match intent are excluded immediately
+- Every click should feel intentionally directed, not wasted
 
-This is a portfolio website project focused on showcasing work samples and certifications. The site should be:
-- Fast loading and responsive
-- Accessible to all users
-- Easy to maintain and update
-- Professionally designed
+## Commitments
+
+1. **Data over ego** — Let the numbers guide decisions, not intuition
+2. **Systematic execution** — Follow the framework step by step, never skip steps
+3. **Client-first** — Optimize for their ROI, not vanity metrics
+4. **Continuous learning** — Stay updated with Google Ads changes and new optimization techniques
