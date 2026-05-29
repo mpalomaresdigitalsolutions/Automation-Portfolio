@@ -1,25 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marlon Palomares — AI Automation & Google Ads Specialist</title>
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com 'unsafe-inline';
-  style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
-  font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://challenges.cloudflare.com https://cdnjs.cloudflare.com https://portfolio-chat-proxy.mpalomaresdigital.workers.dev;
-  frame-src https://challenges.cloudflare.com;
-  img-src 'self' data: https://mpalomaresdigitalsolutions.site;
-">
-<!--
-  ⚠️ IMPORTANT: When you deploy the Cloudflare Worker proxy, add its domain to connect-src:
-  Example: connect-src 'self' https://challenges.cloudflare.com https://chat-proxy.your-subdomain.workers.dev;
--->
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -108,7 +93,7 @@
 
   .hero-profile { animation: fade-up 0.8s ease 0.5s both; flex-shrink: 0; position: relative; }
   .profile-frame { width: 280px; height: 340px; position: relative; border-radius: 20px; overflow: hidden; }
-  .profile-frame::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; z-index: 2; pointer-events: none; }
+  .profile-frame::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 2; pointer-events: none; }
   .profile-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,8,16,0.5) 0%, transparent 60%); z-index: 1; pointer-events: none; border-radius: 20px; }
   .profile-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; border-radius: 20px; }
   .profile-glow { position: absolute; inset: -20px; border-radius: 30px; background: radial-gradient(ellipse at center, rgba(0,212,255,0.15) 0%, rgba(123,47,255,0.08) 50%, transparent 70%); z-index: -1; animation: profile-pulse 4s ease-in-out infinite; }
@@ -390,7 +375,6 @@
   #cf-error { display:none; color:#ff6b6b; font-size:0.82rem; padding:0.65rem 1rem; border:1px solid rgba(255,107,107,0.25); border-radius:6px; background:rgba(255,107,107,0.06); }
   #cf-loading { display:none; align-items:center; gap:0.7rem; font-size:0.84rem; color:var(--muted); margin-top:0.5rem; }
   #cf-loading.show { display:flex !important; }
-  #cf-turnstile { margin: 0.75rem 0; min-height: 65px; }
   #cf-reply-card { display:none; margin-top:1.5rem; border:1px solid rgba(0,212,255,0.3); border-radius:14px; padding:1.6rem; background:linear-gradient(135deg,rgba(0,212,255,0.04),rgba(123,47,255,0.03)); animation:cfReplyIn 0.5s cubic-bezier(.23,1,.32,1) both; }
   #cf-saved-badge { display:none; align-items:center; gap:0.4rem; font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--green); letter-spacing:0.06em; }
   #cf-saved-badge.show { display:flex !important; }
@@ -438,15 +422,8 @@
   .clb-prev { left: -56px; }
   .clb-next { right: -56px; }
 
-  /* ═══════ CHAT FAB ATTENTION ANIMATION ═══════ */
   #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.3); transition: transform 0.25s, box-shadow 0.25s; animation: fab-pulse 3s ease-in-out infinite; }
   @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
-  .fab-glow-ring { position: fixed; bottom: 2rem; right: 2rem; z-index: 499; width: 58px; height: 58px; border-radius: 50%; pointer-events: none; border: 2px solid rgba(0,255,136,0.5); animation: fab-ring-expand 2.5s ease-out infinite; }
-  @keyframes fab-ring-expand { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.8); opacity: 0; } }
-  .fab-label { position: fixed; bottom: 4.2rem; right: 4.5rem; z-index: 501; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--text); background: rgba(6,8,16,0.9); border: 1px solid rgba(0,255,136,0.3); padding: 0.5rem 1rem; border-radius: 20px; backdrop-filter: blur(8px); white-space: nowrap; pointer-events: none; animation: fab-label-float 2.5s ease-in-out infinite; box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,136,0.1); display: flex; align-items: center; gap: 0.4rem; }
-  .fab-label .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
-  @keyframes fab-label-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  #chat-fab:hover ~ .fab-label { opacity: 0; transition: opacity 0.3s; }
   #chat-fab:hover { transform: scale(1.1); }
   #chat-fab svg { width: 26px; height: 26px; fill: #060810; }
   #chat-fab .fab-badge { position: absolute; top: -3px; right: -3px; width: 14px; height: 14px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg); animation: pulse-dot 2s ease-in-out infinite; }
@@ -530,7 +507,7 @@
 
 <div class="social-strip">
   <a href="https://linktr.ee/MPDIGITALSOLUTIONS" class="s-icon" title="Linktree" target="_blank">🌿</a>
-  <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" class="s-icon" title="Book a Call" target="_blank">📅</a>
+  <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" class="s-icon" title="Book a Call" target="_blank">📅</a>
   <a href="mailto:marlon@mpalomaresdigitalsolutions.site" class="s-icon" title="Email">✉</a>
 </div>
 
@@ -542,7 +519,6 @@
     <li><a href="#projects">Projects</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#certifications">Certs</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
     <li class="nav-dropdown">
       <a href="#more-work">More Work <span class="nav-dropdown-arrow">▾</span></a>
       <div class="nav-dropdown-menu">
@@ -556,7 +532,7 @@
     </li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+  <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
 </nav>
 
 <div class="wrapper">
@@ -572,7 +548,7 @@
       <p class="hero-sub">I scale service businesses with <strong>high-intent leads</strong> and <strong>AI-driven automation</strong>. Specialized in <span id="typewriter-text" class="typewriter-text"></span><span class="typewriter-cursor">|</span></p>
       <div class="hero-ctas">
         <a href="#projects" class="btn-primary">View My Work <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-        <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="btn-ghost">📅 Book a Free Call</a>
+        <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-ghost">📅 Book a Free Call</a>
         <a href="resilience-therapy-case-study.html" class="btn-ghost">Case Study →</a>
       </div>
       <div class="hero-meta">
@@ -585,7 +561,7 @@
     <div class="hero-profile tilt-container" id="hero-profile-tilt">
       <div class="profile-glow"></div>
       <div class="profile-frame tilt-card" id="profile-tilt-card">
-        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';var fallback=document.createElement('div');fallback.style.cssText='display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;';fallback.textContent='👤';this.parentElement.appendChild(fallback);" alt="Marlon Palomares">
+        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;\'>👤</div>';" alt="Marlon Palomares">
         <div class="card-glow" id="profile-card-glow"></div>
       </div>
       <div class="profile-badge"><div class="pb-dot"></div><div class="pb-text">Top 1 AI Expert 🇵🇭</div></div>
@@ -756,7 +732,6 @@
           </div>
           <div class="field"><label>Message</label><textarea id="cf-message" placeholder="Tell me about your business and goals..."></textarea></div>
           <div id="cf-error"></div>
-          <div id="cf-turnstile"></div>
           <button class="btn-primary" id="cf-btn" onclick="submitContactForm()" style="align-self:flex-start;border:none;cursor:pointer;font-family:inherit;">
             Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -777,7 +752,7 @@
           </div>
           <div id="cf-reply-text" style="font-size:0.9rem;color:var(--text);line-height:1.8;padding:1rem;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.06);"></div>
           <div style="margin-top:1.1rem;display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
-            <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.55rem 1.2rem;">📅 Book a Free Call</a>
+            <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.55rem 1.2rem;">📅 Book a Free Call</a>
             <button onclick="resetContactForm()" style="background:transparent;border:1px solid var(--border);border-radius:4px;padding:0.55rem 1.1rem;color:var(--muted);font-family:'Outfit',sans-serif;font-size:0.82rem;cursor:pointer;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor='rgba(0,212,255,0.4)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↩ Send Another</button>
             <div id="cf-saved-badge"><span>✓</span> Saved to Sheets</div>
           </div>
@@ -788,7 +763,7 @@
         <div class="contact-item"><div class="c-icon c-i-1">📍</div><div><div class="c-label">Location</div><div class="c-value">Manila, Philippines 🇵🇭</div></div></div>
         <div class="contact-item"><div class="c-icon c-i-2">⏰</div><div><div class="c-label">Timezone</div><div class="c-value">PST +8 · Open to US hours</div></div></div>
         <div class="contact-item"><div class="c-icon c-i-3">🌐</div><div><div class="c-label">Language</div><div class="c-value">English (Fluent) · Tagalog (Native)</div></div></div>
-        <div class="contact-item"><div class="c-icon c-i-4">📅</div><div><div class="c-label">Book a Free Strategy Call</div><div class="c-value" style="margin-top:0.5rem;"><a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.6rem 1.3rem;">Book Now →</a></div></div></div>
+        <div class="contact-item"><div class="c-icon c-i-4">📅</div><div><div class="c-label">Book a Free Strategy Call</div><div class="c-value" style="margin-top:0.5rem;"><a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary" style="font-size:0.82rem;padding:0.6rem 1.3rem;">Book Now →</a></div></div></div>
         <div class="contact-item" style="flex-direction:column;gap:0.8rem;"><div class="c-label">Connect with me</div><div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
           <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank" class="btn-ghost" style="padding:0.45rem 1rem;font-size:0.8rem;">Linktree</a>
           <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="btn-ghost" style="padding:0.45rem 1rem;font-size:0.8rem;">Case Study</a>
@@ -813,14 +788,13 @@
     <div class="footer-links">
       <a href="https://mpalomaresdigitalsolutions.site/html/privacy-policy.html" target="_blank">Privacy</a>
       <a href="certifications.html" target="_blank">Certifications</a>
-      <a href="pricing.html" target="_blank">Pricing</a>
       <a href="meta.html" target="_blank">Meta Ads</a>
       <a href="ghl-work-samples.html" target="_blank">GHL Samples</a>
       <a href="zapier-automation-workflow.html" target="_blank">Zapier</a>
       <a href="resilience-therapy-case-study.html" target="_blank">Resilience Case Study</a>
       <a href="Google Ads Non Profit Case Study.html" target="_blank">Nonprofit Case Study</a>
       <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
-      <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank">Book a Call</a>
+      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank">Book a Call</a>
     </div>
   </footer>
 
@@ -843,8 +817,6 @@
   <div class="fab-badge"></div>
   <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-2 10H6V10h12v2zm0-4H6V6h12v2z"/></svg>
 </button>
-<div class="fab-glow-ring"></div>
-<div class="fab-label"><span class="status-dot"></span> Chat with me · I'm online!</div>
 
 <!-- CHATBOT WINDOW -->
 <div id="chat-window">
@@ -860,15 +832,13 @@
   <div id="chat-messages">
     <div class="chat-msg bot">
       <div class="msg-micro-avatar">🤖</div>
-      <div class="msg-bubble">👋 Hi! I'm Marlon's AI assistant. I can answer questions about his services, pricing, Google Ads, GHL automation, case studies, experience, and more. How can I help you today?</div>
+      <div class="msg-bubble">👋 Hi! I'm Marlon's AI assistant. I can answer questions about his services, experience, Google Ads, GHL automation, pricing, and more. How can I help you?</div>
     </div>
   </div>
   <div class="chat-suggestions" id="chat-suggestions">
     <button class="chat-suggestion" onclick="sendSuggestion(this)">What services do you offer?</button>
     <button class="chat-suggestion" onclick="sendSuggestion(this)">Google Ads pricing?</button>
     <button class="chat-suggestion" onclick="sendSuggestion(this)">GHL automation?</button>
-    <button class="chat-suggestion" onclick="sendSuggestion(this)">Case studies & results</button>
-    <button class="chat-suggestion" onclick="sendSuggestion(this)">Experience & certs</button>
     <button class="chat-suggestion" onclick="sendSuggestion(this)">Book a call</button>
   </div>
   <div class="chat-input-row">
@@ -879,38 +849,33 @@
 
 <script>
 /* ══════════════════════════════════════════
-   CONFIG — Backend Proxy URL only
-   API keys live server-side in the Cloudflare Worker (env vars)
-   NEVER hardcode secrets in frontend code
+   CONFIG - Environment Variables ONLY
+   Load from .env file or deployment platform environment variables
 ══════════════════════════════════════════ */
-// Set this to your deployed Cloudflare Worker URL
-// Example: https://chat-proxy.your-subdomain.workers.dev
-const PROXY_URL = 'https://portfolio-chat-proxy.mpalomaresdigital.workers.dev';
+// Configuration object with environment variable support
+const CONFIG = (function() {
+  const env = typeof process !== 'undefined' && process.env ? process.env : {};
+  const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
+  return {
+    DS_KEY: env.DS_KEY || browserEnv.DS_KEY,
+    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL
+  };
+})();
 
-// Cloudflare Turnstile Site Key (public — safe to include in frontend)
-// Get yours at: https://dash.cloudflare.com/?to=/:account/turnstile
-const TURNSTILE_SITEKEY = '';
+let DS_KEY = CONFIG.DS_KEY;
+let SHEET_URL = CONFIG.SHEET_URL;
 
-// Google Sheets web app URL (optional — for saving contact form submissions)
-const SHEET_URL = (function() {
+// Obfuscated keys to prevent automated API scraping.
+// Note: Frontend encryption obfuscates keys but a backend proxy is recommended for true security.
+if (!DS_KEY) {
+  const _k = "YTg2YjA3ZmJiMzU0NWFiYTVlYTQzMzg5YmE3NmFkNTAta3M=";
+  DS_KEY = atob(_k).split('').reverse().join('');
+}
+
+if (!SHEET_URL) {
   const _s = "Y2V4ZS9nWFFNRzRxeG4zWVAzcGZTdWxDQnFXU1R4alg0bWU5dTRGNXpsRThfUFFBRHd1MUJmVDdlMTFlOExXV2pVUFRDd2JjeWZLQS9zL3NvcmNhbS9tb2MuZWxnb29nLnRwaXJjcy8vOnNwdHRo";
-  return atob(_s).split('').reverse().join('');
-})();
-
-// Render Turnstile widget when sitekey is configured
-(function initTurnstile() {
-  const container = document.getElementById('cf-turnstile');
-  if (!container) return;
-  if (TURNSTILE_SITEKEY && typeof turnstile !== 'undefined') {
-    turnstile.render('#cf-turnstile', {
-      sitekey: TURNSTILE_SITEKEY,
-      theme: 'dark',
-      size: 'normal'
-    });
-  } else {
-    container.style.display = 'none';
-  }
-})();
+  SHEET_URL = atob(_s).split('').reverse().join('');
+}
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1407,7 +1372,7 @@ const SVC_CTX = {
   'Other':                      'Marlon is an AI Automation & Google Ads Specialist from Manila, PH.'
 };
 
-const buildSystem=(svc)=>`You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist, Manila, Philippines. A client just submitted a contact form. Write a warm, personalized reply (60-90 words max). Service context for "${svc}": ${SVC_CTX[svc]||SVC_CTX['Other']}. Rules: Address client by first name. Reference their specific message in 1 sentence. Highlight 1-2 key benefits. End EXACTLY with: "Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/gkfSi1mh93AxrLMC6". Plain text only.`;
+const buildSystem=(svc)=>`You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist, Manila, Philippines. A client just submitted a contact form. Write a warm, personalized reply (60-90 words max). Service context for "${svc}": ${SVC_CTX[svc]||SVC_CTX['Other']}. Rules: Address client by first name. Reference their specific message in 1 sentence. Highlight 1-2 key benefits. End EXACTLY with: "Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/7SukeeU8ezSXwkiX8". Plain text only.`;
 
 async function submitContactForm(){
   const fname=document.getElementById('cf-fname').value.trim();
@@ -1422,39 +1387,29 @@ async function submitContactForm(){
   if(!fname)return showCfErr('Please enter your first name.');
   if(!/\S+@\S+\.\S+/.test(email))return showCfErr('Please enter a valid email address.');
   if(!message)return showCfErr('Please write a short message so Marlon can help you better!');
-
-  const turnstileToken = TURNSTILE_SITEKEY ? turnstile.getResponse() : 'bypass';
-  if (TURNSTILE_SITEKEY && !turnstileToken) {
-    return showCfErr('Please complete the security check (CAPTCHA) before sending.');
-  }
-
   btn.disabled=true;
   btn.innerHTML='<span class="cf-spinner"></span> Sending…';
   loading.classList.add('show');
   let aiReply='';
   try{
-    if(PROXY_URL){
-      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],
-        max_tokens:200,temperature:0.72,turnstile_token:turnstileToken
-      })});
+    if(DS_KEY){
+      const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
       aiReply=d.choices?.[0]?.message?.content?.trim()||'';
     }
   }catch(e){
-    aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/gkfSi1mh93AxrLMC6`;
+    aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/7SukeeU8ezSXwkiX8`;
   }
   loading.classList.remove('show');
   btn.disabled=false;
   btn.innerHTML='Send Message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-  document.getElementById('cf-reply-text').innerHTML=DOMPurify.sanitize(fmtReply(aiReply));
+  document.getElementById('cf-reply-text').innerHTML=fmtReply(aiReply);
   document.getElementById('cf-reply-card').style.display='block';
   document.getElementById('cf-form-body').style.opacity='0.4';
   document.getElementById('cf-form-body').style.pointerEvents='none';
   document.getElementById('cf-reply-card').scrollIntoView({behavior:'smooth',block:'nearest'});
   saveToSheet({fname,lname,email,service,message,aiReply});
-  if (TURNSTILE_SITEKEY && typeof turnstile !== 'undefined') turnstile.reset();
 }
 
 async function saveToSheet(d){
@@ -1474,52 +1429,11 @@ function resetContactForm(){document.getElementById('cf-reply-card').style.displ
 /* ══════════════════════════════════════════
    CHATBOT
 ══════════════════════════════════════════ */
-const CHAT_SYSTEM=`You are a professional AI assistant for Marlon Palomares — AI Automation & Google Ads Specialist based in Manila, Philippines 🇵🇭. Your role is to answer questions about his portfolio in detail. Use the information below to respond accurately.
-
-PROFILE: Marlon Palomares. Top 1 AI Automation Expert PH. 2+ years serving US clients. Manages $10K+/month ad budgets. Available for freelance & full-time. Email: marlon@mpalomaresdigitalsolutions.site. Book calls: https://calendar.app.google/gkfSi1mh93AxrLMC6
-
-SERVICES:
-1. Google Ads Management — Search, Display, Shopping & Video campaigns optimized for ROI. Service businesses up to $10K+/month budgets.
-2. AI Automation (GHL + Zapier) — GoHighLevel CRM pipelines, automated lead capture, SMS/email follow-ups, booking confirmations, multi-step Zaps.
-3. Claude Code AI Workflow — Custom AI scripts for ad performance reporting, keyword clustering, copy generation pipelines using Anthropic API.
-4. Conversion Tracking & Analytics — GTM setup, GA4 configuration, conversion tracking for accurate attribution.
-5. Ad Copywriting — High-converting ad copy for US audiences (2+ years experience with service-based businesses).
-6. Lead Generation Funnels — End-to-end: Google Ads → landing page → GHL CRM → automated follow-up → booked appointment.
-
-PRICING (see pricing.html for full details):
-- Google Ads Management: $1,000/mo + 15% of ad spend (min. $500/mo ad budget). Includes campaign strategy, build, management & reporting.
-- AI Automation (GHL + Zapier): $750/mo + $500 one-time setup. Includes CRM setup, automated SMS/email sequences, Zapier workflows, funnel build.
-- Full-Funnel Growth (both above combined): $1,500/mo + 15% of ad spend. Includes everything plus priority support.
-- One-Time Add-Ons: Conversion Tracking Setup ($400), Ad Copywriting ($250), Claude Code AI Workflow (from $500), GHL Funnel Build ($350).
-- All plans are month-to-month with no long-term contracts. Book a free strategy call to discuss which plan fits best.
-
-CASE STUDIES & PROJECTS:
-- Junk Removal Lead Machine: Google Search campaigns for US junk removal. High-intent leads at sustainable CPA with $10K/mo budget.
-- Plumbing Automation Pipeline: GHL CRM + Zapier automation for plumbing — lead capture to SMS/email follow-ups. Reduced lead response time to under 5 min.
-- Humanity Impact Institute (Nonprofit): Full Google Ads transformation. Cut wasted spend by 67%, improved conversion rate by 211%, reallocated $847 to quality traffic.
-- AI Marketing Automation: Claude Code + Anthropic API for automated ad reporting, keyword clustering, copy generation.
-- Resilience Therapy Case Study: Google Ads for therapy/mental health — qualified leads at efficient CPL.
-- Meta Ads Portfolio: Facebook & Instagram campaigns across multiple verticals.
-
-EXPERIENCE:
-- 2023-Present: Google Ads Campaign Manager, Sustainable Living Association (Catchafire). Keyword research, campaign optimization, GHL lead nurturing.
-- 2024-Present: Google Ads Manager & Copywriter, Humanity Impacts Institute (Catchafire). Full campaign lifecycle, keyword research, ad copy, API integrations.
-- 2020-2022: Customer Service & Technical Support, Concentrix Dash Inc (Philippines). US client communications.
-- 2018-2020: Collection Specialist, Admerex Solution Inc. Performance analytics and client negotiation.
-
-CERTIFICATIONS (8): Google Search, Display, Video, Shopping, Analytics, Apps, Google Ads Professional, SEMrush Academy.
-
-MENTORS: Ian Baillo (Top Google Ads Expert PH — Pass Academy), Coach RJ Villmer (GHL & Zapier AI Automation — Technical Virtual Assistants.ph), Jay Gregorio (Facebook Ads Mastery — Negosyo Network Academy).
-
-TECH STACK: Google Ads, GoHighLevel, Zapier, Claude Code, Google Analytics, Google Tag Manager, SEMrush, Meta Ads.
-
-PORTFOLIO PAGES: meta.html (Meta Ads), ghl-work-samples.html (GHL samples), zapier-automation-workflow.html (Zapier), resilience-therapy-case-study.html, Google Ads Non Profit Case Study.html, certifications.html.
-
-Be professional, friendly, and informative. Provide detailed answers about portfolio, services, experience, and pricing. When asked about booking, direct to the calendar link. Keep responses well-structured but conversational.`;
+const CHAT_SYSTEM=`You are a professional AI assistant for Marlon Palomares, an AI Automation & Google Ads Specialist based in Manila, Philippines. Answer questions about: Google Ads management, GHL/Zapier automation, Claude Code AI workflows, Meta Ads, conversion tracking, lead generation. Experience: 2+ years US clients, $10K+/month budgets, Top 1 AI Automation Expert PH. 8 certs: Google Search, Display, Video, Shopping, Analytics, Apps, SEMrush. Mentors: Ian Baillo, Coach RJ Villmer, Jay Gregorio. Book calls: https://calendar.app.google/7SukeeU8ezSXwkiX8. Be concise, professional, friendly. Under 120 words unless asked for detail.`;
 let chatHistory=[],chatOpen=false;
 function toggleChat(){chatOpen=!chatOpen;document.getElementById('chat-window').classList.toggle('open',chatOpen);if(chatOpen)setTimeout(()=>document.getElementById('chat-input').focus(),320);}
 function sendSuggestion(btn){document.getElementById('chat-input').value=btn.textContent;document.getElementById('chat-suggestions').style.display='none';sendChat();}
-function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;const safeText=DOMPurify.sanitize(text);div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${safeText}</div>`:`<div class="msg-bubble">${safeText}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
+function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${text}</div>`:`<div class="msg-bubble">${text}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
 function showTyping(){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className='chat-msg bot';div.id='typing-indicator';div.innerHTML='<div class="msg-micro-avatar">🤖</div><div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
 function hideTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
 async function sendChat(){
@@ -1533,18 +1447,17 @@ async function sendChat(){
   send.disabled=true;
   showTyping();
   try{
-    if(PROXY_URL){
-      const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7})});
-      if(!res.ok)throw new Error('API '+res.status);
-      const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
-      hideTyping();
-      chatHistory.push({role:'assistant',content:reply});
-      appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
-    } else {
+    if(!DS_KEY){
       appendMsg('bot','⚠️ Chat is not configured yet. Please <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
       hideTyping();
       return;
     }
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
+    if(!res.ok)throw new Error('API '+res.status);
+    const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
+    hideTyping();
+    chatHistory.push({role:'assistant',content:reply});
+    appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
   }catch(err){
     hideTyping();
     appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');

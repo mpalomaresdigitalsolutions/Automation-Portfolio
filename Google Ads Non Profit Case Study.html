@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -281,39 +281,6 @@
   .lb-next { right: 1rem; }
   .lb-counter { position: absolute; bottom: 1.5rem; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; }
 
-  /* ── STEP CARDS (Spec-Kit) ── */
-  .step-card { display: flex; gap: 1.5rem; border: 1px solid var(--border); border-radius: var(--r); padding: 1.8rem 2rem; background: var(--card); transition: border-color 0.3s, background 0.3s, transform 0.3s; position: relative; overflow: hidden; margin-bottom: 1rem; }
-  .step-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.3s; }
-  .step-card:hover { border-color: rgba(0,212,255,0.25); background: rgba(0,212,255,0.03); transform: translateX(4px); }
-  .step-card:hover::before { opacity: 1; }
-  .step-num { flex-shrink: 0; width: 52px; height: 52px; border-radius: 50%; background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); display: flex; align-items: center; justify-content: center; transition: background 0.3s, border-color 0.3s, transform 0.3s; }
-  .step-card:hover .step-num { background: rgba(0,212,255,0.15); border-color: var(--accent); transform: scale(1.05); }
-  .step-icon { font-size: 1.3rem; }
-  .step-body { flex: 1; min-width: 0; }
-  .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
-  .step-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-bottom: 0.6rem; }
-  .step-desc strong { color: var(--text); }
-  .step-insight { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); padding: 0.5rem 0.9rem; border-radius: 4px; background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.1); line-height: 1.5; }
-
-  /* Result Banner */
-  .result-banner { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 2.5rem; background: linear-gradient(135deg, rgba(0,212,255,0.04), rgba(123,47,255,0.03)); margin: 0 auto; max-width: 1100px; position: relative; overflow: hidden; }
-  .result-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent); }
-  .result-inner { display: flex; gap: 2.5rem; align-items: center; }
-  .result-text { flex: 1; }
-  .result-text h3 { font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 800; margin-bottom: 0.8rem; letter-spacing: -0.5px; }
-  .result-text p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; }
-  .result-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex-shrink: 0; }
-  .metric-box { border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; text-align: center; background: var(--card); transition: border-color 0.3s, background 0.3s; }
-  .metric-box:hover { border-color: rgba(0,212,255,0.25); background: rgba(0,212,255,0.03); }
-  .metric-val { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
-  .metric-lbl { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; font-weight: 400; }
-
-  .section-label { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem; justify-content: center; }
-  .section-label::before, .section-label::after { content: ''; width: 20px; height: 1px; background: var(--accent); }
-
-  .btn-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: 1px solid var(--border); color: var(--text); font-weight: 500; font-size: 0.9rem; text-decoration: none; border-radius: 4px; background: var(--card); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
-  .btn-secondary:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
-
   @media (max-width: 768px) {
     .challenge-grid { grid-template-columns: 1fr; }
     .ba-container    { grid-template-columns: 1fr; }
@@ -325,10 +292,6 @@
     .case-hero       { padding: 8rem 4vw 4rem; }
     section          { padding: 3.5rem 4vw; }
     .cta-section     { padding: 2.5rem 1.5rem; }
-    .step-card       { flex-direction: column; gap: 1rem; padding: 1.5rem; }
-    .step-num        { width: 44px; height: 44px; }
-    .result-inner    { flex-direction: column; }
-    .result-metrics  { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -344,7 +307,7 @@
 
 <div class="social-strip">
   <a href="https://linktr.ee/MPDIGITALSOLUTIONS" class="s-icon" title="Linktree" target="_blank">🌿</a>
-  <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" class="s-icon" title="Book a Call" target="_blank">📅</a>
+  <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" class="s-icon" title="Book a Call" target="_blank">📅</a>
   <a href="mailto:marlon@mpalomaresdigitalsolutions.site" class="s-icon" title="Email">✉</a>
 </div>
 
@@ -352,7 +315,7 @@
   <a href="index.html" class="logo">MP<span>.dev</span></a>
   <div class="nav-actions">
     <a href="index.html" class="nav-back">← Portfolio</a>
-    <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+    <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
   </div>
 </nav>
 
@@ -377,7 +340,7 @@
     </p>
     <div class="hero-ctas">
       <a href="#results" class="btn-primary">See the Results ↓</a>
-      <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="btn-ghost">📅 Book a Free Audit</a>
+      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-ghost">📅 Book a Free Audit</a>
     </div>
 
     <div class="kpi-strip">
@@ -685,145 +648,6 @@
     </div>
   </section>
 
-  <!-- SPEC-KIT STEPS -->
-  <section id="spec-kit" style="padding-top:0;">
-    <div class="section-tag">Spec-Kit Execution</div>
-    <h2 class="section-title reveal">Optimization Framework:<br>8-Step Precision Methodology</h2>
-    <p class="section-sub reveal">A systematic Google Ads optimization process — each step builds on the last to eliminate waste, improve conversion quality, and drive measurable results for every campaign.</p>
-
-    <!-- Step 1 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">🔍</span></div>
-      <div class="step-body">
-        <div class="step-title">01 — Search Terms Audit — Exclude Bad Keywords</div>
-        <div class="step-desc">
-          I go to the Search Terms report and review every query that triggered our ads. Any irrelevant, low-intent, or off-target search terms get added as negative keywords at the campaign or ad group level. This stops the ads from showing for searches that will never convert — eliminating wasted spend immediately.
-        </div>
-        <div class="step-insight">→ Blocking bad search terms is the fastest way to reduce wasted budget — it's free money recovery</div>
-      </div>
-    </div>
-
-    <!-- Step 2 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">➕</span></div>
-      <div class="step-body">
-        <div class="step-title">02 — Search Terms Audit — Add New High-Intent Keywords</div>
-        <div class="step-desc">
-          I scan the same Search Terms report for queries driving traffic and conversions that aren't currently in our keyword lists. These high-performing, high-intent keywords get added directly to the relevant ad group — ensuring they match the existing ad copy and landing page design for maximum Quality Score and conversion rate.
-        </div>
-        <div class="step-insight">→ New converting keywords already proven in search terms = instant low-hanging fruit for more conversions</div>
-      </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">📊</span></div>
-      <div class="step-body">
-        <div class="step-title">03 — Ad Copy & Landing Page Alignment</div>
-        <div class="step-desc">
-          For every new keyword added from search terms, I verify the ad copy and landing page match the search intent. Consistent messaging across keyword → ad → landing page improves Quality Score, lowers CPC, and increases conversion rates. Every keyword gets placed in an ad group where the ad creative and page design speak the same language as the searcher.
-        </div>
-        <div class="step-insight">→ Alignment between keyword, ad, and landing page is the foundation of high-performing Google Ads campaigns</div>
-      </div>
-    </div>
-
-    <!-- Step 4 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">📱</span></div>
-      <div class="step-body">
-        <div class="step-title">04 — Optimize Device Bids</div>
-        <div class="step-desc">
-          I break down performance by mobile, desktop, and tablet — identifying where conversions are actually happening. Devices that consistently drive leads get bid increases. Devices burning budget without conversions get bid reductions or are excluded entirely.
-        </div>
-        <div class="step-insight">→ Most accounts overspend on mobile — auditing devices regularly recovers significant wasted spend</div>
-      </div>
-    </div>
-
-    <!-- Step 5 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">📍</span></div>
-      <div class="step-body">
-        <div class="step-title">05 — Optimize Location Bids</div>
-        <div class="step-desc">
-          I analyze performance by city, region, and area — identifying where the lowest CPA and highest conversion rates come from. High-performing locations get bid increases to capture more of that traffic. Underperforming areas get bid reductions to stop the bleed.
-        </div>
-        <div class="step-insight">→ Location data reveals hidden winners and budget drains most managers never look at</div>
-      </div>
-    </div>
-
-    <!-- Step 6 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">🕐</span></div>
-      <div class="step-body">
-        <div class="step-title">06 — Optimize Ad Schedule Bids</div>
-        <div class="step-desc">
-          I identify which days of the week and hours of the day produce the most conversions at the lowest cost. Budget gets concentrated at peak conversion windows with bid adjustments — and reduced during low-conversion periods to avoid burning money when prospects aren't ready to act.
-        </div>
-        <div class="step-insight">→ Ads at the right time cost less and convert more — scheduling is free budget optimization</div>
-      </div>
-    </div>
-
-    <!-- Step 7 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">✂️</span></div>
-      <div class="step-body">
-        <div class="step-title">07 — Optimize Wasteful Keywords</div>
-        <div class="step-desc">
-          Converting keywords that consistently exceed the target CPA get reduced bids or are paused. Just because a keyword generates leads doesn't mean it's profitable. I monitor CPA at the individual keyword level over multiple days — patterns, not single data points, drive the decision to cut.
-        </div>
-        <div class="step-insight">→ A keyword above target CPA is costing the client more per lead than it's worth — it must be addressed</div>
-      </div>
-    </div>
-
-    <!-- Step 8 -->
-    <div class="step-card reveal">
-      <div class="step-num"><span class="step-icon">👥</span></div>
-      <div class="step-body">
-        <div class="step-title">08 — Demographic Optimization</div>
-        <div class="step-desc">
-          I layer in demographic data — age ranges, gender, and household income brackets — to refine who sees the ads. Audiences with strong conversion patterns get bid increases. Demographics with poor performance get reduced bids, reducing spend on unlikely converters and improving overall account efficiency.
-        </div>
-        <div class="step-insight">→ Demographics turn a broad audience into a precision-targeted one — lowering CPL without cutting volume</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULT BANNER -->
-  <section style="padding-top:0;">
-    <div class="result-banner reveal">
-      <div class="result-inner">
-        <div class="result-text">
-          <h3>This Framework in Action — Humanity Impact Institute</h3>
-          <p>
-            Applied this exact 8-step process to a broken nonprofit Google Ads account. The account was wasting budget on irrelevant traffic, tracking the wrong conversions, and serving ads to the wrong countries. Systematic layer-by-layer optimization produced measurable results across every dimension.
-          </p>
-          <br/>
-          <a href="Google Ads Non Profit Case Study.html" style="color: var(--accent); font-size: 0.85rem; font-weight: 600; text-decoration: none;">
-            View the Full Case Study →
-          </a>
-        </div>
-        <div class="result-metrics">
-          <div class="metric-box">
-            <span class="metric-val">↓58%</span>
-            <div class="metric-lbl">CPA Reduced</div>
-          </div>
-          <div class="metric-box">
-            <span class="metric-val">↑211%</span>
-            <div class="metric-lbl">Conversion Rate</div>
-          </div>
-          <div class="metric-box">
-            <span class="metric-val">$847</span>
-            <div class="metric-lbl">Waste Recovered</div>
-          </div>
-          <div class="metric-box">
-            <span class="metric-val">↑340%</span>
-            <div class="metric-lbl">More Applications</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- PARADOX -->
   <section style="padding-top:0;">
     <div class="section-tag">Key Insight</div>
@@ -872,7 +696,7 @@
       <h2>Ready to Transform<br>Your Google Ads?</h2>
       <p>Don't let another dollar go to waste. Get a comprehensive audit of your Google Ads campaigns and discover hidden opportunities to improve performance and reduce costs.</p>
       <div class="cta-btns">
-        <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank" class="btn-primary">📅 Book Free Audit Call</a>
+        <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary">📅 Book Free Audit Call</a>
         <a href="index.html#projects" class="btn-ghost">View More Case Studies →</a>
       </div>
     </div>
@@ -897,7 +721,7 @@
       <a href="meta.html" target="_blank">Meta Ads</a>
       <a href="certifications.html" target="_blank">Certifications</a>
       <a href="index.html#projects" target="_blank">More Case Studies</a>
-      <a href="https://calendar.app.google/gkfSi1mh93AxrLMC6" target="_blank">Book a Call</a>
+      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank">Book a Call</a>
     </div>
   </footer>
 
