@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoHighLevel Work Samples ‚Äî Marlon Palomares</title>
+<title>GoHighLevel Work Samples ó Marlon Palomares</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -213,7 +213,7 @@
   .gallery-card:hover .card-img { transform: scale(1.02); }
   .card-img-wrap { overflow: hidden; position: relative; }
   .card-img-wrap::after {
-    content: 'üîç';
+    content: '??';
     position: absolute; bottom: 0.8rem; right: 0.8rem;
     font-size: 0.9rem;
     background: rgba(6,8,16,0.7);
@@ -239,6 +239,8 @@
 
   .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.45rem; }
   .card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+  .card-cta { display: inline-block; margin-top: 0.8rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--accent); text-decoration: none; letter-spacing: 0.05em; padding: 0.35rem 0; transition: color 0.2s, transform 0.2s; border-bottom: 1px solid rgba(0,212,255,0.3); }
+  .card-cta:hover { color: var(--text); transform: translateX(4px); border-bottom-color: var(--text); }
 
   /* FEATURED CARD (full width) */
   .gallery-card.featured {
@@ -390,10 +392,10 @@
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
-  <button class="lb-close" id="lb-close">‚úï</button>
-  <button class="lb-nav lb-prev" id="lb-prev">‚Äπ</button>
+  <button class="lb-close" id="lb-close">?</button>
+  <button class="lb-nav lb-prev" id="lb-prev">ã</button>
   <img id="lb-img" src="" alt="">
-  <button class="lb-nav lb-next" id="lb-next">‚Ä∫</button>
+  <button class="lb-nav lb-next" id="lb-next">õ</button>
   <div class="lb-caption" id="lb-caption"></div>
 </div>
 
@@ -401,8 +403,8 @@
 <nav>
   <div class="logo">MP<span>.dev</span></div>
   <div class="nav-right">
-    <a href="index.html" class="nav-back">‚Üê Back to Portfolio</a>
-    <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="nav-cta">[ Book a Call ‚Üó ]</a>
+    <a href="index.html" class="nav-back">? Back to Portfolio</a>
+    <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="nav-cta">[ Book a Call ? ]</a>
   </div>
 </nav>
 
@@ -410,10 +412,10 @@
 
   <!-- PAGE HERO -->
   <div class="page-hero">
-    <div class="hero-badge">ü§ñ GHL Work Samples</div>
+    <div class="hero-badge">?? GHL Work Samples</div>
     <h1 class="page-title">GoHighLevel<br><span class="grad">Workflow Samples</span></h1>
     <p class="page-sub">
-      Real GHL implementations ‚Äî sales funnels, email automations, SMS sequences, lead nurturing workflows, and website builds for service businesses.
+      Real GHL implementations ó sales funnels, email automations, SMS sequences, lead nurturing workflows, and website builds for service businesses.
     </p>
     <div class="breadcrumb">
       <a href="marlon-portfolio.html">Portfolio</a>
@@ -427,19 +429,139 @@
   <div class="section-divider"></div>
 
   <!-- ============================================================
-       SECTION 1: FUNNEL & WEBSITE
+       SECTION 1: CRM INFRASTRUCTURE
   ============================================================ -->
-  <section id="funnels">
+  <section id="crm-infrastructure">
     <div class="section-tag">Section 01</div>
-    <h2 class="section-title reveal">Funnel Building &<br>Website Development</h2>
-    <p class="section-sub reveal">High-converting sales funnels and full websites built inside GoHighLevel ‚Äî optimized for service business lead generation.</p>
+    <h2 class="section-title reveal">CRM Infrastructure &<br>Pipeline Management</h2>
+    <p class="section-sub reveal">The backbone of every GHL implementation ó custom fields, smart lists, pipelines, workflows, and contact management working together as a unified system to drive efficiency and revenue growth.</p>
 
     <div class="gallery-grid reveal">
 
-      <!-- Sales Funnel ‚Äî use funnels_opt (optimized version available) -->
+      <!-- Costume Fields -->
+      <div class="gallery-card featured"
+           data-src="ghl-images/Costume Fields.png"
+           data-caption="Custom Fields Configuration ó GHL CRM">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/Costume Fields.png" alt="Custom Fields Configuration" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-purple">Data Architecture</span>
+          <div class="card-title">Custom Fields Configuration</div>
+          <div class="card-desc">Strategically structured custom fields capturing every essential data point ó from lead source and service interest to budget range and appointment history. This architecture enables powerful segmentation, personalized automation triggers, and granular reporting that turns raw data into actionable business intelligence.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- Smart list -->
+      <div class="gallery-card"
+           data-src="ghl-images/Smart list.png"
+           data-caption="Smart Lists ó Advanced Segmentation in GHL">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/Smart list.png" alt="Smart Lists Segmentation" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-blue">Segmentation</span>
+          <div class="card-title">Smart Lists ó Advanced Segmentation</div>
+          <div class="card-desc">Dynamic smart lists that automatically segment contacts based on behavior, demographics, and engagement levels. Hot leads receive immediate follow-up while dormant prospects enter automated re-engagement sequences ó ensuring every contact gets the right treatment at the right time without manual effort.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- Pipe lines -->
+      <div class="gallery-card"
+           data-src="ghl-images/Pipe lines.png"
+           data-caption="Pipeline Management ó GHL CRM">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/Pipe lines.png" alt="Pipeline Management" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-orange">Pipeline Management</span>
+          <div class="card-title">Sales Pipeline Management</div>
+          <div class="card-desc">End-to-end sales pipelines built inside GHL ó tracking every lead from first contact to closed deal. Each pipeline stage has automated triggers for follow-up emails, SMS reminders, and task assignments. Deal stages, probability scoring, and bottleneck identification keep the sales process moving efficiently.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- workflow -->
+      <div class="gallery-card"
+           data-src="ghl-images/workflow.png"
+           data-caption="Workflow Automation ó GHL">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/workflow.png" alt="Workflow Automation" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-green">Workflow Automation</span>
+          <div class="card-title">Multi-Step Workflow Automation</div>
+          <div class="card-desc">Visual workflow builder with conditional logic ó time delays, email/SMS actions, webhook integrations, and API calls all connected in a single automated sequence. Every workflow is designed to reduce manual tasks, accelerate response times, and ensure consistent follow-up across every lead.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- Contacts -->
+      <div class="gallery-card featured"
+           data-src="ghl-images/Contacts.png"
+           data-caption="Contact Management ó GHL CRM">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/Contacts.png" alt="Contact Management" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-blue">Contact Management</span>
+          <div class="card-title">Centralized Contact Management</div>
+          <div class="card-desc">Unified contact database with 360-degree views ó every interaction, email open, SMS reply, appointment, and note is logged automatically. Custom tags, scoring, and activity timelines give you complete visibility into every relationship, ensuring no lead is forgotten and every client feels personally cared for at scale.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- oppurtmity -->
+      <div class="gallery-card"
+           data-src="ghl-images/oppurtmity.png"
+           data-caption="Opportunity Management ó GHL CRM">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/oppurtmity.png" alt="Opportunity Management" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-orange">Opportunity Pipeline</span>
+          <div class="card-title">Opportunity & Deal Management</div>
+          <div class="card-desc">Structured opportunity tracking inside GHL ó every potential deal is logged with stage progression, probability scoring, and value tracking. From initial inquiry to closed-won, the pipeline provides full visibility into deal health, expected revenue, and next-step actions to keep the sales momentum moving forward.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+      <!-- snippet -->
+      <div class="gallery-card"
+           data-src="ghl-images/snippet.png"
+           data-caption="Email Snippet Templates ó GHL Automation">
+        <div class="card-img-wrap">
+          <img class="card-img" src="ghl-images/snippet.png" alt="Email Snippet Templates" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="card-tag ct-green">Snippet Library</span>
+          <div class="card-title">Email Snippet Templates</div>
+          <div class="card-desc">Pre-built email snippet library for rapid outreach ó welcome sequences, follow-up reminders, re-engagement campaigns, and booking confirmations all stored as reusable templates. This library ensures consistent brand messaging across every touchpoint while drastically reducing the time needed to launch new automation sequences.</div>
+          <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="card-cta">Book a Free Call ?</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============================================================
+       SECTION 2: FUNNEL & WEBSITE
+  ============================================================ -->
+  <section id="funnels">
+    <div class="section-tag">Section 02</div>
+    <h2 class="section-title reveal">Funnel Building &<br>Website Development</h2>
+    <p class="section-sub reveal">High-converting sales funnels and full websites built inside GoHighLevel ó optimized for service business lead generation.</p>
+
+    <div class="gallery-grid reveal">
+
+      <!-- Sales Funnel ó use funnels_opt (optimized version available) -->
       <div class="gallery-card featured"
            data-src="ghl-images/funnels_opt.png"
-           data-caption="Sales Funnel Creation ‚Äî GHL">
+           data-caption="Sales Funnel Creation ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/funnels_opt.png" alt="Sales Funnel Creation" loading="lazy">
         </div>
@@ -450,7 +572,7 @@
         </div>
       </div>
 
-      <!-- GHL Website ‚Äî use website_opt -->
+      <!-- GHL Website ó use website_opt -->
       <div class="gallery-card"
            data-src="ghl-images/website_opt.jpg"
            data-caption="GHL Website Development">
@@ -460,14 +582,14 @@
         <div class="card-body">
           <span class="card-tag ct-blue">Website Build</span>
           <div class="card-title">GHL Website Development</div>
-          <div class="card-desc">Custom website development within GoHighLevel ‚Äî responsive design, lead capture forms, and seamless CRM + automation integration.</div>
+          <div class="card-desc">Custom website development within GoHighLevel ó responsive design, lead capture forms, and seamless CRM + automation integration.</div>
         </div>
       </div>
 
-      <!-- Plumbing Landing Page ‚Äî use Plumbing Landing Page_opt -->
+      <!-- Plumbing Landing Page ó use Plumbing Landing Page_opt -->
       <div class="gallery-card"
            data-src="ghl-images/Plumbing Landing Page_opt.png"
-           data-caption="Plumbing Service Landing Page ‚Äî GHL">
+           data-caption="Plumbing Service Landing Page ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Plumbing Landing Page_opt.png" alt="Plumbing Service Landing Page" loading="lazy">
         </div>
@@ -480,17 +602,17 @@
 
     </div>
 
-    <!-- ‚îÄ‚îÄ Wellness Center Sub-section ‚îÄ‚îÄ -->
+    <!-- -- Wellness Center Sub-section -- -->
     <div style="margin-top:3rem;">
       <div class="section-tag" style="margin-top:0;">Wellness Center Build</div>
       <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;" class="reveal">Multi-Page Wellness<br>Center Website</h3>
-      <p class="section-sub reveal" style="margin-bottom:2rem;">Full GHL website for a wellness and spa business ‚Äî from hero section to booking interface and social proof.</p>
+      <p class="section-sub reveal" style="margin-bottom:2rem;">Full GHL website for a wellness and spa business ó from hero section to booking interface and social proof.</p>
 
       <div class="gallery-grid reveal">
 
         <div class="gallery-card"
              data-src="ghl-images/b1.png"
-             data-caption="Wellness Center ‚Äî Homepage Hero">
+             data-caption="Wellness Center ó Homepage Hero">
           <div class="card-img-wrap">
             <img class="card-img" src="ghl-images/b1.png" alt="Wellness Center Homepage" loading="lazy">
           </div>
@@ -503,7 +625,7 @@
 
         <div class="gallery-card"
              data-src="ghl-images/b2.png"
-             data-caption="Wellness Center ‚Äî Service Booking Interface">
+             data-caption="Wellness Center ó Service Booking Interface">
           <div class="card-img-wrap">
             <img class="card-img" src="ghl-images/b2.png" alt="Service Booking Interface" loading="lazy">
           </div>
@@ -516,7 +638,7 @@
 
         <div class="gallery-card"
              data-src="ghl-images/b3.png"
-             data-caption="Wellness Center ‚Äî Treatment Details Section">
+             data-caption="Wellness Center ó Treatment Details Section">
           <div class="card-img-wrap">
             <img class="card-img" src="ghl-images/b3.png" alt="Treatment Details Section" loading="lazy">
           </div>
@@ -529,7 +651,7 @@
 
         <div class="gallery-card"
              data-src="ghl-images/b4.png"
-             data-caption="Wellness Center ‚Äî Testimonials & FAQ">
+             data-caption="Wellness Center ó Testimonials & FAQ">
           <div class="card-img-wrap">
             <img class="card-img" src="ghl-images/b4.png" alt="Testimonials & FAQ" loading="lazy">
           </div>
@@ -550,25 +672,18 @@
        SECTION 2: AUTOMATION & COMMUNICATION
   ============================================================ -->
   <section id="automation">
-    <div class="section-tag">Section 02</div>
+    <div class="section-tag">Section 03</div>
     <h2 class="section-title reveal">Automation &<br>Communication Workflows</h2>
-    <p class="section-sub reveal">Intelligent GHL automation sequences ‚Äî email, SMS, multi-channel ‚Äî designed to nurture leads and convert them to booked appointments automatically.</p>
+    <p class="section-sub reveal">Intelligent GHL automation sequences ó email, SMS, multi-channel ó designed to nurture leads and convert them to booked appointments automatically.</p>
 
     <div class="gallery-grid reveal">
 
-      <!-- Email Automation ‚Äî optimized version -->
+      <!-- Email Automation ó optimized version -->
       <div class="gallery-card"
-<<<<<<< Updated upstream
-           data-src="ghl-images/Email Automation_opt.png"
-           data-caption="Email Automation Implementation ‚Äî GHL">
-        <div class="card-img-wrap">
-          <img class="card-img" src="ghl-images/Email Automation_opt.png" alt="Email Automation Implementation" loading="lazy">
-=======
            data-src="ghl-images/Email Automation_opt.jpg"
-           data-caption="Email Automation Implementation ‚Äî GHL">
+           data-caption="Email Automation Implementation ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Email Automation_opt.jpg" alt="Email Automation Implementation" loading="lazy">
->>>>>>> Stashed changes
         </div>
         <div class="card-body">
           <span class="card-tag ct-blue">Email Automation</span>
@@ -577,10 +692,10 @@
         </div>
       </div>
 
-      <!-- Sample Email ‚Äî use Sample_Email_opt -->
+      <!-- Sample Email ó use Sample_Email_opt -->
       <div class="gallery-card"
            data-src="ghl-images/Sample_Email_opt.png"
-           data-caption="Sample Email Campaigns ‚Äî GHL">
+           data-caption="Sample Email Campaigns ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Sample_Email_opt.png" alt="Sample Email Campaigns" loading="lazy">
         </div>
@@ -591,10 +706,10 @@
         </div>
       </div>
 
-      <!-- If CX Reply ‚Äî use if cx reply_opt -->
+      <!-- If CX Reply ó use if cx reply_opt -->
       <div class="gallery-card"
            data-src="ghl-images/if cx reply_opt.png"
-           data-caption="Customer Reply Automation ‚Äî GHL">
+           data-caption="Customer Reply Automation ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/if cx reply_opt.png" alt="Customer Reply Automation" loading="lazy">
         </div>
@@ -605,59 +720,59 @@
         </div>
       </div>
 
-      <!-- Send ‚Äî use Send_opt -->
+      <!-- Send ó use Send_opt -->
       <div class="gallery-card"
            data-src="ghl-images/Send_opt.png"
-           data-caption="Automated Message Sending ‚Äî GHL">
+           data-caption="Automated Message Sending ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Send_opt.png" alt="Automated Message Sending" loading="lazy">
         </div>
         <div class="card-body">
           <span class="card-tag ct-orange">Multi-Channel</span>
           <div class="card-title">Automated Message Sending</div>
-          <div class="card-desc">Advanced messaging automation sending targeted communications across SMS, email, and social media ‚Äî ensuring consistent brand messaging and maximum customer engagement.</div>
+          <div class="card-desc">Advanced messaging automation sending targeted communications across SMS, email, and social media ó ensuring consistent brand messaging and maximum customer engagement.</div>
         </div>
       </div>
 
-      <!-- SMS & Email ‚Äî featured, no _opt available -->
+      <!-- SMS & Email ó featured, no _opt available -->
       <div class="gallery-card featured"
            data-src="ghl-images/sms and email.png"
-           data-caption="SMS & Email Automation Sequences ‚Äî GHL">
+           data-caption="SMS & Email Automation Sequences ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/sms and email.png" alt="SMS and Email Automation" loading="lazy">
         </div>
         <div class="card-body">
           <span class="card-tag ct-blue">SMS + Email</span>
           <div class="card-title">SMS & Email Automation Sequences</div>
-          <div class="card-desc">Seamless customer journeys combining SMS and email touchpoints ‚Äî from initial contact through document delivery and contract signing. Maintains engagement, provides value, and guides prospects toward conversion with personalized, timely communications at every stage.</div>
+          <div class="card-desc">Seamless customer journeys combining SMS and email touchpoints ó from initial contact through document delivery and contract signing. Maintains engagement, provides value, and guides prospects toward conversion with personalized, timely communications at every stage.</div>
         </div>
       </div>
 
-      <!-- Lead Nurturing ‚Äî Norturing.png (no _opt) -->
+      <!-- Lead Nurturing ó Norturing.png (no _opt) -->
       <div class="gallery-card featured"
            data-src="ghl-images/Norturing.png"
-           data-caption="Lead Nurturing Automation ‚Äî GHL">
+           data-caption="Lead Nurturing Automation ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Norturing.png" alt="Lead Nurturing Automation" loading="lazy">
         </div>
         <div class="card-body">
           <span class="card-tag ct-green">Lead Nurturing</span>
           <div class="card-title">Lead Nurturing Automation</div>
-          <div class="card-desc">Intelligent follow-up email sequences for lead nurturing. The system automatically sends targeted emails, tracks engagement, and when genuine interest is detected ‚Äî sends an appointment booking link. No lead falls through the cracks; every prospect is efficiently qualified for sales appointments.</div>
+          <div class="card-desc">Intelligent follow-up email sequences for lead nurturing. The system automatically sends targeted emails, tracks engagement, and when genuine interest is detected ó sends an appointment booking link. No lead falls through the cracks; every prospect is efficiently qualified for sales appointments.</div>
         </div>
       </div>
 
-      <!-- Chiropractic Reactivation ‚Äî Chiropractor.png (no _opt) -->
+      <!-- Chiropractic Reactivation ó Chiropractor.png (no _opt) -->
       <div class="gallery-card featured"
            data-src="ghl-images/Chiropractor.png"
-           data-caption="Chiropractic Patient Reactivation ‚Äî GHL">
+           data-caption="Chiropractic Patient Reactivation ó GHL">
         <div class="card-img-wrap">
           <img class="card-img" src="ghl-images/Chiropractor.png" alt="Chiropractic Patient Reactivation" loading="lazy">
         </div>
         <div class="card-body">
           <span class="card-tag ct-purple">Patient Reactivation</span>
           <div class="card-title">Chiropractic Patient Reactivation</div>
-          <div class="card-desc">Comprehensive workflow to re-engage dormant patients ‚Äî personalized check-in messages, return visit incentives, and automated appointment scheduling. Includes conditional logic to handle different patient responses, prioritizing active leads while nurturing those who need more time.</div>
+          <div class="card-desc">Comprehensive workflow to re-engage dormant patients ó personalized check-in messages, return visit incentives, and automated appointment scheduling. Includes conditional logic to handle different patient responses, prioritizing active leads while nurturing those who need more time.</div>
         </div>
       </div>
 
@@ -670,13 +785,13 @@
        SECTION 3: GHL DASHBOARD
   ============================================================ -->
   <section id="dashboard">
-    <div class="section-tag">Section 03</div>
+    <div class="section-tag">Section 04</div>
     <h2 class="section-title reveal">GHL Dashboard<br>Overviews</h2>
-    <p class="section-sub reveal">A look at the integrated GoHighLevel command center ‚Äî CRM, automation, scheduling, and reporting all in one platform.</p>
+    <p class="section-sub reveal">A look at the integrated GoHighLevel command center ó CRM, automation, scheduling, and reporting all in one platform.</p>
 
     <div class="gallery-grid two-col reveal">
 
-      <!-- GH1 ‚Äî no _opt listed in screenshot -->
+      <!-- GH1 ó no _opt listed in screenshot -->
       <div class="gallery-card"
            data-src="ghl-images/GH1.png"
            data-caption="Comprehensive GHL Dashboard Overview">
@@ -690,7 +805,7 @@
         </div>
       </div>
 
-      <!-- GH3 ‚Äî no _opt listed in screenshot -->
+      <!-- GH3 ó no _opt listed in screenshot -->
       <div class="gallery-card"
            data-src="ghl-images/GH3.png"
            data-caption="Advanced GHL Implementation">
@@ -700,7 +815,7 @@
         <div class="card-body">
           <span class="card-tag ct-purple">Advanced Config</span>
           <div class="card-title">Advanced GHL Implementation</div>
-          <div class="card-desc">Detailed view of advanced GoHighLevel features ‚Äî custom workflows and system integrations designed to optimize business processes and enhance client management at scale.</div>
+          <div class="card-desc">Detailed view of advanced GoHighLevel features ó custom workflows and system integrations designed to optimize business processes and enhance client management at scale.</div>
         </div>
       </div>
 
@@ -714,23 +829,23 @@
       <p>Let's build a GHL system that captures leads, nurtures them automatically, and books appointments while you sleep.</p>
     </div>
     <div class="cta-actions">
-      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary">
-        üìÖ Book a Free Call
+      <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" class="btn-primary">
+        ?? Book a Free Call
       </a>
       <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="btn-ghost">
-        View Case Study ‚Üí
+        View Case Study ?
       </a>
     </div>
   </div>
 
   <!-- FOOTER -->
   <footer>
-    <div>¬© 2025 Marlon Palomares Digital Solutions ¬∑ Manila, Philippines üáµüá≠</div>
+    <div>© 2025 Marlon Palomares Digital Solutions ∑ Manila, Philippines ????</div>
     <div class="footer-links">
       <a href="marlon-portfolio.html">Portfolio</a>
       <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank">Case Study</a>
       <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
-      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank">Book a Call</a>
+      <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank">Book a Call</a>
     </div>
   </footer>
 
