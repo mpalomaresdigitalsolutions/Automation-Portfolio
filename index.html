@@ -5,18 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com 'unsafe-inline';
+  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline';
   style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://challenges.cloudflare.com;
+  connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com;
   frame-src https://challenges.cloudflare.com;
-  img-src 'self' data: https://mpalomaresdigitalsolutions.site;
+  img-src 'self' data: https://mpalomaresdigitalsolutions.site https://www.googletagmanager.com https://www.google-analytics.com;
 ">
 <!--
   ⚠️ IMPORTANT: When you deploy the Cloudflare Worker proxy, add its domain to connect-src:
   Example: connect-src 'self' https://challenges.cloudflare.com https://chat-proxy.your-subdomain.workers.dev;
 -->
 <title>Marlon Palomares — AI Automation & Google Ads Specialist</title>
+<meta name="description" content="Marlon Palomares — Top 1 AI Automation Expert PH & Google Ads Specialist. I scale home service businesses with high-intent leads and AI-driven automation. 8 Google certified, $10K+ ad budget managed.">
+<meta name="keywords" content="AI Automation, Google Ads Specialist, Lead Generation, GoHighLevel, Home Services Marketing, Marlon Palomares, Manila">
+<link rel="canonical" href="https://mpalomaresdigitalsolutions.online/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mpalomaresdigitalsolutions.online/">
+<meta property="og:title" content="Marlon Palomares — AI Automation & Google Ads Specialist">
+<meta property="og:description" content="Top 1 AI Automation Expert PH. I scale home service businesses with high-intent leads and AI-driven automation.">
+<meta property="og:image" content="https://mpalomaresdigitalsolutions.online/og-image.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Marlon Palomares — AI Automation & Google Ads Specialist">
+<meta name="twitter:description" content="Top 1 AI Automation Expert PH. I scale home service businesses with high-intent leads and AI-driven automation.">
+<meta name="twitter:image" content="https://mpalomaresdigitalsolutions.online/og-image.jpg">
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Marlon Palomares",
+  "givenName": "Marlon",
+  "familyName": "Palomares",
+  "jobTitle": "AI Automation & Google Ads Specialist",
+  "description": "Top 1 AI Automation Expert PH. Scales home service businesses with high-intent leads and AI-driven automation.",
+  "url": "https://mpalomaresdigitalsolutions.online",
+  "sameAs": [
+    "https://linktr.ee/MPDIGITALSOLUTIONS"
+  ],
+  "knowsAbout": ["Google Ads", "AI Automation", "GoHighLevel", "Zapier", "Lead Generation", "Google Analytics", "Conversion Tracking"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Manila",
+    "addressCountry": "PH"
+  }
+}
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -506,6 +546,14 @@
   /* ═══════ COUNT-UP ═══════ */
   .meta-num { transition: opacity 0.3s; }
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 </head>
 <body>
 
@@ -555,8 +603,8 @@
       <div class="hero-badge"><div class="badge-dot"></div> Available for freelance & full-time</div>
       <div class="hero-eyebrow">Marlon Palomares · Manila, Philippines 🇵🇭</div>
       <h1 class="hero-title">
-        <span class="name">AI Automation</span>
-        <span class="role">& Ads Specialist</span>
+        <span class="name">Marlon Palomares</span>
+        <span class="role">— AI Automation & Ads Specialist</span>
       </h1>
       <p class="hero-sub">I scale service businesses with <strong>high-intent leads</strong> and <strong>AI-driven automation</strong>. Specialized in <span id="typewriter-text" class="typewriter-text"></span><span class="typewriter-cursor">|</span></p>
       <div class="hero-ctas">
@@ -633,14 +681,14 @@
     <div class="section-tag">Tech Stack</div>
     <h2 class="section-title reveal">Tools I Use<br>Daily</h2>
     <div class="tools-band reveal">
-      <div class="tool-item"><img class="tool-img" src="Tool images/Gads.png" alt="Google Ads"><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/GHL.jpg" alt="GoHighLevel"><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Zapier.png" alt="Zapier"><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Claude.png" alt="Claude Code"><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Analytics.jpg" alt="Google Analytics"><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Tag.png" alt="Google Tag Manager"><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Semrush.png" alt="SEMrush"><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool images/Meta.jpg" alt="Meta Ads"><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
+      <div class="tool-item"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
     </div>
   </section>
 
@@ -649,12 +697,12 @@
     <h2 class="section-title reveal">Case Studies<br>& Projects</h2>
     <p class="section-sub reveal">Real campaigns, real results. Built for service businesses that need leads — not just impressions.</p>
     <div class="projects-grid">
-      <div class="project-card"><div class="project-thumb p-t-1"><img src="Case images/junk removal.png" alt="Junk Removal Lead Machine" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case images/Plumbimg.png" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-3"><img src="Case images/non Profit.png" alt="Humanity Impact Institute Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Humanity Impact Institute Case Study</div><div class="project-desc">Full Google Ads transformation for a nonprofit — cut wasted ad spend by 67%, improved conversion rate by 211%, and realigned campaign architecture to drive real internship applications.</div><div class="project-result">67% less waste · 211% better conversions · $847 reallocated</div><div class="project-links"><a href="Google Ads Non Profit Case Study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-4"><img src="Case images/Ai automation.png" alt="AI Marketing Automation" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-purple">AI</span></div><div class="project-name">AI Marketing Automation</div><div class="project-desc">Leveraged Claude Code and Anthropic API to build custom AI scripts for automated ad performance reporting, keyword clustering, and copy generation workflows.</div><div class="project-result">Hours of manual reporting automated with AI</div><div class="project-links"><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-5"><img src="Case images/therapy.png" alt="Resilience Therapy Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);"><img src="Case images/Facebook.png" alt="Meta Ads Portfolio" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-1"><img src="Case%20images/junk%20removal.png" alt="Junk Removal Lead Machine" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case%20images/Plumbimg.png" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-3"><img src="Case%20images/non%20Profit.png" alt="Humanity Impact Institute Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Humanity Impact Institute Case Study</div><div class="project-desc">Full Google Ads transformation for a nonprofit — cut wasted ad spend by 67%, improved conversion rate by 211%, and realigned campaign architecture to drive real internship applications.</div><div class="project-result">67% less waste · 211% better conversions · $847 reallocated</div><div class="project-links"><a href="Google Ads Non Profit Case Study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-4"><img src="Case%20images/Ai%20automation.png" alt="AI Marketing Automation" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-purple">AI</span></div><div class="project-name">AI Marketing Automation</div><div class="project-desc">Leveraged Claude Code and Anthropic API to build custom AI scripts for automated ad performance reporting, keyword clustering, and copy generation workflows.</div><div class="project-result">Hours of manual reporting automated with AI</div><div class="project-links"><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-5"><img src="Case%20images/therapy.png" alt="Resilience Therapy Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);"><img src="Case%20images/Facebook.png" alt="Meta Ads Portfolio" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
     </div>
   </section>
 
@@ -706,14 +754,14 @@
     <h2 class="section-title reveal">8 Professional<br>Certifications</h2>
     <p class="section-sub reveal">Google-certified across Search, Display, Video, Shopping, Analytics, Apps & more — plus SEMrush Academy.</p>
     <div class="certs-grid">
-      <div class="cert-card" onclick="openCertLb(0)"><div class="cert-thumb"><img src="certificates images/Certificate.jpg" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Ads Professional Certificate" loading="lazy"><span class="cert-badge-overlay cbo-star">⭐ Featured</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Ads Professional</div><div class="cert-org">Certificate of Accomplishment · Ian Baillo</div></div></div>
-      <div class="cert-card" onclick="openCertLb(1)"><div class="cert-thumb"><img src="certificates images/Google Analytics.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Analytics.png'" alt="Google Analytics Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Analytics Certified</div><div class="cert-org">Google Certified · Analytics</div></div></div>
-      <div class="cert-card" onclick="openCertLb(2)"><div class="cert-thumb"><img src="certificates images/Google display.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20display.png'" alt="Google Display Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Display Ads Certified</div><div class="cert-org">Google Certified · Display</div></div></div>
-      <div class="cert-card" onclick="openCertLb(3)"><div class="cert-thumb"><img src="certificates images/Google Search.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Search Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Search Ads Certified</div><div class="cert-org">Google Certified · Search</div></div></div>
-      <div class="cert-card" onclick="openCertLb(4)"><div class="cert-thumb"><img src="certificates images/Google Shopping.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Shopping.png'" alt="Google Shopping Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Shopping Ads Certified</div><div class="cert-org">Google Certified · AI-Powered Shopping</div></div></div>
-      <div class="cert-card" onclick="openCertLb(5)"><div class="cert-thumb"><img src="certificates images/Google Video.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Video.png'" alt="Google Video Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Video Ads Certified</div><div class="cert-org">Google Certified · Video</div></div></div>
-      <div class="cert-card" onclick="openCertLb(6)"><div class="cert-thumb"><img src="certificates images/Gooogle Apps.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png'" alt="Google Apps Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Apps Certified</div><div class="cert-org">Google Certified · Apps</div></div></div>
-      <div class="cert-card" onclick="openCertLb(7)"><div class="cert-thumb"><img src="certificates images/Semrush.png" onerror="this.src='https://mpalomaresdigitalsolutions.site/certificates%20images/Semrush.png'" alt="SEMrush Certification" loading="lazy"><span class="cert-badge-overlay cbo-semrush">SEMrush</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">SEMrush Certification</div><div class="cert-org">SEMrush Academy · SEO Strategy</div></div></div>
+      <div class="cert-card" onclick="openCertLb(0)"><div class="cert-thumb"><img src="certificates%20images/Certificate.jpg" onerror="this.src='certificates%20images/Google%20Search.png'" alt="Google Ads Professional Certificate" loading="lazy"><span class="cert-badge-overlay cbo-star">⭐ Featured</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Ads Professional</div><div class="cert-org">Certificate of Accomplishment · Ian Baillo</div></div></div>
+      <div class="cert-card" onclick="openCertLb(1)"><div class="cert-thumb"><img src="certificates%20images/Google%20Analytics.png" onerror="this.src='certificates%20images/Google%20Analytics.png'" alt="Google Analytics Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Analytics Certified</div><div class="cert-org">Google Certified · Analytics</div></div></div>
+      <div class="cert-card" onclick="openCertLb(2)"><div class="cert-thumb"><img src="certificates%20images/Google%20display.png" onerror="this.src='certificates%20images/Google%20display.png'" alt="Google Display Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Display Ads Certified</div><div class="cert-org">Google Certified · Display</div></div></div>
+      <div class="cert-card" onclick="openCertLb(3)"><div class="cert-thumb"><img src="certificates%20images/Google%20Search.png" onerror="this.src='certificates%20images/Google%20Search.png'" alt="Google Search Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Search Ads Certified</div><div class="cert-org">Google Certified · Search</div></div></div>
+      <div class="cert-card" onclick="openCertLb(4)"><div class="cert-thumb"><img src="certificates%20images/Google%20Shopping.png" onerror="this.src='certificates%20images/Google%20Shopping.png'" alt="Google Shopping Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Shopping Ads Certified</div><div class="cert-org">Google Certified · AI-Powered Shopping</div></div></div>
+      <div class="cert-card" onclick="openCertLb(5)"><div class="cert-thumb"><img src="certificates%20images/Google%20Video.png" onerror="this.src='certificates%20images/Google%20Video.png'" alt="Google Video Ads Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Video Ads Certified</div><div class="cert-org">Google Certified · Video</div></div></div>
+      <div class="cert-card" onclick="openCertLb(6)"><div class="cert-thumb"><img src="certificates%20images/Gooogle%20Apps.png" onerror="this.src='certificates%20images/Google%20Search.png'" alt="Google Apps Certification" loading="lazy"><span class="cert-badge-overlay cbo-google">Google</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">Google Apps Certified</div><div class="cert-org">Google Certified · Apps</div></div></div>
+      <div class="cert-card" onclick="openCertLb(7)"><div class="cert-thumb"><img src="certificates%20images/Semrush.png" onerror="this.src='certificates%20images/Semrush.png'" alt="SEMrush Certification" loading="lazy"><span class="cert-badge-overlay cbo-semrush">SEMrush</span><span class="cert-view-hint">VIEW</span></div><div class="cert-footer"><div class="cert-name">SEMrush Certification</div><div class="cert-org">SEMrush Academy · SEO Strategy</div></div></div>
     </div>
     <div style="text-align:center;margin-top:2rem;position:relative;z-index:1;"><a href="certifications.html" target="_blank" class="btn-ghost" style="display:inline-flex;">View All Certifications →</a></div>
   </section>
@@ -1352,14 +1400,14 @@ document.querySelectorAll('.reveal,.project-card,.tl-item,.cert-card,.pl-card,.t
    CERT LIGHTBOX
 ══════════════════════════════════════════ */
 const CERTS=[
-  {src:'certificates images/Certificate.jpg',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Ads Professional — Certificate of Accomplishment'},
-  {src:'certificates images/Google Analytics.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Analytics.png',cap:'Google Analytics Certified'},
-  {src:'certificates images/Google display.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20display.png',cap:'Google Display Ads Certified'},
-  {src:'certificates images/Google Search.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Search Ads Certified'},
-  {src:'certificates images/Google Shopping.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Shopping.png',cap:'Google Shopping Ads Certified — AI-Powered'},
-  {src:'certificates images/Google Video.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Video.png',cap:'Google Video Ads Certified'},
-  {src:'certificates images/Gooogle Apps.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Google%20Search.png',cap:'Google Apps Certified'},
-  {src:'certificates images/Semrush.png',fb:'https://mpalomaresdigitalsolutions.site/certificates%20images/Semrush.png',cap:'SEMrush Certification — Crafting a Winning SEO Strategy'},
+  {src:'certificates%20images/Certificate.jpg',fb:'certificates%20images/Google%20Search.png',cap:'Google Ads Professional — Certificate of Accomplishment'},
+  {src:'certificates%20images/Google%20Analytics.png',fb:'certificates%20images/Google%20Analytics.png',cap:'Google Analytics Certified'},
+  {src:'certificates%20images/Google%20display.png',fb:'certificates%20images/Google%20display.png',cap:'Google Display Ads Certified'},
+  {src:'certificates%20images/Google%20Search.png',fb:'certificates%20images/Google%20Search.png',cap:'Google Search Ads Certified'},
+  {src:'certificates%20images/Google%20Shopping.png',fb:'certificates%20images/Google%20Shopping.png',cap:'Google Shopping Ads Certified — AI-Powered'},
+  {src:'certificates%20images/Google%20Video.png',fb:'certificates%20images/Google%20Video.png',cap:'Google Video Ads Certified'},
+  {src:'certificates%20images/Gooogle%20Apps.png',fb:'certificates%20images/Google%20Search.png',cap:'Google Apps Certified'},
+  {src:'certificates%20images/Semrush.png',fb:'certificates%20images/Semrush.png',cap:'SEMrush Certification — Crafting a Winning SEO Strategy'},
 ];
 let clbCur=0;
 const certLb=document.getElementById('cert-lb'),clbImg=document.getElementById('clb-img'),clbCap=document.getElementById('clb-cap'),clbCnt=document.getElementById('clb-counter');
@@ -1409,7 +1457,9 @@ async function submitContactForm(){
       const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
-      aiReply=d.choices?.[0]?.message?.content?.trim()||'';
+      const choice0 = d && d.choices && d.choices[0];
+      const content = choice0 && choice0.message && choice0.message.content;
+      aiReply = (typeof content === 'string' ? content.trim() : '') || '';
     }
   }catch(e){
     aiReply=`Hi ${fname}, thanks for reaching out about ${service}! Marlon received your message and will review it personally. He specializes in delivering real results for service businesses. Marlon will personally follow up within 24 hours. You can also book a free strategy call here: https://calendar.app.google/7SukeeU8ezSXwkiX8`;
@@ -1429,7 +1479,9 @@ async function saveToSheet(d){
   if(!SHEET_URL)return;
   try{
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'}),firstName:d.fname,lastName:d.lname,email:d.email,service:d.service,message:d.message,aiReply:d.aiReply})});
-  }catch(e){console.warn('Sheet save:',e);}
+  }catch(e){
+    if (typeof console !== 'undefined' && console && typeof console.warn === 'function') console.warn('Sheet save:', e);
+  }
   const badge=document.getElementById('cf-saved-badge');
   if(badge)badge.classList.add('show');
 }
@@ -1467,14 +1519,16 @@ async function sendChat(){
     }
     const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
     if(!res.ok)throw new Error('API '+res.status);
-    const data=await res.json(),reply=data.choices?.[0]?.message?.content||'Sorry, I had trouble responding. Please try again!';
+    const data=await res.json();
+    const choice0 = data && data.choices && data.choices[0];
+    const reply = (choice0 && choice0.message && choice0.message.content) || 'Sorry, I had trouble responding. Please try again!';
     hideTyping();
     chatHistory.push({role:'assistant',content:reply});
     appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
   }catch(err){
     hideTyping();
     appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
-    console.warn('Chat error:',err);
+    if (typeof console !== 'undefined' && console && typeof console.warn === 'function') console.warn('Chat error:', err);
   }finally{
     send.disabled=false;
     input.focus();
