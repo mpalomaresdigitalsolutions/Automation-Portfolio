@@ -921,7 +921,8 @@ const CONFIG = (function() {
   const browserEnv = typeof window !== 'undefined' && window.__ENV ? window.__ENV : {};
   return {
     DS_KEY: env.DS_KEY || browserEnv.DS_KEY,
-    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL
+    SHEET_URL: env.SHEET_URL || browserEnv.SHEET_URL,
+    PROXY_URL: env.PROXY_URL || browserEnv.PROXY_URL
   };
 })();
 
@@ -941,7 +942,7 @@ if (!SHEET_URL) {
 }
 
 // Cloudflare Worker proxy for AI — keeps API key server-side
-const PROXY_URL = "https://portfolio-chat-proxy.mpalomaresdigital.workers.dev";
+const PROXY_URL = CONFIG.PROXY_URL || "https://portfolio-chat-proxy.mpalomaresdigital.workers.dev";
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1506,6 +1507,28 @@ function sendSuggestion(btn){document.getElementById('chat-input').value=btn.tex
 function appendMsg(role,text){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${role}`;div.innerHTML=role==='bot'?`<div class="msg-micro-avatar">🤖</div><div class="msg-bubble">${text}</div>`:`<div class="msg-bubble">${text}</div>`;wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;return div;}
 function showTyping(){const wrap=document.getElementById('chat-messages'),div=document.createElement('div');div.className='chat-msg bot';div.id='typing-indicator';div.innerHTML='<div class="msg-micro-avatar">🤖</div><div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;}
 function hideTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
+function escapeHtml(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function isLocalPreview(){return /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);}
+function buildOfflineChatReply(text){
+  const q=(text||'').toLowerCase();
+  if(/price|pricing|cost|how much|budget/.test(q)) return 'Marlon offers Google Ads management, automation builds, conversion tracking, and funnel setup based on business goals and scope. For exact pricing, the fastest next step is a quick strategy call: <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" style="color:var(--accent);text-decoration:underline;">book here</a>.';
+  if(/service|offer|what do you do|help/.test(q)) return 'Marlon helps service businesses with Google Ads management, GHL and Zapier automation, Claude Code AI workflows, Meta Ads, conversion tracking, and lead generation systems.';
+  if(/ghl|gohighlevel|zapier|automation/.test(q)) return 'Marlon builds GHL and Zapier systems for lead capture, pipeline automation, SMS and email follow-up, booking flows, and CRM handoff so leads move faster with less manual work.';
+  if(/book|call|schedule|meeting/.test(q)) return 'You can book a free strategy call here: <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" style="color:var(--accent);text-decoration:underline;">calendar.app.google/7SukeeU8ezSXwkiX8</a>.';
+  if(/google ads|ppc|search ads|shopping|display|youtube/.test(q)) return 'Marlon manages Google Search, Display, Shopping, and Video campaigns, with experience supporting US service businesses and budgets up to $10K+ per month.';
+  return 'Thanks for your message. Marlon can help with Google Ads, GHL/Zapier automation, Claude Code AI workflows, Meta Ads, conversion tracking, and lead generation. You can <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" style="color:var(--accent);text-decoration:underline;">book a free call</a> or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);text-decoration:underline;">email Marlon directly</a>.';
+}
+function extractChatErrorMessage(data,status){
+  const detail=data&&data.detail;
+  const direct=data&&(data.error||data.message);
+  const nested=detail&&(detail.error||detail.message||(detail.error&&detail.error.message));
+  const msg=direct||nested;
+  if(msg)return msg;
+  if(status===403)return 'Access denied by the chat proxy.';
+  if(status===429)return 'Chat is getting too many requests right now. Please try again in a minute.';
+  if(status>=500)return 'The AI assistant is temporarily unavailable.';
+  return '';
+}
 async function sendChat(){
   const input=document.getElementById('chat-input'),send=document.getElementById('chat-send'),text=input.value.trim();
   if(!text)return;
@@ -1523,8 +1546,9 @@ async function sendChat(){
       return;
     }
     const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
-    if(!res.ok)throw new Error('API '+res.status);
-    const data=await res.json();
+    let data=null;
+    try{data=await res.json();}catch(e){data=null;}
+    if(!res.ok)throw new Error(extractChatErrorMessage(data,res.status)||('API '+res.status));
     const choice0 = data && data.choices && data.choices[0];
     const reply = (choice0 && choice0.message && choice0.message.content) || 'Sorry, I had trouble responding. Please try again!';
     hideTyping();
@@ -1532,7 +1556,14 @@ async function sendChat(){
     appendMsg('bot',reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;">$1</a>'));
   }catch(err){
     hideTyping();
-    appendMsg('bot','⚠️ Connection issue. Please try again or <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
+    const fallback=buildOfflineChatReply(text);
+    const prefix=isLocalPreview()
+      ? '<strong>Local preview note:</strong> the live AI proxy is not reachable from this preview, so here is a quick fallback answer.<br><br>'
+      : '';
+    const reason=err&&err.message&&!/^\s*API\s+\d+/i.test(err.message)
+      ? `<div style="margin-bottom:0.55rem;color:var(--muted);font-size:0.88rem;">${escapeHtml(err.message)}</div>`
+      : '';
+    appendMsg('bot',`${prefix}${reason}${fallback}`);
     if (typeof console !== 'undefined' && console && typeof console.warn === 'function') console.warn('Chat error:', err);
   }finally{
     send.disabled=false;

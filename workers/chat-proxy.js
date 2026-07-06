@@ -12,22 +12,65 @@
 // In-memory rate limiting (per-worker, resets on cold start)
 const rateStore = new Map();
 
+function resolveAllowedOrigin(request, env) {
+  const requestOrigin = request.headers.get('Origin');
+  const configuredOrigins = String(env.ALLOWED_ORIGIN || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const devOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:4173',
+    'http://127.0.0.1:4173',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'http://localhost:8787',
+    'http://127.0.0.1:8787',
+  ];
+  const allowList = new Set([...configuredOrigins, ...devOrigins]);
+
+  if (!requestOrigin) {
+    return configuredOrigins[0] || '*';
+  }
+
+  if (!env.ALLOWED_ORIGIN) {
+    return requestOrigin;
+  }
+
+  return allowList.has(requestOrigin) ? requestOrigin : null;
+}
+
 export default {
   async fetch(request, env) {
+    const allowedOrigin = resolveAllowedOrigin(request, env);
     const corsHeaders = {
-      'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN || '*',
+      'Access-Control-Allow-Origin': allowedOrigin || 'null',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',
+      'Vary': 'Origin',
     };
 
     if (request.method === 'OPTIONS') {
+      if (!allowedOrigin) {
+        return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
       return new Response(null, { headers: corsHeaders });
     }
 
     if (request.method !== 'POST') {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    if (request.headers.get('Origin') && !allowedOrigin) {
+      return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
+        status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 

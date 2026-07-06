@@ -3,6 +3,10 @@ main = "workers/chat-proxy.js"
 compatibility_date = "2025-04-01"
 account_id = "7727bfc4627263a4d0776348c0ba3f96"
 
+[vars]
+ALLOWED_ORIGIN = "https://mpalomaresdigitalsolutions.site"
+RATE_LIMIT = "20"
+
 # ====================================================
 # Required environment variables — set via Cloudflare Dashboard
 # ====================================================
