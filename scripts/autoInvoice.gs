@@ -48,11 +48,7 @@ function processWeeklyInvoices() {
     if (!services || !services.length) continue;
     try {
       var invoice = createWeeklyInvoice(p, services);
-      if (invoice) {
-        created++;
-        results.push({ name: p.name || p.clients?.name, num: invoice.invoice_num, amount: invoice.amount });
-        nextNum = parseInt(invoice.invoice_num.replace('#IV-', '')) + 1;
-      }
+      if (invoice) { sendInvoiceEmail(p, invoice, services); created++; }
     } catch (e) {
       errors++;
       console.error(`Error processing project ${p.id}: ${e.toString()}`);
@@ -217,14 +213,9 @@ function createWeeklyInvoice(p, services) {
   var result = insertInvoice(invoiceData);
   if (!result) return null;
   
-  var clientInfo = p.clients || {};
   logActivity(p.id, 'invoice', 'Invoice ' + invoiceNum + ' sent — ₱' + amount.toLocaleString());
   
-  if (clientInfo.email) {
-    sendInvoiceEmail(clientInfo.email, clientInfo.name || p.name, invoiceNum, amount, dueDate.toISOString().split('T')[0], invoiceData.title);
-  }
-  
-  return { invoice_num: invoiceNum, amount: amount, name: clientInfo.name || p.name };
+  return { invoice_num: invoiceNum, amount: amount, name: p.name || '' };
 }
 
 /**
@@ -259,38 +250,31 @@ function sendSummaryEmail(created, errors, results) {
 /**
  * Email invoice to client
  */
-function sendInvoiceEmail(clientEmail, clientName, invoiceNum, amount, dueDate, title) {
-  const dueDisplay = new Date(dueDate + 'T12:00:00').toLocaleDateString('en-US', { 
+function sendInvoiceEmail(p, invoice, services) {
+  var clientEmail = p.clients?.email;
+  var clientName = p.clients?.name || p.name;
+  if (!clientEmail) { console.log('No email for ' + p.name); return; }
+  
+  var dueDisplay = new Date().toLocaleDateString('en-US', { 
     month: 'long', day: 'numeric', year: 'numeric' 
   });
   
-  const subject = `📄 Invoice ${invoiceNum} — MPalomares Digital Solutions`;
-  const body = `Hi ${clientName},
-
-A new invoice has been generated for your project.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  INVOICE #${invoiceNum}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  Title: ${title}
-  Amount: ₱${amount.toLocaleString()}.00
-  Due Date: ${dueDisplay}
-  Status: Sent
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Payment is due within ${CONFIG.INVOICE_DUE_DAYS} days.
-
-You can view all your invoices at:
-${CONFIG.SUPABASE_URL}/portal.html
-
-For questions, contact:
-admin@mpalomares.com
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MPalomares Digital Solutions
-`;
+  var amt = invoice.amount || 0;
+  var invNum = invoice.invoice_num || '';
+  
+  var subject = '📄 Invoice ' + invNum + ' — MPalomares Digital Solutions';
+  var body = 'Hi ' + clientName + ',\n\n'
+    + 'A new invoice has been generated for your weekly services.\n\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + '  INVOICE #' + invNum + '\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    + '  Amount: ₱' + amt.toLocaleString() + '.00\n'
+    + '  Status: Sent\n\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    + 'Payment is due within ' + CONFIG.INVOICE_DUE_DAYS + ' days.\n\n'
+    + 'For questions, contact: admin@mpalomares.com\n\n'
+    + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + 'MPalomares Digital Solutions\n';
 
   try {
     MailApp.sendEmail(clientEmail, subject, body);
