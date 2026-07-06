@@ -1,19 +1,14 @@
 /**
- * Automated Invoice Generator — Google Apps Script
- * 
- * Scheduled: Every 1st of the month, generates invoices for active projects
- * Saves to Supabase `invoices` table via REST API
+ * AUTO INVOICE — Google Apps Script
+ * Runs every Monday. Creates invoices for projects with weekly_services
+ * Saves to Supabase invoices table via REST API
  * 
  * SETUP:
  * 1. Go to https://script.google.com/
- * 2. Create New Project → paste this code
- * 3. Replace SUPABASE_URL, SUPABASE_SERVICE_KEY, ADMIN_EMAIL below
- * 4. Run → setupTrigger() once to create monthly schedule
- * 5. Review → Executions tab to see results
- * 
- * SECURITY:
- * Use SUPABASE_SERVICE_KEY (anon key works too but service_role bypasses RLS)
- * Find it: Supabase Dashboard → Settings → API → service_role key
+ * 2. Create New Project -> paste this code
+ * 3. Replace SUPABASE_ANON_KEY below
+ * 4. Run -> setupTrigger() once to create weekly schedule
+ * 5. Review -> Executions tab to see results
  */
 
 const CONFIG = {
@@ -21,29 +16,28 @@ const CONFIG = {
   // ⚠️ Replace with your actual Supabase anon key (or service_role key)
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY',
   ADMIN_EMAIL: 'admin@mpalomares.com', // for notifications
-  INVOICE_DUE_DAYS: 15, // days from generation
-  INVOICE_DESCRIPTION: 'Monthly Management Fee'
+  INVOICE_DUE_DAYS: 7, // days from generation (weekly)
+  INVOICE_DESCRIPTION: 'Weekly Service Fee'
 };
 
 /**
  * Main function — run on schedule or manually
  * Fetches active projects, generates invoice for each
  */
-function generateMonthlyInvoices() {
+function generateWeeklyInvoices() {
   const today = new Date();
-  const month = today.toLocaleString('en-US', { month: 'long' });
-  const year = today.getFullYear();
+  const weekStr = today.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   
-  console.log(`🔄 Auto-Invoice Generation: ${month} ${year}`);
+  console.log(`🔄 Auto-Invoice Generation: Week of ${weekStr}`);
   
-  // 1. Fetch active projects from Supabase
-  const projects = fetchActiveProjects();
+  // 1. Fetch projects with weekly_services from Supabase
+  const projects = fetchWeeklyServiceProjects();
   if (!projects || projects.length === 0) {
-    console.log('No active projects found.');
+    console.log('No projects with weekly services found.');
     return;
   }
   
-  console.log(`Found ${projects.length} active project(s)`);
+  console.log(`Found ${projects.length} project(s) with weekly services`);
   
   // 2. Get last invoice number
   const lastNum = getLastInvoiceNumber();
@@ -51,23 +45,23 @@ function generateMonthlyInvoices() {
   
   const created = [];
   
-  // 3. Generate invoice for each active project
+  // 3. Generate invoice for each project
   projects.forEach(project => {
     const dueDate = new Date(today);
     dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
     
     const invoiceNum = '#IV-' + String(nextNum).padStart(5, '0');
-    const amount = Number(project.budget) || 0;
+    const amount = Number(project.weekly_amount || project.budget || 0);
     
     if (amount <= 0) {
-      console.log(`Skipping ${project.name}: budget is 0`);
+      console.log(`Skipping ${project.name}: amount is 0`);
       return;
     }
     
     const invoiceData = {
       project_id: project.id,
       invoice_num: invoiceNum,
-      title: `${month} ${year} — ${CONFIG.INVOICE_DESCRIPTION}`,
+      title: `Week of ${weekStr} — ${CONFIG.INVOICE_DESCRIPTION}`,
       amount: amount,
       due_date: dueDate.toISOString().split('T')[0],
       status: 'sent'
@@ -76,7 +70,6 @@ function generateMonthlyInvoices() {
     const result = insertInvoice(invoiceData);
     if (result) {
       created.push({ name: project.name, num: invoiceNum, amount: amount });
-      // Also log activity
       logActivity(project.id, 'invoice', 
         `Invoice ${invoiceNum} sent — ₱${amount.toLocaleString()}`);
     }
@@ -86,17 +79,17 @@ function generateMonthlyInvoices() {
   
   // 4. Send summary email
   if (created.length > 0) {
-    sendSummaryEmail(month, year, created);
+    sendSummaryEmail(created);
   }
   
   console.log(`✅ Generated ${created.length} invoice(s)`);
 }
 
 /**
- * Fetch active/ongoing projects from Supabase
+ * Fetch projects that have weekly_services enabled
  */
-function fetchActiveProjects() {
-  const url = `${CONFIG.SUPABASE_URL}/rest/v1/projects?select=*&status=in.(active,review)`;
+function fetchWeeklyServiceProjects() {
+  const url = `${CONFIG.SUPABASE_URL}/rest/v1/projects?select=*&status=in.(active,review)&weekly_services=eq.true`;
   const options = {
     method: 'GET',
     headers: {
@@ -213,7 +206,7 @@ function logActivity(projectId, type, text) {
 /**
  * Send summary email to admin
  */
-function sendSummaryEmail(month, year, created) {
+function sendSummaryEmail(created) {
   let totalAmount = 0;
   let details = '';
   
@@ -222,8 +215,9 @@ function sendSummaryEmail(month, year, created) {
     details += `\n• ${inv.name}: ${inv.num} — ₱${inv.amount.toLocaleString()}`;
   });
   
-  const subject = `📄 Auto-Invoice Summary: ${month} ${year}`;
-  const body = `Auto-invoice generation complete for ${month} ${year}.\n\n`
+  const weekStr = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' });
+  const subject = `📄 Auto-Invoice: Week of ${weekStr}`;
+  const body = `Weekly auto-invoice generation complete.\n\n`
     + `Generated: ${created.length} invoice(s)\n`
     + `Total: ₱${totalAmount.toLocaleString()}\n`
     + `\n--- Details ---${details}\n\n`
@@ -245,29 +239,29 @@ function setupTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(t => ScriptApp.deleteTrigger(t));
   
-  // Create new monthly trigger — 1st of month at 8:00 AM
-  ScriptApp.newTrigger('generateMonthlyInvoices')
+  // Create new weekly trigger — every Monday at 8:00 AM
+  ScriptApp.newTrigger('generateWeeklyInvoices')
     .timeBased()
-    .onMonthDay(1)
+    .onWeekDay(ScriptApp.WeekDay.MONDAY)
     .atHour(8)
     .nearMinute(0)
     .create();
   
-  console.log('✅ Monthly trigger set: 1st of each month at 8:00 AM');
+  console.log('✅ Weekly trigger set: Every Monday at 8:00 AM');
   
   // Also send confirmation email
   MailApp.sendEmail(CONFIG.ADMIN_EMAIL, '✅ Auto-Invoice Trigger Active',
-    'Monthly invoice automation is now active.\n\n'
-    + 'Schedule: Every 1st of the month at 8:00 AM\n'
-    + 'Action: Generate invoices for all active projects\n'
-    + 'Due: 15 days from generation\n\n'
-    + 'You can also run generateMonthlyInvoices() manually anytime.');
+    'Weekly invoice automation is now active.\n\n'
+    + 'Schedule: Every Monday at 8:00 AM\n'
+    + 'Action: Generate invoices for projects with weekly_services\n'
+    + 'Due: 7 days from generation\n\n'
+    + 'You can also run generateWeeklyInvoices() manually anytime.');
 }
 
 /**
  * Run to test manually (no trigger needed)
  */
 function testRun() {
-  console.log('🧪 Test run — generating invoices now...');
-  generateMonthlyInvoices();
+  console.log('🧪 Test run — generating weekly invoices now...');
+  generateWeeklyInvoices();
 }
