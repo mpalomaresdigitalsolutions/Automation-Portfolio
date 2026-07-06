@@ -24,7 +24,7 @@ const CONFIG = {
  * Main function — run on schedule or manually
  * Fetches active projects, generates invoice for each
  */
-function generateWeeklyInvoices() {
+function processWeeklyInvoices() {
   const today = new Date();
   const weekStr = today.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   
@@ -290,7 +290,7 @@ function setupTrigger() {
   triggers.forEach(t => ScriptApp.deleteTrigger(t));
   
   // Create new weekly trigger — every Monday at 8:00 AM
-  ScriptApp.newTrigger('generateWeeklyInvoices')
+  ScriptApp.newTrigger('processWeeklyInvoices')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
     .atHour(8)
@@ -305,7 +305,7 @@ function setupTrigger() {
     + 'Schedule: Every Monday at 8:00 AM\n'
     + 'Action: Generate invoices for projects with weekly_services\n'
     + 'Due: 7 days from generation\n\n'
-    + 'You can also run generateWeeklyInvoices() manually anytime.');
+    + 'You can also run processWeeklyInvoices() manually anytime.');
 }
 
 /**
@@ -313,5 +313,5 @@ function setupTrigger() {
  */
 function testRun() {
   console.log('🧪 Test run — generating weekly invoices now...');
-  generateWeeklyInvoices();
+  processWeeklyInvoices();
 }
