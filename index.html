@@ -8,7 +8,7 @@
   script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline';
   style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com;
+  connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com https://api.deepseek.com https://portfolio-chat-proxy.mpalomaresdigital.workers.dev;
   frame-src https://challenges.cloudflare.com;
   img-src 'self' data: https://mpalomaresdigitalsolutions.site https://www.googletagmanager.com https://www.google-analytics.com;
 ">
@@ -146,7 +146,7 @@
 
   .hero-profile { animation: fade-up 0.8s ease 0.5s both; flex-shrink: 0; position: relative; }
   .profile-frame { width: 280px; height: 340px; position: relative; border-radius: 20px; overflow: hidden; }
-  .profile-frame::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 2; pointer-events: none; }
+  .profile-frame::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 2; pointer-events: none; }
   .profile-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,8,16,0.5) 0%, transparent 60%); z-index: 1; pointer-events: none; border-radius: 20px; }
   .profile-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; border-radius: 20px; }
   .profile-glow { position: absolute; inset: -20px; border-radius: 30px; background: radial-gradient(ellipse at center, rgba(0,212,255,0.15) 0%, rgba(123,47,255,0.08) 50%, transparent 70%); z-index: -1; animation: profile-pulse 4s ease-in-out infinite; }
@@ -592,6 +592,7 @@
       </div>
     </li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="login.html" target="_blank">Client Portal</a></li>
   </ul>
   <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
 </nav>
@@ -856,6 +857,7 @@
       <a href="Google Ads Non Profit Case Study.html" target="_blank">Nonprofit Case Study</a>
       <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
       <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank">Book a Call</a>
+      <a href="login.html" target="_blank">Client Portal</a>
     </div>
   </footer>
 
@@ -929,7 +931,7 @@ let SHEET_URL = CONFIG.SHEET_URL;
 // Obfuscated keys to prevent automated API scraping.
 // Note: Frontend encryption obfuscates keys but a backend proxy is recommended for true security.
 if (!DS_KEY) {
-  const _k = "YTg2YjA3ZmJiMzU0NWFiYTVlYTQzMzg5YmE3NmFkNTAta3M=";
+  const _k = "ZjcxMGM1Mjk1YmYyNWJkYmE5ZTQ2YzE4ZDQ1YWI3YmIta3M=";
   DS_KEY = atob(_k).split('').reverse().join('');
 }
 
@@ -937,6 +939,9 @@ if (!SHEET_URL) {
   const _s = "Y2V4ZS9nWFFNRzRxeG4zWVAzcGZTdWxDQnFXU1R4alg0bWU5dTRGNXpsRThfUFFBRHd1MUJmVDdlMTFlOExXV2pVUFRDd2JjeWZLQS9zL3NvcmNhbS9tb2MuZWxnb29nLnRwaXJjcy8vOnNwdHRo";
   SHEET_URL = atob(_s).split('').reverse().join('');
 }
+
+// Cloudflare Worker proxy for AI — keeps API key server-side
+const PROXY_URL = "https://portfolio-chat-proxy.mpalomaresdigital.workers.dev";
 
 /* ══════════════════════════════════════════
    GLOBAL CIRCUIT BOARD BACKGROUND CANVAS
@@ -1453,8 +1458,8 @@ async function submitContactForm(){
   loading.classList.add('show');
   let aiReply='';
   try{
-    if(DS_KEY){
-      const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
+    if(PROXY_URL){
+      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client: ${fname} ${lname}\nEmail: ${email}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
       const choice0 = d && d.choices && d.choices[0];
@@ -1512,12 +1517,12 @@ async function sendChat(){
   send.disabled=true;
   showTyping();
   try{
-    if(!DS_KEY){
-      appendMsg('bot','⚠️ Chat is not configured yet. Please <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
+    if(!PROXY_URL){
+      appendMsg('bot',' Chat is not configured yet. Please <a href="mailto:marlon@mpalomaresdigitalsolutions.site" style="color:var(--accent);">email Marlon directly</a>.');
       hideTyping();
       return;
     }
-    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${DS_KEY}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
+    const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:CHAT_SYSTEM},...chatHistory.slice(-10)],max_tokens:300,temperature:0.7,stream:false})});
     if(!res.ok)throw new Error('API '+res.status);
     const data=await res.json();
     const choice0 = data && data.choices && data.choices[0];

@@ -1,6 +1,7 @@
 name = "portfolio-chat-proxy"
 main = "workers/chat-proxy.js"
 compatibility_date = "2025-04-01"
+account_id = "7727bfc4627263a4d0776348c0ba3f96"
 
 # ====================================================
 # Required environment variables — set via Cloudflare Dashboard

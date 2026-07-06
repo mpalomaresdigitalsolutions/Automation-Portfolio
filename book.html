@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mpalomares — Book a Meeting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060810;
+      --bg2: #0b0e1a;
+      --bg3: #111625;
+      --accent: #00d4ff;
+      --accent2: #7b2fff;
+      --green: #00ff88;
+      --text: #e8eeff;
+      --muted: #6b7299;
+      --border: rgba(255,255,255,0.07);
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    code, .mono { font-family: 'Space Mono', monospace; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .topbar-logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .topbar-logo span { color: var(--accent); }
+    .topbar-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .topbar-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.15s;
+    }
+    .topbar-links a:hover { color: var(--text); }
+    .topbar-links .btn {
+      background: var(--accent);
+      color: #060810;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      text-decoration: none;
+    }
+    .topbar-links .btn:hover { opacity: 0.85; }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 60px 24px 40px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto 24px;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-meta-item .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* ── Calendly Wrapper ── */
+    .calendly-wrap {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+    .calendly-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .calendly-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calendly-card-header h3 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .calendly-card-header h3 span { color: var(--accent); }
+    .calendly-card-header .badge {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.2);
+      color: var(--green);
+      font-family: 'Space Mono', monospace;
+    }
+    .calendly-inline-widget {
+      min-width: 320px;
+      height: 700px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 32px 24px 48px;
+      border-top: 1px solid var(--border);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .footer p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .footer .alt-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer .alt-link:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .topbar { padding: 12px 16px; }
+      .hero { padding: 40px 16px 28px; }
+      .hero h1 { font-size: 26px; }
+      .hero-meta { gap: 16px; }
+      .calendly-wrap { padding: 0 12px; }
+      .calendly-card-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .calendly-inline-widget { height: 600px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-logo"><span>M</span>palomares</div>
+    <div class="topbar-links">
+      <a href="http://localhost:8080/admin.html">Portal</a>
+      <a href="mailto:admin@mpalomares.com">Contact</a>
+      <a href="https://calendar.app.google/cPq3sch4Vr3Gu1ym6" target="_blank" class="btn">📅 View Calendar</a>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Book a <span>Meeting</span></h1>
+    <p>Schedule a 30-minute consultation via Google Meet. Pick a time that works for you — I'll see you there.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="icon">📹</div>
+        <span>Google Meet</span>
+      </div>
+      <div class="hero-meta-item">
+        <div class="icon">⏱</div>
+        <span>30 minutes</span>
+      </div>
+      <div class="hero-meta-item">
+        <div class="icon">📅</div>
+        <span>Auto-confirmed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendly Embed -->
+  <div class="calendly-wrap">
+    <div class="calendly-card">
+      <div class="calendly-card-header">
+        <h3><span>◈</span> Select a Time</h3>
+        <span class="badge">● Google Meet</span>
+      </div>
+      <div class="calendly-inline-widget" data-url="https://calendly.com/mpalomaresdigital/30min?hide_event_type_details=1&background_color=060810&text_color=e8eeff&primary_color=00d4ff"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>After booking, you'll receive a confirmation email with your Google Meet link and calendar invite.</p>
+    <p style="margin-top:8px;">Need a different time? <a href="mailto:admin@mpalomares.com" style="color:var(--accent);text-decoration:none;">Email me</a></p>
+    <a href="https://calendar.app.google/cPq3sch4Vr3Gu1ym6" target="_blank" class="alt-link">📅 Or view my Google Calendar directly →</a>
+  </div>
+
+  <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</body>
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Portal — MPalomares Digital Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════
+     DESIGN SYSTEM — matches portfolio site
+     ═══════════════════════════════════════ */
+  :root {
+    --bg:        #060810;
+    --bg2:       #0b0e1a;
+    --bg3:       #0f1322;
+    --accent:    #00d4ff;
+    --accent2:   #7b2fff;
+    --accent3:   #ff6b35;
+    --green:     #00ff88;
+    --text:      #e8eeff;
+    --muted:     #6b7299;
+    --card:      rgba(255,255,255,0.03);
+    --card-hover:rgba(255,255,255,0.05);
+    --border:    rgba(255,255,255,0.07);
+    --r:         12px;
+    --glow:      0 0 40px rgba(0,212,255,0.15);
+    --sidebar-w: 240px;
+    --tr: 0.2s ease;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); display: flex; overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+
+  /* ═══════════════════════════════════════
+     BACKGROUND
+     ═══════════════════════════════════════ */
+  .bg-orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent2); top: -180px; left: -80px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent); bottom: -100px; right: -80px; animation-delay: -8s; }
+  .orb-3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 55%; animation-delay: -14s; }
+  @keyframes orb-drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-50px) scale(1.1); } 100% { transform: translate(-40px,30px) scale(0.9); } }
+  .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+  /* ═══════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════ */
+  .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); height: 100vh; background: rgba(6,8,16,0.85); backdrop-filter: blur(24px); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; z-index: 100; }
+  .sidebar-header { padding: 24px 24px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+  .sidebar-logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+  .sidebar-logo-icon svg { width: 16px; height: 16px; fill: #fff; }
+  .sidebar-logo-text { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .back-link { padding: 16px 24px 8px; font-size: 12px; color: var(--muted); transition: color var(--tr); display: flex; align-items: center; gap: 6px; }
+  .back-link:hover { color: var(--accent); }
+  .nav-list { list-style: none; padding: 8px 12px; flex: 1; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all var(--tr); margin-bottom: 2px; user-select: none; position: relative; }
+  .nav-item:hover { background: rgba(0,212,255,0.06); color: var(--text); }
+  .nav-item.active { background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(123,47,255,0.1)); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(0,212,255,0.2), 0 0 20px rgba(0,212,255,0.08); }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 20px; background: var(--accent); border-radius: 0 3px 3px 0; box-shadow: 0 0 10px rgba(0,212,255,0.5); }
+  .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.6; transition: opacity var(--tr); }
+  .nav-item:hover svg, .nav-item.active svg { opacity: 1; }
+  .hamburger { display: none; position: fixed; top: 14px; left: 14px; z-index: 200; background: rgba(11,14,26,0.9); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text); }
+  .hamburger svg { width: 22px; height: 22px; }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 90; }
+
+  /* ═══════════════════════════════════════
+     MAIN
+     ═══════════════════════════════════════ */
+  .main { flex: 1; height: 100vh; overflow-y: auto; padding: 48px 56px; position: relative; z-index: 1; }
+  .page-header { margin-bottom: 36px; }
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 0.6rem; }
+  .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  .page-header h1 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .page-header p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ═══════════════════════════════════════
+     PROJECT CARDS (main view)
+     ═══════════════════════════════════════ */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+  .project-card { border: 1px solid var(--border); border-radius: var(--r); background: var(--card); backdrop-filter: blur(12px); overflow: hidden; transition: all 0.3s ease; cursor: pointer; position: relative; }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.3s; }
+  .project-card:hover { border-color: rgba(0,212,255,0.35); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow); }
+  .project-card:hover::before { opacity: 1; }
+  .pc-header { padding: 24px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .pc-client-avatar { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .pc-body { padding: 16px 24px 24px; }
+  .pc-client-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .pc-project-type { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .pc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .pc-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .pc-meta-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .pc-meta-val { font-size: 14px; font-weight: 600; }
+  .pc-meta-val.mono { font-family: 'Space Mono', monospace; }
+  .pc-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .pc-invoices-count { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+  .pc-arrow { color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px; transition: transform var(--tr); }
+  .project-card:hover .pc-arrow { transform: translateX(4px); }
+
+  /* Status badges */
+  .status-badge { display: inline-block; padding: 4px 12px; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; }
+  .status-active { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .status-review { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .status-completed { background: rgba(123,47,255,0.1); color: #a78bfa; border: 1px solid rgba(123,47,255,0.2); }
+  .status-hold { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+
+  /* Avatar colors */
+  .av-blue   { background: rgba(0,212,255,0.15); color: var(--accent); }
+  .av-purple { background: rgba(123,47,255,0.15); color: #a78bfa; }
+  .av-orange { background: rgba(255,107,53,0.15); color: var(--accent3); }
+  .av-green  { background: rgba(0,255,136,0.15); color: var(--green); }
+
+  /* ═══════════════════════════════════════
+     PROJECT DETAIL VIEW
+     ═══════════════════════════════════════ */
+  .detail-back { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 500; margin-bottom: 24px; cursor: pointer; transition: color var(--tr); }
+  .detail-back:hover { color: var(--accent); }
+  .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+  .detail-client-name { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .detail-project-type { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+  /* Stats row */
+  .detail-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .detail-stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+  .detail-stat-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .detail-stat-val { font-size: 22px; font-weight: 700; }
+  .detail-stat-val.mono { font-family: 'Space Mono', monospace; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+  .tab { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all var(--tr); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Invoice table inside project */
+  .invoice-table { width: 100%; border-collapse: collapse; }
+  .invoice-table th { padding: 14px 20px; text-align: left; font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.015); }
+  .invoice-table td { padding: 18px 20px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .invoice-table tr:last-child td { border-bottom: none; }
+  .invoice-table tr { transition: background var(--tr); }
+  .invoice-table tr:hover { background: var(--card-hover); }
+  .inv-num { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; }
+  .inv-amount { font-family: 'Space Mono', monospace; font-weight: 700; }
+  .badge-sent { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .badge-paid { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .badge-pending { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .btn { padding: 9px 20px; border-radius: 4px; font-size: 13px; font-weight: 600; transition: all var(--tr); }
+  .btn-pay { background: var(--accent); color: var(--bg); font-weight: 700; box-shadow: 0 0 20px rgba(0,212,255,0.2); }
+  .btn-pay:hover { box-shadow: 0 0 30px rgba(0,212,255,0.4); transform: translateY(-1px); }
+  .btn-icon { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 8px 9px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all var(--tr); }
+  .btn-icon:hover { border-color: rgba(0,212,255,0.3); color: var(--accent); }
+  .btn-icon svg { width: 16px; height: 16px; }
+  .actions-cell { display: flex; gap: 8px; }
+
+  /* Deliverables */
+  .deliverables-list { display: flex; flex-direction: column; gap: 12px; }
+  .deliverable-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); transition: all var(--tr); }
+  .deliverable-item:hover { border-color: rgba(0,212,255,0.2); background: var(--card-hover); }
+  .del-icon { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .del-file { background: rgba(0,212,255,0.1); }
+  .del-info { flex: 1; }
+  .del-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .del-meta { font-size: 12px; color: var(--muted); }
+  .del-action { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); cursor: pointer; transition: color var(--tr); }
+  .del-action:hover { color: var(--text); }
+
+  /* Activity log */
+  .activity-list { display: flex; flex-direction: column; gap: 0; }
+  .activity-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); position: relative; }
+  .activity-item:last-child { border-bottom: none; }
+  .act-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .act-dot.created { background: var(--green); box-shadow: 0 0 8px rgba(0,255,136,0.4); }
+  .act-dot.invoice { background: var(--accent3); box-shadow: 0 0 8px rgba(255,107,53,0.4); }
+  .act-dot.update { background: var(--accent); box-shadow: 0 0 8px rgba(0,212,255,0.4); }
+  .act-dot.payment { background: var(--accent2); box-shadow: 0 0 8px rgba(123,47,255,0.4); }
+  .act-content { flex: 1; }
+  .act-text { font-size: 14px; line-height: 1.5; }
+  .act-time { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ═══════════════════════════════════════
+     PLACEHOLDER PAGES
+     ═══════════════════════════════════════ */
+  .placeholder-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; color: var(--muted); text-align: center; }
+  .placeholder-page .ph-icon { width: 72px; height: 72px; border-radius: 16px; background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  .placeholder-page .ph-icon svg { width: 32px; height: 32px; stroke: var(--accent); opacity: 0.6; fill: none; stroke-width: 1.5; }
+  .placeholder-page h2 { font-size: 20px; margin-bottom: 8px; color: var(--text); font-weight: 700; }
+  .placeholder-page p { font-size: 14px; max-width: 320px; line-height: 1.7; }
+
+  /* ═══════════════════════════════════════
+     MODAL
+     ═══════════════════════════════════════ */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); width: 100%; max-width: 480px; padding: 32px; transform: translateY(12px) scale(0.97); transition: transform 0.25s cubic-bezier(.23,1,.32,1); box-shadow: 0 30px 80px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
+  .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 24px; }
+  .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .modal-row:last-of-type { border-bottom: none; }
+  .modal-label { color: var(--muted); }
+  .modal-val { font-weight: 600; font-family: 'Space Mono', monospace; font-size: 13px; }
+  .modal-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .payment-options { margin: 18px 0; }
+  .payment-options label { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14px; transition: all var(--tr); background: var(--card); }
+  .payment-options label:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.04); }
+  .payment-options input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+  .btn-confirm { background: var(--accent); color: var(--bg); padding: 12px 28px; border-radius: 4px; font-weight: 700; font-size: 14px; transition: all var(--tr); box-shadow: 0 0 20px rgba(0,212,255,0.2); }
+  .btn-confirm:hover { box-shadow: 0 0 30px rgba(0,212,255,0.4); transform: translateY(-1px); }
+  .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 12px 28px; border-radius: 4px; font-weight: 600; font-size: 14px; transition: all var(--tr); }
+  .btn-cancel:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+
+  /* ═══════════════════════════════════════
+     DASHBOARD
+     ═══════════════════════════════════════ */
+  .dashboard-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .dash-metric { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 22px 24px; position: relative; overflow: hidden; }
+  .dash-metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0.6; }
+  .dash-metric.m-blue::before  { background: var(--accent); }
+  .dash-metric.m-green::before { background: var(--green); }
+  .dash-metric.m-orange::before { background: var(--accent3); }
+  .dash-metric.m-purple::before { background: var(--accent2); }
+  .dash-metric-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .dash-metric-val { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .dash-metric-sub { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .dash-metric-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .dash-metric-icon svg { width: 20px; height: 20px; opacity: 0.7; }
+
+  .dashboard-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
+  .dash-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; }
+  .dash-panel-label { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+  /* Activity list (dashboard version) */
+  .dash-activity { display: flex; flex-direction: column; gap: 0; }
+  .dash-activity-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .dash-activity-item:last-child { border-bottom: none; }
+  .da-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .da-dot.created { background: var(--green); box-shadow: 0 0 6px rgba(0,255,136,0.4); }
+  .da-dot.invoice { background: var(--accent3); box-shadow: 0 0 6px rgba(255,107,53,0.4); }
+  .da-dot.update { background: var(--accent); box-shadow: 0 0 6px rgba(0,212,255,0.4); }
+  .da-dot.payment { background: var(--accent2); box-shadow: 0 0 6px rgba(123,47,255,0.4); }
+  .da-text { font-size: 13px; line-height: 1.5; flex: 1; }
+  .da-client { color: var(--accent); font-weight: 600; }
+  .da-time { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+
+  /* Upcoming invoices */
+  .dash-upcoming { display: flex; flex-direction: column; gap: 0; }
+  .upcoming-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .upcoming-item:last-child { border-bottom: none; }
+  .upcoming-info { flex: 1; }
+  .upcoming-client { font-size: 14px; font-weight: 600; }
+  .upcoming-detail { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .upcoming-amount { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; text-align: right; margin-bottom: 6px; }
+  .upcoming-due { font-family: 'Space Mono', monospace; font-size: 10px; text-align: right; }
+  .upcoming-due.overdue { color: var(--accent3); }
+  .upcoming-due.soon { color: var(--accent-yellow, #eab308); }
+  .upcoming-right { text-align: right; min-width: 100px; }
+  .upcoming-pay { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); cursor: pointer; transition: color var(--tr); }
+  .upcoming-pay:hover { color: var(--text); }
+  .dash-empty { font-size: 13px; color: var(--muted); padding: 20px 0; text-align: center; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.open { display: block; }
+    .main { padding: 72px 20px 40px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .detail-stats { grid-template-columns: 1fr 1fr; }
+    .tabs { overflow-x: auto; }
+    .dashboard-metrics { grid-template-columns: 1fr 1fr; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+
+<button class="hamburger" id="hamburger" aria-label="Menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <span class="sidebar-logo-text">Portal</span>
+  </div>
+  <a href="https://mpalomaresdigitalsolutions.online" class="back-link">← Back to Portfolio</a>
+  <ul class="nav-list">
+    <li class="nav-item" data-page="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </li>
+    <li class="nav-item active" data-page="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 3H8l-2 4h12L16 3z"/></svg>
+      Projects
+    </li>
+    <li class="nav-item" data-page="contracts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Contracts
+    </li>
+    <li class="nav-item" data-page="meetings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Book Meeting
+    </li>
+    <li class="nav-item" data-page="messages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Messages
+    </li>
+    <li class="nav-item" data-page="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </li>
+  </ul>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- ═══ PROJECTS LIST ═══ -->
+  <div class="page active" id="page-projects">
+    <div class="page-header">
+      <div class="section-tag">Client Work</div>
+      <h1>Projects</h1>
+      <p>Manage your client engagements, track progress, and view invoices.</p>
+    </div>
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ═══ PROJECT DETAIL ═══ -->
+  <div class="page" id="page-project-detail">
+    <div class="detail-back" onclick="showProjectsList()">← Back to Projects</div>
+    <div class="detail-header">
+      <div>
+        <div class="detail-client-name" id="det-client-name"></div>
+        <div class="detail-project-type" id="det-project-type"></div>
+      </div>
+      <div id="det-status-badge"></div>
+    </div>
+    <div class="detail-stats" id="det-stats"></div>
+    <div class="tabs" id="det-tabs">
+      <div class="tab active" data-tab="invoices">Invoices</div>
+      <div class="tab" data-tab="deliverables">Deliverables</div>
+      <div class="tab" data-tab="activity">Activity</div>
+    </div>
+    <div class="tab-content active" id="tab-invoices"></div>
+    <div class="tab-content" id="tab-deliverables"></div>
+    <div class="tab-content" id="tab-activity"></div>
+  </div>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="page" id="page-dashboard">
+    <div class="page-header">
+      <div class="section-tag">Overview</div>
+      <h1>Dashboard</h1>
+      <p>At-a-glance summary of all your projects, revenue, and upcoming invoices.</p>
+    </div>
+    <div class="dashboard-metrics" id="dashMetrics">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="dashboard-grid">
+      <div class="dash-panel">
+        <div class="dash-panel-label">Recent Activity</div>
+        <div class="dash-activity" id="dashActivity">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="dash-panel">
+        <div class="dash-panel-label">Upcoming Invoices</div>
+        <div class="dash-upcoming" id="dashUpcoming">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page" id="page-contracts">
+    <div class="placeholder-page">
+      <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
+      <h2>Contracts</h2>
+      <p>View and sign project contracts.</p>
+    </div>
+  </div>
+  <div class="page" id="page-meetings">
+    <div class="placeholder-page">
+      <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <h2>Book Meeting</h2>
+      <p>Schedule a consultation or check-in.</p>
+    </div>
+  </div>
+  <div class="page" id="page-messages">
+    <div class="placeholder-page">
+      <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <h2>Messages</h2>
+      <p>Direct messaging with your clients.</p>
+    </div>
+  </div>
+  <div class="page" id="page-settings">
+    <div class="placeholder-page">
+      <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <h2>Settings</h2>
+      <p>Manage your account and preferences.</p>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ PAY MODAL ═══ -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3>Pay Invoice</h3>
+    <div class="modal-row"><span class="modal-label">Invoice #</span><span class="modal-val" id="pay-inv-num"></span></div>
+    <div class="modal-row"><span class="modal-label">Amount</span><span class="modal-val" id="pay-amount"></span></div>
+    <div class="modal-row"><span class="modal-label">Due Date</span><span class="modal-val" id="pay-due"></span></div>
+    <hr class="modal-divider">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:500;">Select Payment Method</div>
+    <div class="payment-options">
+      <label><input type="radio" name="payMethod" value="gcash" checked> GCash</label>
+      <label><input type="radio" name="payMethod" value="bank"> Bank Transfer</label>
+      <label><input type="radio" name="payMethod" value="paypal"> PayPal</label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePayModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmPayment()">Confirm Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3>Invoice Details</h3>
+    <div class="modal-row"><span class="modal-label">Invoice #</span><span class="modal-val" id="det-inv-num"></span></div>
+    <div class="modal-row"><span class="modal-label">Amount</span><span class="modal-val" id="det-amount"></span></div>
+    <div class="modal-row"><span class="modal-label">Due Date</span><span class="modal-val" id="det-due"></span></div>
+    <div class="modal-row"><span class="modal-label">Status</span><span class="modal-val" id="det-status"></span></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeDetailModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   SAMPLE DATA
+   ═══════════════════════════════════════ */
+const projects = [
+  {
+    id: 1,
+    client: "CleanOut Pro",
+    initials: "CP",
+    type: "Google Ads Management",
+    status: "active",
+    budget: 10000,
+    startDate: "Jan 15, 2026",
+    deadline: "Ongoing",
+    totalPaid: 20000,
+    outstanding: 10000,
+    color: "av-blue",
+    invoices: [
+      { num: "#IV-00001", title: "January 2026 Management", amount: 10000, due: "Feb 15, 2026", status: "paid" },
+      { num: "#IV-00004", title: "February 2026 Management", amount: 10000, due: "Mar 15, 2026", status: "paid" },
+      { num: "#IV-00007", title: "March 2026 Management", amount: 10000, due: "Apr 15, 2026", status: "sent" }
+    ],
+    deliverables: [
+      { name: "Q1 Campaign Report.pdf", size: "2.4 MB", date: "Mar 31, 2026" },
+      { name: "Keyword Strategy v2.xlsx", size: "156 KB", date: "Feb 20, 2026" },
+      { name: "Ad Copy Variants.docx", size: "89 KB", date: "Jan 18, 2026" }
+    ],
+    activity: [
+      { type: "invoice", text: "Invoice #IV-00007 sent — ₱10,000", time: "Apr 1, 2026 · 10:00 AM" },
+      { type: "update", text: "Campaign report uploaded: Q1 Campaign Report.pdf", time: "Mar 31, 2026 · 4:30 PM" },
+      { type: "payment", text: "Payment received for #IV-00004 — ₱10,000", time: "Mar 12, 2026 · 2:15 PM" },
+      { type: "update", text: "Keyword strategy updated — 24 new keywords added", time: "Feb 20, 2026 · 11:00 AM" },
+      { type: "created", text: "Project created — Google Ads Management engagement", time: "Jan 15, 2026 · 9:00 AM" }
+    ]
+  },
+  {
+    id: 2,
+    client: "FlowFix Plumbing",
+    initials: "FP",
+    type: "GHL + Zapier Automation",
+    status: "review",
+    budget: 25000,
+    startDate: "Mar 1, 2026",
+    deadline: "Apr 30, 2026",
+    totalPaid: 12500,
+    outstanding: 12500,
+    color: "av-purple",
+    invoices: [
+      { num: "#IV-00002", title: "Phase 1 — CRM Setup", amount: 12500, due: "Mar 15, 2026", status: "paid" },
+      { num: "#IV-00005", title: "Phase 2 — Automation Build", amount: 12500, due: "Apr 30, 2026", status: "sent" }
+    ],
+    deliverables: [
+      { name: "GHL Pipeline Setup.png", size: "1.1 MB", date: "Mar 15, 2026" },
+      { name: "Zapier Workflow Map.pdf", size: "340 KB", date: "Mar 22, 2026" }
+    ],
+    activity: [
+      { type: "invoice", text: "Invoice #IV-00005 sent — ₱12,500", time: "Apr 10, 2026 · 9:00 AM" },
+      { type: "update", text: "Zapier workflow map uploaded for review", time: "Mar 22, 2026 · 3:00 PM" },
+      { type: "payment", text: "Payment received for #IV-00002 — ₱12,500", time: "Mar 14, 2026 · 11:30 AM" },
+      { type: "created", text: "Project created — GHL + Zapier Automation", time: "Mar 1, 2026 · 10:00 AM" }
+    ]
+  },
+  {
+    id: 3,
+    client: "Humanity Impact Institute",
+    initials: "HI",
+    type: "Google Ads Grant (Nonprofit)",
+    status: "completed",
+    budget: 5000,
+    startDate: "Nov 10, 2025",
+    deadline: "Feb 28, 2026",
+    totalPaid: 5000,
+    outstanding: 0,
+    color: "av-green",
+    invoices: [
+      { num: "#IV-00003", title: "Grant Setup & Optimization", amount: 5000, due: "Dec 10, 2025", status: "paid" }
+    ],
+    deliverables: [
+      { name: "Final Performance Report.pdf", size: "3.2 MB", date: "Feb 28, 2026" },
+      { name: "Grant Account Screenshot.png", size: "890 KB", date: "Nov 15, 2025" }
+    ],
+    activity: [
+      { type: "update", text: "Project marked as completed", time: "Feb 28, 2026 · 5:00 PM" },
+      { type: "update", text: "Final report uploaded — 67% waste cut, 211% conversion lift", time: "Feb 28, 2026 · 4:45 PM" },
+      { type: "payment", text: "Payment received for #IV-00003 — ₱5,000", time: "Dec 8, 2025 · 10:00 AM" },
+      { type: "created", text: "Project created — Google Ads Grant Optimization", time: "Nov 10, 2025 · 2:00 PM" }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════
+   RENDER PROJECT CARDS
+   ═══════════════════════════════════════ */
+function renderProjects() {
+  const grid = document.getElementById('projectsGrid');
+  grid.innerHTML = projects.map(p => {
+    const unpaid = p.invoices.filter(i => i.status !== 'paid').length;
+    const statusClass = { active:'status-active', review:'status-review', completed:'status-completed', hold:'status-hold' }[p.status];
+    const statusLabel = { active:'Active', review:'In Review', completed:'Completed', hold:'On Hold' }[p.status];
+    return `
+      <div class="project-card" onclick="openProject(${p.id})">
+        <div class="pc-header">
+          <div class="pc-client-avatar ${p.color}">${p.initials}</div>
+          <span class="status-badge ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-client-name">${p.client}</div>
+          <div class="pc-project-type">${p.type}</div>
+          <div class="pc-meta">
+            <div class="pc-meta-item">
+              <span class="pc-meta-label">Budget</span>
+              <span class="pc-meta-val mono">₱${p.budget.toLocaleString()}</span>
+            </div>
+            <div class="pc-meta-item">
+              <span class="pc-meta-label">Outstanding</span>
+              <span class="pc-meta-val mono" style="color:${p.outstanding > 0 ? 'var(--accent3)' : 'var(--green)'}">₱${p.outstanding.toLocaleString()}</span>
+            </div>
+            <div class="pc-meta-item">
+              <span class="pc-meta-label">Start Date</span>
+              <span class="pc-meta-val">${p.startDate}</span>
+            </div>
+            <div class="pc-meta-item">
+              <span class="pc-meta-label">Deadline</span>
+              <span class="pc-meta-val">${p.deadline}</span>
+            </div>
+          </div>
+        </div>
+        <div class="pc-footer">
+          <span class="pc-invoices-count">${p.invoices.length} invoice${p.invoices.length !== 1 ? 's' : ''} · ${unpaid} unpaid</span>
+          <span class="pc-arrow">View →</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   OPEN PROJECT DETAIL
+   ═══════════════════════════════════════ */
+function openProject(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('det-client-name').textContent = p.client;
+  document.getElementById('det-project-type').textContent = p.type;
+
+  const statusClass = { active:'status-active', review:'status-review', completed:'status-completed', hold:'status-hold' }[p.status];
+  const statusLabel = { active:'Active', review:'In Review', completed:'Completed', hold:'On Hold' }[p.status];
+  document.getElementById('det-status-badge').innerHTML = `<span class="status-badge ${statusClass}">${statusLabel}</span>`;
+
+  // Stats
+  document.getElementById('det-stats').innerHTML = `
+    <div class="detail-stat"><div class="detail-stat-label">Budget</div><div class="detail-stat-val mono">₱${p.budget.toLocaleString()}</div></div>
+    <div class="detail-stat"><div class="detail-stat-label">Total Paid</div><div class="detail-stat-val mono" style="color:var(--green)">₱${p.totalPaid.toLocaleString()}</div></div>
+    <div class="detail-stat"><div class="detail-stat-label">Outstanding</div><div class="detail-stat-val mono" style="color:${p.outstanding > 0 ? 'var(--accent3)' : 'var(--green)'}">₱${p.outstanding.toLocaleString()}</div></div>
+    <div class="detail-stat"><div class="detail-stat-label">Invoices</div><div class="detail-stat-val">${p.invoices.length}</div></div>
+  `;
+
+  // Invoices tab
+  document.getElementById('tab-invoices').innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
+      <table class="invoice-table">
+        <thead><tr><th>Invoice #</th><th>Due Date</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${p.invoices.map(inv => {
+          const badgeClass = inv.status === 'paid' ? 'badge-paid' : inv.status === 'sent' ? 'badge-sent' : 'badge-pending';
+          const statusLabel = inv.status.charAt(0).toUpperCase() + inv.status.slice(1);
+          return `<tr>
+            <td><span class="inv-num">${inv.num}</span><br><span style="font-size:12px;color:var(--muted)">${inv.title}</span></td>
+            <td>${inv.due}</td>
+            <td class="inv-amount">₱${inv.amount.toLocaleString()}.00</td>
+            <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
+            <td><div class="actions-cell">
+              ${inv.status !== 'paid' ? `<button class="btn btn-pay" onclick="event.stopPropagation();openPayModal('${inv.num}',${inv.amount},'${inv.due}')">Pay Now</button>` : ''}
+              <button class="btn btn-icon" onclick="event.stopPropagation();openDetailModal('${inv.num}',${inv.amount},'${inv.due}','${statusLabel}','${inv.title}')" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
+            </div></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  `;
+
+  // Deliverables tab
+  document.getElementById('tab-deliverables').innerHTML = p.deliverables.length ? `
+    <div class="deliverables-list">${p.deliverables.map(d => `
+      <div class="deliverable-item">
+        <div class="del-icon del-file">📄</div>
+        <div class="del-info"><div class="del-name">${d.name}</div><div class="del-meta">${d.size} · ${d.date}</div></div>
+        <span class="del-action">Download</span>
+      </div>
+    `).join('')}</div>
+  ` : '<p style="color:var(--muted);padding:20px 0;">No deliverables uploaded yet.</p>';
+
+  // Activity tab
+  document.getElementById('tab-activity').innerHTML = `
+    <div class="activity-list">${p.activity.map(a => `
+      <div class="activity-item">
+        <div class="act-dot ${a.type}"></div>
+        <div class="act-content"><div class="act-text">${a.text}</div><div class="act-time">${a.time}</div></div>
+      </div>
+    `).join('')}</div>
+  `;
+
+  // Reset tabs
+  document.querySelectorAll('#det-tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('#det-tabs .tab[data-tab="invoices"]').classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-invoices').classList.add('active');
+
+  // Switch page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-project-detail').classList.add('active');
+}
+
+/* ═══════════════════════════════════════
+   TAB SWITCHING
+   ═══════════════════════════════════════ */
+document.querySelectorAll('#det-tabs .tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#det-tabs .tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ═══════════════════════════════════════
+   NAV + SIDEBAR
+   ═══════════════════════════════════════ */
+const navItems = document.querySelectorAll('.nav-item');
+const pages = document.querySelectorAll('.page');
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const target = item.dataset.page;
+    navItems.forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    pages.forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + target).classList.add('active');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+});
+
+function showProjectsList() {
+  pages.forEach(p => p.classList.remove('active'));
+  document.getElementById('page-projects').classList.add('active');
+  navItems.forEach(n => n.classList.remove('active'));
+  document.querySelector('[data-page="projects"]').classList.add('active');
+}
+
+const hamburger = document.getElementById('hamburger');
+const sidebarEl = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+hamburger.addEventListener('click', () => { sidebarEl.classList.toggle('open'); overlay.classList.toggle('open'); });
+overlay.addEventListener('click', () => { sidebarEl.classList.remove('open'); overlay.classList.remove('open'); });
+
+/* ═══════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════ */
+const payModal = document.getElementById('payModal');
+const detailModal = document.getElementById('detailModal');
+
+function openPayModal(num, amount, due) {
+  document.getElementById('pay-inv-num').textContent = num;
+  document.getElementById('pay-amount').textContent = '₱' + amount.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+  document.getElementById('pay-due').textContent = due;
+  payModal.classList.add('open');
+}
+function closePayModal() { payModal.classList.remove('open'); }
+function confirmPayment() {
+  const method = document.querySelector('input[name="payMethod"]:checked').value;
+  alert('Payment of ' + document.getElementById('pay-amount').textContent + ' via ' + method.charAt(0).toUpperCase() + method.slice(1) + ' submitted! (Demo)');
+  closePayModal();
+}
+
+function openDetailModal(num, amount, due, status, title) {
+  document.getElementById('det-inv-num').textContent = num;
+  document.getElementById('det-amount').textContent = '₱' + amount.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+  document.getElementById('det-due').textContent = due;
+  document.getElementById('det-status').textContent = status;
+  detailModal.classList.add('open');
+}
+function closeDetailModal() { detailModal.classList.remove('open'); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePayModal(); closeDetailModal(); } });
+payModal.addEventListener('click', e => { if (e.target === payModal) closePayModal(); });
+detailModal.addEventListener('click', e => { if (e.target === detailModal) closeDetailModal(); });
+
+/* ═══════════════════════════════════════
+   RENDER DASHBOARD
+   ═══════════════════════════════════════ */
+function renderDashboard() {
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  // ── Compute metrics ──
+  let totalRevenue = 0, totalOutstanding = 0, activeCount = 0, thisMonthEarnings = 0;
+
+  const allUnpaidInvoices = [];
+
+  projects.forEach(p => {
+    if (p.status === 'active' || p.status === 'review') activeCount++;
+    p.invoices.forEach(inv => {
+      if (inv.status === 'paid') {
+        totalRevenue += inv.amount;
+        // Check if paid this month
+        const dueParts = inv.due.match(/(\w+) (\d+), (\d+)/);
+        if (dueParts) {
+          const invMonth = monthNames.indexOf(dueParts[1]);
+          const invYear = parseInt(dueParts[3]);
+          if (invMonth === thisMonth && invYear === thisYear) {
+            thisMonthEarnings += inv.amount;
+          }
+        }
+      } else {
+        totalOutstanding += inv.amount;
+        allUnpaidInvoices.push({ ...inv, client: p.client });
+      }
+    });
+  });
+
+  // ── Metrics cards ──
+  document.getElementById('dashMetrics').innerHTML = `
+    <div class="dash-metric m-blue">
+      <div class="dash-metric-label">Total Revenue</div>
+      <div class="dash-metric-val">₱${totalRevenue.toLocaleString()}</div>
+      <div class="dash-metric-sub">Across all projects</div>
+      <div class="dash-metric-icon" style="background:rgba(0,212,255,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+    </div>
+    <div class="dash-metric m-orange">
+      <div class="dash-metric-label">Outstanding</div>
+      <div class="dash-metric-val" style="color:var(--accent3)">₱${totalOutstanding.toLocaleString()}</div>
+      <div class="dash-metric-sub">${allUnpaidInvoices.length} unpaid invoice${allUnpaidInvoices.length !== 1 ? 's' : ''}</div>
+      <div class="dash-metric-icon" style="background:rgba(255,107,53,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </div>
+    <div class="dash-metric m-green">
+      <div class="dash-metric-label">Active Projects</div>
+      <div class="dash-metric-val" style="color:var(--green)">${activeCount}</div>
+      <div class="dash-metric-sub">${projects.length} total projects</div>
+      <div class="dash-metric-icon" style="background:rgba(0,255,136,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 3H8l-2 4h12L16 3z"/></svg>
+      </div>
+    </div>
+    <div class="dash-metric m-purple">
+      <div class="dash-metric-label">${monthNames[thisMonth]} Earnings</div>
+      <div class="dash-metric-val" style="color:#a78bfa">₱${thisMonthEarnings.toLocaleString()}</div>
+      <div class="dash-metric-sub">So far this month</div>
+      <div class="dash-metric-icon" style="background:rgba(123,47,255,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+    </div>
+  `;
+
+  // ── Recent Activity (merge + sort all projects) ──
+  const allActivity = [];
+  projects.forEach(p => {
+    p.activity.forEach(a => {
+      allActivity.push({ ...a, client: p.client });
+    });
+  });
+  // Sort by time descending (crude sort by month/day since times are strings)
+  allActivity.sort((a, b) => {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const getTs = s => { const m = months.indexOf(s.slice(0,3)); return m >= 0 ? m : 0; };
+    const aMonth = getTs(a.time), bMonth = getTs(b.time);
+    if (aMonth !== bMonth) return bMonth - aMonth;
+    return a.time.localeCompare(b.time) * -1; // reverse for newer first
+  });
+
+  const activityEl = document.getElementById('dashActivity');
+  if (allActivity.length === 0) {
+    activityEl.innerHTML = '<div class="dash-empty">No recent activity.</div>';
+  } else {
+    activityEl.innerHTML = allActivity.slice(0, 8).map(a => `
+      <div class="dash-activity-item">
+        <div class="da-dot ${a.type}"></div>
+        <div class="da-text"><span class="da-client">${a.client}</span> ${a.text}</div>
+        <div class="da-time">${a.time.split(' · ')[0]}</div>
+      </div>
+    `).join('');
+  }
+
+  // ── Upcoming Invoices (sorted by due date soonest first) ──
+  const upcomingEl = document.getElementById('dashUpcoming');
+  if (allUnpaidInvoices.length === 0) {
+    upcomingEl.innerHTML = '<div class="dash-empty">No unpaid invoices. All settled! ✅</div>';
+  } else {
+    // Sort by due date (crude: month-day comparison)
+    allUnpaidInvoices.sort((a, b) => {
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const parseDate = s => {
+        const parts = s.match(/(\w+) (\d+), (\d+)/);
+        return parts ? { m: months.indexOf(parts[1]), d: parseInt(parts[2]), y: parseInt(parts[3]) } : null;
+      };
+      const ad = parseDate(a.due), bd = parseDate(b.due);
+      if (!ad || !bd) return 0;
+      if (ad.y !== bd.y) return ad.y - bd.y;
+      if (ad.m !== bd.m) return ad.m - bd.m;
+      return ad.d - bd.d;
+    });
+
+    // Determine overdue/soon
+    const today = new Date();
+    upcomingEl.innerHTML = allUnpaidInvoices.map(inv => {
+      const parts = inv.due.match(/(\w+) (\d+), (\d+)/);
+      let dueClass = '', dueLabel = '';
+      if (parts) {
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const dueDate = new Date(parseInt(parts[3]), months.indexOf(parts[1]), parseInt(parts[2]));
+        const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) { dueClass = 'overdue'; dueLabel = `Overdue by ${Math.abs(diffDays)}d`; }
+        else if (diffDays <= 7) { dueClass = 'soon'; dueLabel = `Due in ${diffDays}d`; }
+        else { dueLabel = inv.due; }
+      } else {
+        dueLabel = inv.due;
+      }
+      return `
+        <div class="upcoming-item">
+          <div class="upcoming-info">
+            <div class="upcoming-client">${inv.client}</div>
+            <div class="upcoming-detail">${inv.num} · ${inv.title}</div>
+          </div>
+          <div class="upcoming-right">
+            <div class="upcoming-amount">₱${inv.amount.toLocaleString()}</div>
+            <div class="upcoming-due ${dueClass}">${dueLabel}</div>
+            <div class="upcoming-pay" onclick="openPayModal('${inv.num}',${inv.amount},'${inv.due}')">Pay Now →</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+/* ═══════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════ */
+renderProjects();
+renderDashboard();
+</script>
+</body>
+</html>

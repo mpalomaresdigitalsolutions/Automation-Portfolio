@@ -1,0 +1,3119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mpalomares — Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.12/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --bg: #060810;
+      --bg2: #0b0e1a;
+      --bg3: #111625;
+      --accent: #00d4ff;
+      --accent2: #7b2fff;
+      --accent3: #ff6b35;
+      --green: #00ff88;
+      --text: #e8eeff;
+      --muted: #6b7299;
+      --border: rgba(255,255,255,0.07);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --sidebar-w: 220px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    code, .mono { font-family: 'Space Mono', monospace; }
+
+    /* Layout */
+    .app { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 0 20px 28px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .sidebar-logo span { color: var(--accent); }
+    .sidebar-logo small {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .nav-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(0,212,255,0.06);
+    }
+    .nav-item .icon { width: 20px; text-align: center; font-size: 16px; }
+    .sidebar-spacer { flex: 1; }
+    .nav-logout {
+      margin: 8px 16px;
+      padding: 10px 16px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: 13px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nav-logout:hover { color: var(--accent3); border-color: var(--accent3); }
+
+    /* Main */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 32px 36px;
+    }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .page-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .page-header h2 span { color: var(--accent); }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+    .stat-card .value {
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'Space Mono', monospace;
+    }
+    .stat-card .value.accent { color: var(--accent); }
+    .stat-card .value.green { color: var(--green); }
+    .stat-card .value.orange { color: var(--accent3); }
+    .stat-card .value.purple { color: var(--accent2); }
+
+    /* Project Cards */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,212,255,0.08);
+    }
+    .project-card .proj-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .project-card .proj-client {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .project-card .proj-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .badge.active { background: rgba(0,255,136,0.12); color: var(--green); }
+    .badge.pending { background: rgba(255,107,53,0.12); color: var(--accent3); }
+    .badge.completed { background: rgba(0,212,255,0.10); color: var(--accent); }
+    .badge.on-hold { background: rgba(123,47,255,0.12); color: var(--accent2); }
+    .badge.paid { background: rgba(0,255,136,0.12); color: var(--green); }
+    .badge.unpaid { background: rgba(255,107,53,0.12); color: var(--accent3); }
+    .badge.overdue { background: rgba(255,53,53,0.15); color: #ff4444; }
+    .badge.draft { background: rgba(107,114,153,0.12); color: var(--muted); }
+    .badge.sent { background: rgba(0,212,255,0.10); color: var(--accent); }
+    .badge.signed { background: rgba(0,255,136,0.12); color: var(--green); }
+    .badge.expired { background: rgba(255,53,53,0.15); color: #ff4444; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: #fff;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .modal h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .modal h3 span { color: var(--accent); }
+    .modal .form-group {
+      margin-bottom: 16px;
+    }
+    .modal .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+    .modal .form-group input,
+    .modal .form-group select,
+    .modal .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal .form-group input:focus,
+    .modal .form-group select:focus {
+      border-color: var(--accent);
+    }
+    .modal .form-group select option { background: var(--bg2); color: var(--text); }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* Tabs inside detail */
+    .detail-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .detail-tab {
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .detail-tab:hover { color: var(--text); }
+    .detail-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Milestones */
+    .milestone-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: all 0.15s;
+    }
+    .milestone-item:hover { border-color: rgba(255,255,255,0.12); }
+    .milestone-item.completed { opacity: 0.65; }
+    .milestone-item.completed .ms-title { text-decoration: line-through; color: var(--muted); }
+    .milestone-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--muted);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-size: 12px;
+    }
+    .milestone-check:hover { border-color: var(--green); }
+    .milestone-check.done {
+      background: var(--green);
+      border-color: var(--green);
+      color: #060810;
+    }
+    .milestone-item .ms-title {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .milestone-item .ms-date {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+    .milestone-delete {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: 14px; padding: 4px;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .milestone-item:hover .milestone-delete { opacity: 0.5; }
+    .milestone-delete:hover { opacity: 1 !important; color: var(--accent3); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Activity timeline */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: 4px;
+      width: 1px;
+      background: var(--border);
+    }
+    .tl-item {
+      position: relative;
+      padding-bottom: 18px;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot {
+      position: absolute;
+      left: -20px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--muted);
+      background: var(--bg);
+    }
+    .tl-dot.created { border-color: var(--accent); }
+    .tl-dot.invoice { border-color: var(--accent3); }
+    .tl-dot.payment { border-color: var(--green); }
+    .tl-dot.update { border-color: var(--accent2); }
+    .tl-text { font-size: 13px; color: var(--text); }
+    .tl-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* Deliverables list */
+    .dl-list { display: flex; flex-direction: column; gap: 8px; }
+    .dl-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .dl-item .dl-name { font-size: 13px; font-weight: 500; }
+    .dl-item .dl-meta { font-size: 11px; color: var(--muted); }
+
+    /* Client list table in dashboard */
+    .client-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Space Mono', monospace;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .client-cell {
+      display: flex;
+      align-items: center;
+    }
+    .client-cell .info .name { font-size: 13px; font-weight: 500; }
+    .client-cell .info .email { font-size: 11px; color: var(--muted); }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: color 0.15s;
+      background: none;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--accent); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+    .empty-state .big-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+    .empty-state p { font-size: 14px; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .alert-error {
+      background: rgba(255,107,53,0.12);
+      border: 1px solid rgba(255,107,53,0.25);
+      color: var(--accent3);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 60px; padding: 16px 0; }
+      .sidebar-logo { padding: 0 10px 20px; font-size: 14px; }
+      .sidebar-logo small { display: none; }
+      .nav-item { padding: 10px 12px; justify-content: center; }
+      .nav-item .nav-label { display: none; }
+      .nav-item .icon { margin: 0; }
+      .nav-logout { margin: 8px 8px; padding: 8px; font-size: 11px; }
+      .main { margin-left: 60px; padding: 20px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Invoice Detail ── */
+    .invoice-detail {
+      max-width: 820px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+    }
+    .invoice-detail .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .invoice-detail .inv-from h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .invoice-detail .inv-from h3 span { color: var(--accent); }
+    .invoice-detail .inv-from p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .invoice-detail .inv-to-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-family: 'Space Mono', monospace;
+    }
+    .invoice-detail .inv-to h4 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .invoice-detail .inv-to p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .invoice-detail .inv-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .invoice-detail .inv-meta-item label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .invoice-detail .inv-meta-item div {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .invoice-detail .inv-meta-item .badge { font-size: 12px; padding: 4px 12px; }
+    .invoice-detail .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+    .invoice-detail .inv-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .invoice-detail .inv-table th:last-child,
+    .invoice-detail .inv-table td:last-child { text-align: right; }
+    .invoice-detail .inv-table td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .invoice-detail .inv-table .inv-item-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .invoice-detail .inv-total-row td {
+      border-top: 2px solid var(--accent);
+      font-weight: 700;
+      font-size: 16px;
+      padding-top: 16px;
+    }
+    .invoice-detail .inv-notes {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      margin-bottom: 32px;
+    }
+    .invoice-detail .inv-notes label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .invoice-detail .inv-notes p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .invoice-detail .inv-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* ── Invoice Item Rows ── */
+    .item-row input:focus { border-color: var(--accent) !important; }
+    .item-row input::-webkit-outer-spin-button,
+    .item-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .item-row input[type=number] { -moz-appearance: textfield; }
+    .remove-item-btn:hover { transform: scale(1.2); }
+
+    /* ── Weekly Services ── */
+    .weekly-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .weekly-card .wc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .weekly-card .wc-header h4 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .weekly-card .wc-header h4 span { color: var(--accent); }
+    .weekly-card .wc-total {
+      text-align: right;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+    .weekly-card .wc-total strong {
+      font-size: 20px;
+      color: var(--accent);
+    }
+    .weekly-card .ws-table { width: 100%; border-collapse: collapse; }
+    .weekly-card .ws-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      border-bottom: 1px solid var(--border);
+    }
+    .weekly-card .ws-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .weekly-card .ws-table td:last-child { text-align: right; color: var(--text); font-family: 'Space Mono', monospace; }
+    .weekly-card .empty-services {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Weekly Services Edit Modal ── */
+    .ws-edit-row input { font-size: 13px; }
+    .ws-edit-row input:focus { border-color: var(--accent) !important; }
+    .ws-edit-row .ws-remove-btn { color: var(--accent3); cursor: pointer; background: none; border: none; font-size: 16px; }
+    .ws-edit-row .ws-remove-btn:hover { transform: scale(1.2); }
+
+    /* ── Messages / Chat ── */
+    .msg-layout { display:flex;height:calc(100vh - 120px);gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
+    .msg-sidebar { width:320px;min-width:320px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg); }
+    .msg-sidebar-header { padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between; }
+    .msg-sidebar-header h3 { font-size:15px;font-weight:600; }
+    .msg-sidebar-header h3 span { color:var(--accent); }
+    .msg-conv-list { flex:1;overflow-y:auto; }
+    .msg-conv-item { display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s; }
+    .msg-conv-item:hover { background:var(--bg3); }
+    .msg-conv-item.active { background:var(--bg3);border-left:3px solid var(--accent); }
+    .msg-conv-avatar { width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#060810;flex-shrink:0; }
+    .msg-conv-info { flex:1;min-width:0; }
+    .msg-conv-name { font-size:14px;font-weight:500; }
+    .msg-conv-last { font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .msg-conv-meta { text-align:right;flex-shrink:0; }
+    .msg-conv-time { font-size:11px;color:var(--muted);font-family:'Space Mono',monospace; }
+    .msg-conv-unread { display:inline-block;background:var(--accent3);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-family:'Space Mono',monospace;margin-top:4px; }
+    .msg-conv-empty { text-align:center;padding:40px 20px;color:var(--muted);font-size:13px; }
+    .msg-main { flex:1;display:flex;flex-direction:column;background:var(--bg2); }
+    .msg-empty { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted); }
+    .msg-chat { display:flex;flex-direction:column;height:100%; }
+    .msg-chat-header { padding:16px 24px;border-bottom:1px solid var(--border);background:var(--bg); }
+    .msg-chat-header h4 { font-size:15px;font-weight:600; }
+    .msg-chat-header p { font-size:12px;color:var(--muted);margin-top:2px; }
+    .msg-messages { flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:8px; }
+    .msg-bubble { max-width:75%;padding:10px 16px;border-radius:12px;font-size:14px;line-height:1.5;word-wrap:break-word; }
+    .msg-bubble.admin { align-self:flex-end;background:var(--accent);color:#060810;border-bottom-right-radius:4px; }
+    .msg-bubble.client { align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border); }
+    .msg-bubble-time { font-size:10px;margin-top:4px;opacity:0.6;font-family:'Space Mono',monospace;text-align:right; }
+    .msg-input-area { display:flex;gap:12px;padding:16px 24px;border-top:1px solid var(--border);background:var(--bg); }
+    .msg-input { flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;resize:none;outline:none; }
+    .msg-input:focus { border-color:var(--accent); }
+
+    /* ── Settings ── */
+    .settings-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px; }
+    .settings-card { background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px; }
+    .settings-card h3 { font-size:15px;font-weight:600;margin-bottom:16px; }
+    .settings-card h3 span { color:var(--accent); }
+    .settings-card .form-group { margin-bottom:14px; }
+    .settings-card .form-group:last-child { margin-bottom:0; }
+    .settings-card .form-group label { display:block;font-size:12px;color:var(--muted);margin-bottom:4px; }
+    .settings-card .form-group input,
+    .settings-card .form-group textarea { width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none; }
+    .settings-card .form-group input:focus,
+    .settings-card .form-group textarea:focus { border-color:var(--accent); }
+    .settings-card .form-group textarea { resize:vertical;min-height:60px; }
+    .settings-card .form-hint { font-size:11px;color:var(--muted);margin-top:3px; }
+    @media (max-width:768px) { .settings-grid { grid-template-columns:1fr; } }
+
+    /* ── Print Styles ── */
+    @media print {
+      body * { visibility: hidden; }
+      .invoice-detail, .invoice-detail * { visibility: visible; }
+      .invoice-detail {
+        position: fixed;
+        left: 0; top: 0;
+        width: 100%; height: auto;
+        max-width: 100%;
+        padding: 40px;
+        border: none;
+        border-radius: 0;
+        background: #fff;
+        color: #111 !important;
+      }
+      .invoice-detail .inv-from p,
+      .invoice-detail .inv-to p,
+      .invoice-detail .inv-meta-item label,
+      .invoice-detail .inv-meta-item div,
+      .invoice-detail .inv-notes p { color: #555 !important; }
+      .invoice-detail .inv-table th { color: #888 !important; }
+      .invoice-detail .inv-from h3 { color: #111 !important; }
+      .invoice-detail .inv-from h3 span { color: #00a0d4 !important; }
+      .invoice-detail .inv-table td { color: #222 !important; }
+      .invoice-detail .inv-to h4 { color: #111 !important; }
+      .invoice-detail .inv-meta-item .badge { border: 1px solid #ccc; }
+      .invoice-detail .inv-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <span id="topbarLogoText" style="display:inline;">◈ Mpalomares</span>
+        <img id="topbarLogoImg" style="display:none;height:28px;">
+        <small>Admin Portal</small>
+      </div>
+      <div class="nav-item active" data-page="dashboard">
+        <span class="icon">◆</span><span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" data-page="projects">
+        <span class="icon">◈</span><span class="nav-label">Projects</span>
+      </div>
+      <div class="nav-item" data-page="invoices">
+        <span class="icon">📄</span><span class="nav-label">Invoices</span>
+      </div>
+      <div class="nav-item" data-page="clients">
+        <span class="icon">⊙</span><span class="nav-label">Clients</span>
+      </div>
+      <div class="nav-item" data-page="contracts">
+        <span class="icon">◎</span><span class="nav-label">Contracts</span>
+      </div>
+      <div class="nav-item" data-page="messages" id="messagesNav">
+        <span class="icon">💬</span><span class="nav-label">Messages</span>
+        <span id="msgBadge" style="display:none;margin-left:auto;background:var(--accent3);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-family:'Space Mono',monospace;"></span>
+      </div>
+      <div class="nav-item" data-page="settings">
+        <span class="icon">⚙</span><span class="nav-label">Settings</span>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <a href="book.html" target="_blank" class="nav-item" style="text-decoration:none;">
+        <span class="icon">📅</span><span class="nav-label">Book Meeting</span>
+      </a>
+      <div class="sidebar-spacer"></div>
+      <button class="nav-logout" id="logoutBtn">✕ Sign Out</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Dashboard Page -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header"><h2><span>◆</span> Dashboard</h2></div>
+        <div id="dashLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading dashboard…</div>
+        <div id="dashContent" style="display:none;">
+          <div class="stat-grid" id="dashStats"></div>
+          <div class="card" style="padding:0;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;">Recent Clients</div>
+            <div class="table-wrap" style="border:none;"><table><thead><tr><th>Client</th><th>Company</th><th>Email</th><th>Projects</th></tr></thead><tbody id="dashClients"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Page -->
+      <div class="page" id="page-projects">
+        <div class="page-header">
+          <h2><span>◈</span> Projects</h2>
+          <button class="btn btn-primary" id="addProjectBtn">+ Add Project</button>
+        </div>
+        <div id="projLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading projects…</div>
+        <div class="project-grid" id="projGrid" style="display:none;"></div>
+      </div>
+
+      <!-- Project Detail (sub-view) -->
+      <div class="page" id="page-project-detail">
+        <button class="back-btn" id="backToProjects">← Back to Projects</button>
+        <div id="detailHeader" class="page-header"></div>
+        <div class="stat-grid" id="detailStats"></div>
+        <div id="weeklyServicesSection"></div>
+        <div class="detail-tabs" id="detailTabs">
+          <div class="detail-tab active" data-tab="invoices">Invoices</div>
+          <div class="detail-tab" data-tab="deliverables">Deliverables</div>
+          <div class="detail-tab" data-tab="milestones">🎯 Milestones</div>
+          <div class="detail-tab" data-tab="activity">Activity</div>
+        </div>
+        <div id="detailTabContent">
+          <div class="tab-content active" id="tab-invoices">
+            <div style="margin-bottom:12px;text-align:right;"><button class="btn btn-primary btn-sm" id="addInvoiceBtn">+ Add Invoice</button></div>
+            <div class="table-wrap" id="detailInvoicesWrap"><table><thead><tr><th>Invoice #</th><th>Title</th><th>Amount</th><th>Due Date</th><th>Status</th></tr></thead><tbody id="detailInvoicesBody"></tbody></table></div>
+          </div>
+          <div class="tab-content" id="tab-deliverables">
+            <div class="dl-list" id="detailDeliverablesList"></div>
+          </div>
+          <div class="tab-content" id="tab-milestones">
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <input type="text" id="newMilestoneInput" placeholder="Add a milestone..." style="flex:1;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
+                <button class="btn btn-primary btn-sm" id="addMilestoneBtn">+ Add</button>
+              </div>
+              <div id="milestonesList"></div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-activity">
+            <div class="timeline" id="detailActivityTimeline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices Page -->
+      <div class="page" id="page-invoices">
+        <div class="page-header">
+          <h2><span>📄</span> Invoices</h2>
+        </div>
+        <div id="invLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading invoices…</div>
+        <div class="table-wrap" id="invTableWrap" style="display:none;">
+          <table>
+            <thead>
+              <tr><th>Invoice #</th><th>Client</th><th>Project</th><th>Amount</th><th>Due Date</th><th>Status</th></tr>
+            </thead>
+            <tbody id="invoicesAllBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="invEmpty" style="display:none;">
+          <div class="big-icon">📄</div>
+          <p>No invoices yet. Create one from a project's detail view.</p>
+        </div>
+      </div>
+
+      <!-- Clients Page -->
+      <div class="page" id="page-clients">
+        <div class="page-header">
+          <h2><span>⊙</span> Clients</h2>
+          <button class="btn btn-primary" id="addClientBtn">+ Add Client</button>
+        </div>
+        <div id="clientLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading clients…</div>
+        <div class="table-wrap" id="clientTableWrap" style="display:none;">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Company</th><th>Phone</th><th>Projects</th><th>Created</th></tr>
+            </thead>
+            <tbody id="clientTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="clientEmpty" style="display:none;">
+          <div class="big-icon">⊙</div>
+          <p>No clients yet. Click "Add Client" to get started.</p>
+        </div>
+      </div>
+
+      <!-- Contracts Page -->
+      <div class="page" id="page-contracts">
+        <div class="page-header">
+          <h2><span>◎</span> Contracts</h2>
+          <button class="btn btn-primary" id="createContractBtn">+ Create Contract</button>
+        </div>
+        <div id="contractLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading contracts…</div>
+        <div class="table-wrap" id="contractTableWrap" style="display:none;">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Client</th><th>Project</th><th>Status</th><th>Created</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="contractsBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="contractEmpty" style="display:none;">
+          <div class="big-icon">◎</div>
+          <p>No contracts yet. Click "Create Contract" to get started.</p>
+        </div>
+      </div>
+
+      <!-- Book Meeting (placeholder) -->
+      <div class="page" id="page-meeting">
+        <div class="page-header"><h2><span>◉</span> Book Meeting</h2></div>
+        <div class="empty-state"><div class="big-icon">◉</div><p>Meeting scheduler coming soon.</p></div>
+      </div>
+
+      <!-- Settings -->
+      <div class="page" id="page-settings">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+          <h2><span>⚙</span> Settings</h2>
+          <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+        </div>
+        <div id="settingsLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading settings...</div>
+        <div id="settingsForm" style="display:none;">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3><span>◈</span> Company Info</h3>
+              <div class="form-group"><label>Company Name</label><input type="text" id="setCompanyName" placeholder="Mpalomares"></div>
+              <div class="form-group"><label>Email</label><input type="email" id="setCompanyEmail" placeholder="admin@mpalomares.com"></div>
+              <div class="form-group"><label>Phone</label><input type="text" id="setCompanyPhone" placeholder="+63 9XX XXX XXXX"></div>
+              <div class="form-group"><label>Address</label><textarea id="setCompanyAddress" rows="2" placeholder="Street, City, Country"></textarea></div>
+              <div class="form-group"><label>Logo URL</label>
+                <input type="text" id="setLogoUrl" placeholder="https://i.imgur.com/yourlogo.png">
+                <div class="form-hint">Upload sa ImgBB, paste direct link. Recommended size: 120x40px max</div>
+                <div id="logoPreview" style="margin-top:8px;display:none;padding:12px;background:var(--bg3);border-radius:8px;text-align:center;">
+                  <img id="logoPreviewImg" style="max-height:40px;">
+                </div>
+              </div>
+            </div>
+            <div class="settings-card">
+              <h3><span>◈</span> Invoice Defaults</h3>
+              <div class="form-group"><label>Invoice Prefix</label><input type="text" id="setInvPrefix" placeholder="INV-"><div class="form-hint">e.g. INV-, IVC-, 2026-</div></div>
+              <div class="form-group"><label>Due Days</label><input type="number" id="setInvDueDays" placeholder="15" min="1"><div class="form-hint">Days until invoice is due</div></div>
+              <div class="form-group"><label>Payment Terms</label><textarea id="setPaymentTerms" rows="3" placeholder="Payment is due within 15 days..."></textarea></div>
+            </div>
+          </div>
+          <div id="settingsSaved" class="alert" style="display:none;max-width:900px;margin-top:16px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.2);color:var(--green);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Page -->
+  <div class="page" id="page-messages">
+    <div class="msg-layout">
+      <div class="msg-sidebar">
+        <div class="msg-sidebar-header">
+          <h3><span>💬</span> Conversations</h3>
+          <button class="btn btn-primary btn-sm" id="newConvBtn" style="font-size:11px;">+ New</button>
+        </div>
+        <div id="conversationList" class="msg-conv-list">
+          <div class="msg-conv-empty">No conversations yet.</div>
+        </div>
+      </div>
+      <div class="msg-main" id="msgMain">
+        <div class="msg-empty" id="msgEmptyState">
+          <div class="big-icon" style="font-size:48px;margin-bottom:12px;">💬</div>
+          <p>Select a conversation to start chatting</p>
+        </div>
+        <div class="msg-chat" id="msgChatArea" style="display:none;">
+          <div class="msg-chat-header" id="msgChatHeader"></div>
+          <div class="msg-messages" id="msgMessages"></div>
+          <div class="msg-input-area">
+            <textarea class="msg-input" id="msgInput" placeholder="Type a message..." rows="2"></textarea>
+            <button class="btn btn-primary" id="msgSendBtn" style="border-radius:8px;padding:10px 20px;">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Project Modal -->
+  <div class="modal-overlay" id="addProjectModal">
+    <div class="modal">
+      <h3><span>+</span> New Project</h3>
+      <div id="projModalError" class="alert alert-error" style="display:none;"></div>
+      <div class="form-group">
+        <label>Project Name</label>
+        <input type="text" id="projNameInput" placeholder="e.g. Website Redesign">
+      </div>
+      <div class="form-group">
+        <label>Client</label>
+        <select id="projClientSelect"><option value="">Select a client…</option></select>
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="projTypeSelect">
+          <option value="web">Web</option>
+          <option value="mobile">Mobile</option>
+          <option value="branding">Branding</option>
+          <option value="marketing">Marketing</option>
+          <option value="consulting">Consulting</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="projStatusSelect">
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
+          <option value="on-hold">On Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Budget ($)</label>
+        <input type="number" id="projBudgetInput" placeholder="0.00" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Deadline</label>
+        <input type="date" id="projDeadlineInput">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="projModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="projModalSave">Create Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Invoice Modal -->
+  <div class="modal-overlay" id="addInvoiceModal">
+    <div class="modal" style="max-width:640px;">
+      <h3><span>+</span> New Invoice</h3>
+      <div id="invModalError" class="alert alert-error" style="display:none;"></div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;">
+        <div class="form-group" style="flex:1;margin-bottom:0;">
+          <label>Due Date</label>
+          <input type="date" id="invDueDateInput">
+        </div>
+        <div class="form-group" style="flex:1;margin-bottom:0;">
+          <label>Status</label>
+          <select id="invStatusSelect">
+            <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Line Items</span>
+          <button class="btn btn-outline btn-sm" id="addItemBtn" style="font-size:11px;">+ Add Item</button>
+        </label>
+        <div style="margin-top:8px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;" id="itemsTable">
+            <thead>
+              <tr>
+                <th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:44%;">Description</th>
+                <th style="padding:10px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Qty</th>
+                <th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Rate</th>
+                <th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Amount</th>
+                <th style="padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg3);width:8%;"></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody">
+              <tr class="item-row">
+                <td style="padding:6px 8px;"><input type="text" class="item-desc" placeholder="Service description" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;"></td>
+                <td style="padding:6px 8px;"><input type="number" class="item-qty" value="1" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;outline:none;"></td>
+                <td style="padding:6px 8px;"><input type="number" class="item-rate" value="0" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:right;outline:none;"></td>
+                <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">$0.00</div></td>
+                <td style="padding:6px 8px;text-align:center;"><button class="remove-item-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;opacity:0;pointer-events:none;" title="Remove item">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;justify-content:flex-end;padding:12px 0 0;">
+          <div style="font-size:14px;color:var(--muted);font-family:'Space Mono',monospace;">
+            Total: <strong id="invItemsTotal" style="font-size:18px;color:var(--accent);">$0.00</strong>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn btn-outline" id="invModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="invModalSave">Create Invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Client Modal -->
+  <div class="modal-overlay" id="addClientModal">
+    <div class="modal">
+      <h3><span>+</span> New Client</h3>
+      <div id="clientModalError" class="alert alert-error" style="display:none;"></div>
+      <div class="form-group">
+        <label>Client Name *</label>
+        <input type="text" id="clientNameInput" placeholder="e.g. John's Plumbing">
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="clientEmailInput" placeholder="client@example.com">
+        <small style="color:var(--muted);font-size:11px;">This will be their login email</small>
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="clientPassInput" placeholder="Set a temporary password">
+        <small style="color:var(--muted);font-size:11px;">They can change this later</small>
+      </div>
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" id="clientCompanyInput" placeholder="Company name (optional)">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" id="clientPhoneInput" placeholder="+63 9XX XXX XXXX">
+      </div>
+      <div class="form-group">
+        <label>Logo URL</label>
+        <input type="text" id="clientLogoInput" placeholder="https://i.imgur.com/yourlogo.png">
+        <small style="color:var(--muted);font-size:11px;">Upload logo to ImgBB or any image host, paste URL here</small>
+      </div>
+      <div class="form-group">
+        <label>Brand Color</label>
+        <input type="text" id="clientColorInput" placeholder="#00d4ff" style="text-transform:uppercase;">
+        <small style="color:var(--muted);font-size:11px;">Hex color code for their portal theme accent</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="clientModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="clientModalSave">Create Client</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Contract Modal -->
+  <div class="modal-overlay" id="createContractModal">
+    <div class="modal" style="max-width:640px;">
+      <h3><span>+</span> Create Contract</h3>
+      <div id="contractModalError" class="alert alert-error" style="display:none;"></div>
+      <div class="form-group">
+        <label>Step 1: Select Project</label>
+        <select id="contractProjectSelect"><option value="">Select a project…</option></select>
+      </div>
+      <div class="form-group">
+        <label>Step 2: Select Template Type</label>
+        <select id="contractTemplateSelect">
+          <option value="">Select a template…</option>
+          <option value="google-ads">Google Ads Management</option>
+          <option value="ghl-automation">GHL Automation</option>
+          <option value="ads-grant">Ads Grant</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="contractTitleInput" placeholder="Contract title">
+      </div>
+      <div class="form-group">
+        <label>Contract Content</label>
+        <textarea id="contractContentInput" rows="18" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:'Space Mono',monospace;outline:none;resize:vertical;line-height:1.6;"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="contractModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="contractModalSave">Save Contract</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Contract Modal -->
+  <div class="modal-overlay" id="viewContractModal">
+    <div class="modal" style="max-width:700px;">
+      <div id="viewContractHeader" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:4px;"><span>◎</span> <span id="viewContractTitle"></span></h3>
+        <div><span class="badge" id="viewContractStatus"></span> <span id="viewContractMeta" style="font-size:12px;color:var(--muted);margin-left:8px;"></span></div>
+      </div>
+      <div id="viewContractBody" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin-bottom:16px;max-height:400px;overflow-y:auto;font-size:13px;line-height:1.7;white-space:pre-wrap;font-family:'Space Mono',monospace;color:var(--text);"></div>
+      <div class="modal-actions" style="justify-content:space-between;">
+        <div>
+          <button class="btn btn-outline" id="viewContractDownloadPdf">⬇ Download PDF</button>
+        </div>
+        <div>
+          <button class="btn btn-outline" id="viewContractClose">Close</button>
+          <button class="btn btn-primary" id="viewContractSendBtn">✉ Send to Client</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Services Edit Modal -->
+  <div class="modal-overlay" id="weeklyServicesModal">
+    <div class="modal" style="max-width:580px;">
+      <h3><span>◎</span> Weekly Services</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Set up recurring services for this project. These will auto-fill when you generate an invoice.</p>
+      <div id="wsModalError" class="alert alert-error" style="display:none;"></div>
+      <div class="form-group">
+        <label style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Services</span>
+          <button class="btn btn-outline btn-sm" id="wsAddRowBtn" style="font-size:11px;">+ Add Service</button>
+        </label>
+        <div style="margin-top:8px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:50%;">Service</th>
+                <th style="padding:10px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:20%;">Qty</th>
+                <th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:22%;">Rate</th>
+                <th style="padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg3);width:8%;"></th>
+              </tr>
+            </thead>
+            <tbody id="wsEditBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="wsModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="wsModalSave">Save Services</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice Detail Modal -->
+  <div class="modal-overlay" id="invoiceDetailModal">
+    <div class="invoice-detail" id="invoiceDetailContent">
+      <div class="inv-header">
+        <div class="inv-from">
+          <h3><span>M</span>palomares</h3>
+          <p>Digital Agency<br>admin@mpalomares.com</p>
+        </div>
+        <div class="inv-to" id="invToSection">
+          <div class="inv-to-title">Bill To</div>
+          <h4 id="invClientName"></h4>
+          <p id="invClientInfo"></p>
+        </div>
+      </div>
+      <div class="inv-meta">
+        <div class="inv-meta-item">
+          <label>Invoice #</label>
+          <div id="invDetailNum" class="mono"></div>
+        </div>
+        <div class="inv-meta-item">
+          <label>Issue Date</label>
+          <div id="invDetailIssueDate"></div>
+        </div>
+        <div class="inv-meta-item">
+          <label>Due Date</label>
+          <div id="invDetailDueDate"></div>
+        </div>
+        <div class="inv-meta-item">
+          <label>Project</label>
+          <div id="invDetailProject"></div>
+        </div>
+        <div class="inv-meta-item">
+          <label>Status</label>
+          <div><span class="badge" id="invDetailStatus"></span></div>
+        </div>
+        <div class="inv-meta-item">
+          <label>Amount Due</label>
+          <div id="invDetailAmount" style="font-weight:700;font-size:20px;color:var(--accent);"></div>
+        </div>
+      </div>
+      <table class="inv-table">
+        <thead>
+          <tr><th style="width:55%;">Description</th><th style="width:15%;">Qty</th><th style="width:15%;">Rate</th><th style="width:15%;">Amount</th></tr>
+        </thead>
+        <tbody id="invDetailItems">
+          <tr><td><div id="invItemDesc"></div><div class="inv-item-desc" id="invItemProj"></div></td><td>1</td><td id="invItemRate"></td><td id="invItemTotal"></td></tr>
+        </tbody>
+        <tfoot>
+          <tr class="inv-total-row"><td colspan="3">Total</td><td id="invDetailTotal"></td></tr>
+        </tfoot>
+      </table>
+      <div class="inv-notes">
+        <label>Payment Terms & Notes</label>
+        <p>Thank you for your business. Payment is due within 15 days of invoice date. Please include the invoice number in your payment reference.<br><br>For questions regarding this invoice, contact admin@mpalomares.com.</p>
+      </div>
+      <div class="inv-actions">
+        <button class="btn btn-outline" id="invDetailClose">Close</button>
+        <button class="btn btn-primary" id="invDetailPrint">🖨 Print / PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ── Auth check ── */
+    (async function init() {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error || !session) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const email = session.user.email;
+      const { data: pu, error: pe } = await supabase
+        .from('portal_users')
+        .select('role')
+        .eq('email', email)
+        .single();
+      if (pe || !pu || pu.role !== 'admin') {
+        window.location.href = 'login.html';
+        return;
+      }
+      // Auth OK — init app
+      loadDashboard();
+    })();
+
+    /* ── State ── */
+    let allClients = [];
+    let allProjects = [];
+    let currentProjectId = null;
+
+    /* ── Helpers ── */
+    function $(id) { return document.getElementById(id); }
+    function esc(s) { let d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function formatCurrency(n) { return '$' + parseFloat(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function formatDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); } catch(e) { return d; }}
+
+    /* ── Navigation ── */
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = $('page-' + page);
+        if (target) target.classList.add('active');
+        if (page === 'dashboard') loadDashboard();
+        if (page === 'projects') loadProjects();
+        if (page === 'invoices') loadInvoicesPage();
+        if (page === 'clients') loadClients();
+        if (page === 'contracts') loadContracts();
+      });
+    });
+
+    /* ── SETTINGS ── */
+    function loadSettings() {
+      supabase.from('settings').select('data').eq('id', 1).maybeSingle().then(function(r) {
+        if (r.error) { document.getElementById('settingsLoading').textContent = 'Error loading settings'; return; }
+        if (!r.data) { document.getElementById('settingsLoading').style.display = 'none'; document.getElementById('settingsForm').style.display = 'block'; return; }
+        var s = r.data.data || {};
+        document.getElementById('settingsLoading').style.display = 'none';
+        document.getElementById('settingsForm').style.display = 'block';
+        document.getElementById('setCompanyName').value = s.company_name || '';
+        document.getElementById('setCompanyEmail').value = s.company_email || '';
+        document.getElementById('setCompanyPhone').value = s.company_phone || '';
+        document.getElementById('setCompanyAddress').value = s.company_address || '';
+        document.getElementById('setInvPrefix').value = s.invoice_prefix || 'INV-';
+        document.getElementById('setInvDueDays').value = s.invoice_due_days || 15;
+        document.getElementById('setPaymentTerms').value = s.payment_terms || '';
+        document.getElementById('setLogoUrl').value = s.logo_url || '';
+        if (s.logo_url) {
+          document.getElementById('logoPreview').style.display = 'block';
+          document.getElementById('logoPreviewImg').src = s.logo_url;
+        } else {
+          document.getElementById('logoPreview').style.display = 'none';
+        }
+        // Update topbar logo
+        updateTopbarLogo(s.logo_url);
+      });
+    }
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+      var data = {
+        company_name: document.getElementById('setCompanyName').value.trim(),
+        company_email: document.getElementById('setCompanyEmail').value.trim(),
+        company_phone: document.getElementById('setCompanyPhone').value.trim(),
+        company_address: document.getElementById('setCompanyAddress').value.trim(),
+        invoice_prefix: document.getElementById('setInvPrefix').value.trim() || 'INV-',
+        invoice_due_days: parseInt(document.getElementById('setInvDueDays').value) || 15,
+        payment_terms: document.getElementById('setPaymentTerms').value.trim(),
+        logo_url: document.getElementById('setLogoUrl').value.trim()
+      };
+      supabase.from('settings').upsert({ id: 1, data: data, updated_at: new Date().toISOString() }).then(function(r) {
+        var saved = document.getElementById('settingsSaved');
+        if (r.error) { saved.style.display = 'block'; saved.style.background = 'rgba(255,107,53,0.1)'; saved.style.color = 'var(--accent3)'; saved.textContent = 'Error: ' + r.error.message; return; }
+        saved.style.display = 'block'; saved.style.background = 'rgba(0,255,136,0.1)'; saved.style.color = 'var(--green)'; saved.textContent = '✅ Saved!';
+        setTimeout(function() { saved.style.display = 'none'; }, 3000);
+      });
+    });
+
+    document.querySelector('[data-page="settings"]').addEventListener('click', function() {
+      loadSettings();
+    });
+
+    // Logo URL live preview
+    document.getElementById('setLogoUrl').addEventListener('input', function() {
+      var url = this.value.trim();
+      if (url) {
+        document.getElementById('logoPreview').style.display = 'block';
+        document.getElementById('logoPreviewImg').src = url;
+      } else {
+        document.getElementById('logoPreview').style.display = 'none';
+      }
+    });
+
+    // Update topbar logo
+    function updateTopbarLogo(url) {
+      if (url) {
+        document.getElementById('topbarLogoText').style.display = 'none';
+        document.getElementById('topbarLogoImg').style.display = 'inline';
+        document.getElementById('topbarLogoImg').src = url;
+      } else {
+        document.getElementById('topbarLogoText').style.display = 'inline';
+        document.getElementById('topbarLogoImg').style.display = 'none';
+      }
+    }
+
+    /* ── Logout ── */
+    $('logoutBtn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    });
+
+    /* ── DASHBOARD ── */
+    async function loadDashboard() {
+      $('dashLoading').style.display = 'block';
+      $('dashContent').style.display = 'none';
+      try {
+        const [clientsR, projectsR, invoicesR] = await Promise.all([
+          supabase.from('clients').select('*').order('created_at', {ascending:false}),
+          supabase.from('projects').select('*'),
+          supabase.from('invoices').select('*'),
+        ]);
+        if (clientsR.error) throw clientsR.error;
+        if (projectsR.error) throw projectsR.error;
+        if (invoicesR.error) throw invoicesR.error;
+
+        allClients = clientsR.data || [];
+        allProjects = projectsR.data || [];
+        const invoices = invoicesR.data || [];
+
+        const totalBudget = allProjects.reduce((s,p) => s + parseFloat(p.budget || 0), 0);
+        const totalPaid = allProjects.reduce((s,p) => s + parseFloat(p.total_paid || 0), 0);
+        const totalOutstanding = allProjects.reduce((s,p) => s + parseFloat(p.outstanding || 0), 0);
+        const totalInvoiced = invoices.reduce((s,inv) => s + parseFloat(inv.amount || 0), 0);
+
+        $('dashStats').innerHTML = `
+          <div class="stat-card"><div class="label">Clients</div><div class="value accent">${allClients.length}</div></div>
+          <div class="stat-card"><div class="label">Projects</div><div class="value purple">${allProjects.length}</div></div>
+          <div class="stat-card"><div class="label">Total Budget</div><div class="value green">${formatCurrency(totalBudget)}</div></div>
+          <div class="stat-card"><div class="label">Paid</div><div class="value green">${formatCurrency(totalPaid)}</div></div>
+          <div class="stat-card"><div class="label">Outstanding</div><div class="value orange">${formatCurrency(totalOutstanding)}</div></div>
+          <div class="stat-card"><div class="label">Invoiced</div><div class="value accent">${formatCurrency(totalInvoiced)}</div></div>
+        `;
+
+        // Count projects per client
+        const projCounts = {};
+        allProjects.forEach(p => { projCounts[p.client_id] = (projCounts[p.client_id] || 0) + 1; });
+
+        $('dashClients').innerHTML = allClients.slice(0, 10).map(c => {
+          const init = c.avatar_initials || c.name.split(' ').map(w=>w[0]).join('').slice(0,2) || '??';
+          const color = c.avatar_color || '#7b2fff';
+          return `<tr>
+            <td><div class="client-cell"><div class="client-avatar" style="background:${color};">${init}</div><div class="info"><div class="name">${esc(c.name)}</div><div class="email">${esc(c.company||'')}</div></div></div></td>
+            <td>${esc(c.company||'—')}</td>
+            <td>${esc(c.email)}</td>
+            <td>${projCounts[c.id] || 0}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="4"><div class="empty-state"><p>No clients yet.</p></div></td></tr>';
+
+        $('dashLoading').style.display = 'none';
+        $('dashContent').style.display = 'block';
+      } catch (e) {
+        $('dashLoading').textContent = 'Error loading dashboard: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    /* ── PROJECTS ── */
+    async function loadProjects() {
+      $('projLoading').style.display = 'block';
+      $('projGrid').style.display = 'none';
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', {ascending:false});
+        if (error) throw error;
+        allProjects = data || [];
+
+        if (!allClients.length) {
+          const { data: cd } = await supabase.from('clients').select('*');
+          allClients = cd || [];
+        }
+
+        renderProjectGrid();
+      } catch (e) {
+        $('projLoading').textContent = 'Error loading projects: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    function renderProjectGrid() {
+      $('projLoading').style.display = 'none';
+      if (!allProjects.length) {
+        $('projGrid').style.display = 'block';
+        $('projGrid').innerHTML = '<div class="empty-state"><div class="big-icon">◈</div><p>No projects yet. Click "Add Project" to get started.</p></div>';
+        return;
+      }
+      const clientMap = {};
+      allClients.forEach(c => clientMap[c.id] = c);
+      $('projGrid').style.display = 'grid';
+      $('projGrid').innerHTML = allProjects.map(p => {
+        const cl = clientMap[p.client_id];
+        return `<div class="project-card" data-id="${p.id}">
+          <div class="proj-name">${esc(p.name)}</div>
+          <div class="proj-client">${cl ? esc(cl.name) : 'Unknown Client'}</div>
+          <div class="proj-meta">
+            <span class="badge ${p.status}">${p.status || 'active'}</span>
+            <span class="mono" style="color:var(--muted);">${esc(p.type||'')}</span>
+            <span class="mono" style="color:var(--green);">${formatCurrency(p.budget||0)}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('click', () => openProjectDetail(card.dataset.id));
+      });
+    }
+
+    /* ── CLIENTS ── */
+    async function loadClients() {
+      $('clientLoading').style.display = 'block';
+      $('clientTableWrap').style.display = 'none';
+      $('clientEmpty').style.display = 'none';
+      try {
+        const { data, error } = await supabase
+          .from('clients')
+          .select('*')
+          .order('created_at', {ascending:false});
+        if (error) throw error;
+        allClients = data || [];
+        renderClients();
+      } catch (e) {
+        $('clientLoading').textContent = 'Error loading clients: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    function renderClients() {
+      $('clientLoading').style.display = 'none';
+      if (!allClients.length) {
+        $('clientEmpty').style.display = 'block';
+        return;
+      }
+      $('clientTableWrap').style.display = 'block';
+      const projCounts = {};
+      (allProjects || []).forEach(p => {
+        projCounts[p.client_id] = (projCounts[p.client_id] || 0) + 1;
+      });
+      $('clientTableBody').innerHTML = allClients.map(c => `
+        <tr style="cursor:pointer;" data-client=\\'${JSON.stringify(c).replace(/'/g,"&#39;")}\\'>
+          <td><strong>${esc(c.name)}</strong></td>
+          <td>${esc(c.email)}</td>
+          <td>${esc(c.company||'—')}</td>
+          <td>${esc(c.phone||'—')}</td>
+          <td>${projCounts[c.id] || 0}</td>
+          <td>${formatDate(c.created_at)}</td>
+        </tr>
+      `).join('');
+
+      // Click to edit client
+      document.querySelectorAll('#clientTableBody tr').forEach(function(row) {
+        row.addEventListener('click', function() {
+          var c = JSON.parse(this.dataset.client);
+          $('clientNameInput').value = c.name;
+          $('clientEmailInput').value = c.email;
+          $('clientPassInput').value = '';
+          $('clientCompanyInput').value = c.company || '';
+          $('clientPhoneInput').value = c.phone || '';
+          $('clientLogoInput').value = c.logo_url || '';
+          $('clientColorInput').value = c.brand_color || '';
+          $('clientModalError').style.display = 'none';
+          $('clientModalSave').textContent = 'Save Changes';
+          $('addClientModal').classList.add('open');
+          // Store client id for update
+          $('addClientModal').dataset.editId = c.id;
+        });
+      });
+    }
+
+    /* ── Add Client Modal ── */
+    $('addClientBtn').addEventListener('click', () => {
+      $('clientModalError').style.display = 'none';
+      $('clientNameInput').value = '';
+      $('clientEmailInput').value = '';
+      $('clientPassInput').value = '';
+      $('clientCompanyInput').value = '';
+      $('clientPhoneInput').value = '';
+      $('clientLogoInput').value = '';
+      $('clientColorInput').value = '';
+      $('clientModalSave').textContent = 'Create Client';
+      $('addClientModal').classList.add('open');
+    });
+    $('clientModalCancel').addEventListener('click', () => {
+      $('addClientModal').classList.remove('open');
+    });
+    $('clientModalSave').addEventListener('click', async () => {
+      const name = $('clientNameInput').value.trim();
+      const email = $('clientEmailInput').value.trim();
+      const password = $('clientPassInput').value;
+      const company = $('clientCompanyInput').value.trim();
+      const phone = $('clientPhoneInput').value.trim();
+      const logo = $('clientLogoInput').value.trim();
+      const brandColor = $('clientColorInput').value.trim();
+
+      const editId = $('addClientModal').dataset.editId;
+
+      const errEl = $('clientModalError');
+      errEl.style.display = 'none';
+
+      if (!name || !email) {
+        errEl.textContent = 'Name and Email are required.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (!editId && password.length < 6) {
+        errEl.textContent = 'Password must be at least 6 characters for new clients.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const saveBtn = $('clientModalSave');
+      saveBtn.disabled = true;
+
+      try {
+        // If editing, update client record
+        if (editId) {
+          saveBtn.textContent = 'Saving…';
+          const { error: updErr } = await supabase
+            .from('clients')
+            .update({ name, email, company, phone, logo_url: logo, brand_color: brandColor })
+            .eq('id', editId);
+          if (updErr) throw new Error('Update error: ' + updErr.message);
+
+          // Update portal_users display_name
+          await supabase.from('portal_users').update({ display_name: name }).eq('client_id', editId);
+
+          $('addClientModal').classList.remove('open');
+          delete $('addClientModal').dataset.editId;
+          loadClients();
+          saveBtn.textContent = 'Create Client';
+          saveBtn.disabled = false;
+          return;
+        }
+
+        // Creating new client
+        saveBtn.textContent = 'Creating…';
+
+        // 1. Create auth user
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        if (authError) throw new Error('Auth error: ' + authError.message);
+
+        // 2. Insert into clients table
+        const initials = name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+        const colors = ['av-blue','av-purple','av-orange','av-green'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        const { data: clientData, error: clientError } = await supabase
+          .from('clients')
+          .insert({ name, email, company, phone, logo_url: logo, brand_color: brandColor, avatar_initials: initials, avatar_color: color })
+          .select()
+          .single();
+        if (clientError) throw new Error('Client insert error: ' + clientError.message);
+
+        // 3. Insert into portal_users
+        const { error: puError } = await supabase
+          .from('portal_users')
+          .insert({ email, role: 'client', client_id: clientData.id, display_name: name });
+        if (puError) throw new Error('Portal user error: ' + puError.message);
+
+        $('addClientModal').classList.remove('open');
+        loadClients();
+      } catch (e) {
+        errEl.textContent = e.message;
+        errEl.style.display = 'block';
+        console.error(e);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Create Client';
+      }
+    });
+
+    /* ── PROJECT DETAIL ── */
+    async function openProjectDetail(projectId) {
+      currentProjectId = projectId;
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      $('page-project-detail').classList.add('active');
+
+      const p = allProjects.find(pr => pr.id == projectId);
+      if (!p) return;
+      const cl = allClients.find(c => c.id == p.client_id);
+      const clientName = cl ? cl.name : 'Unknown';
+
+      $('detailHeader').innerHTML = `
+        <div>
+          <h2 style="margin-bottom:4px;"><span>◈</span> ${esc(p.name)}</h2>
+          <p style="font-size:14px;color:var(--muted);">${esc(clientName)} · ${esc(p.type||'')} · <span class="badge ${p.status}">${p.status||'active'}</span></p>
+        </div>
+      `;
+      $('detailStats').innerHTML = `
+        <div class="stat-card"><div class="label">Budget</div><div class="value green">${formatCurrency(p.budget)}</div></div>
+        <div class="stat-card"><div class="label">Paid</div><div class="value green">${formatCurrency(p.total_paid)}</div></div>
+        <div class="stat-card"><div class="label">Outstanding</div><div class="value orange">${formatCurrency(p.outstanding)}</div></div>
+        <div class="stat-card"><div class="label">Start</div><div class="value accent" style="font-size:14px;">${formatDate(p.start_date)}</div></div>
+        <div class="stat-card"><div class="label">Deadline</div><div class="value accent" style="font-size:14px;">${formatDate(p.deadline)}</div></div>
+      `;
+
+      // Load tabs
+      loadDetailInvoices(projectId);
+      loadDetailDeliverables(projectId);
+      loadDetailMilestones(projectId);
+      loadDetailActivity(projectId);
+      switchDetailTab('invoices');
+    }
+
+    function switchDetailTab(tab) {
+      document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.detail-tab[data-tab="${tab}"]`).classList.add('active');
+      $(`tab-${tab}`).classList.add('active');
+    }
+
+    document.querySelectorAll('.detail-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchDetailTab(tab.dataset.tab));
+    });
+
+    $('backToProjects').addEventListener('click', () => {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-page="projects"]').click();
+    });
+
+    /* ── Detail: Invoices ── */
+    async function loadDetailInvoices(projectId) {
+      try {
+        const { data, error } = await supabase
+          .from('invoices')
+          .select('*')
+          .eq('project_id', projectId)
+          .order('created_at', {ascending:false});
+        if (error) throw error;
+        const invoices = data || [];
+        const body = $('detailInvoicesBody');
+        if (!invoices.length) {
+          body.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No invoices yet.</p></div></td></tr>';
+        } else {
+          body.innerHTML = invoices.map(inv => `
+            <tr class="inv-row" data-invoice=\'${JSON.stringify(inv).replace(/'/g,"&#39;")}\' style="cursor:pointer;">
+              <td class="mono">${esc(inv.invoice_num||'—')}</td>
+              <td>${esc(inv.title)}</td>
+              <td class="mono">${formatCurrency(inv.amount)}</td>
+              <td>${formatDate(inv.due_date)}</td>
+              <td><span class="badge ${inv.status}">${inv.status||'unpaid'}</span></td>
+            </tr>
+          `).join('');
+
+          // Click to view invoice detail
+          document.querySelectorAll('.inv-row').forEach(row => {
+            row.addEventListener('click', () => {
+              const inv = JSON.parse(row.dataset.invoice);
+              openInvoiceDetail(inv);
+            });
+          });
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    /* ── Detail: Deliverables ── */
+    async function loadDetailDeliverables(projectId) {
+      try {
+        const { data, error } = await supabase
+          .from('deliverables')
+          .select('*')
+          .eq('project_id', projectId)
+          .order('uploaded_at', {ascending:false});
+        if (error) throw error;
+        const dels = data || [];
+        const list = $('detailDeliverablesList');
+        if (!dels.length) {
+          list.innerHTML = '<div class="empty-state"><p>No deliverables yet.</p></div>';
+        } else {
+          list.innerHTML = dels.map(d => {
+            const size = d.file_size ? (d.file_size / 1024).toFixed(1) + ' KB' : '—';
+            return `<div class="dl-item">
+              <div><div class="dl-name">📄 ${esc(d.name)}</div><div class="dl-meta">${size} · ${formatDate(d.uploaded_at)}</div></div>
+            </div>`;
+          }).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    /* ── Detail: Milestones ── */
+    var currentMilestoneProjectId = null;
+
+    async function loadDetailMilestones(projectId) {
+      currentMilestoneProjectId = projectId;
+      try {
+        const { data, error } = await supabase
+          .from('milestones')
+          .select('*')
+          .eq('project_id', projectId)
+          .order('order_index', { ascending: true })
+          .order('created_at', { ascending: true });
+        if (error) throw error;
+        renderMilestones(data || []);
+      } catch (e) {
+        $('milestonesList').innerHTML = '<div class="empty-state"><p>Error loading milestones.</p></div>';
+        console.error(e);
+      }
+    }
+
+    function renderMilestones(milestones) {
+      var list = $('milestonesList');
+      if (!milestones.length) {
+        list.innerHTML = '<div class="empty-state"><p>No milestones yet. Add one above!</p></div>';
+        return;
+      }
+      list.innerHTML = milestones.map(function(m) {
+        var checked = m.status === 'completed' ? 'done' : '';
+        var checkmark = m.status === 'completed' ? '✓' : '';
+        var completedClass = m.status === 'completed' ? 'completed' : '';
+        var dateStr = m.completed_at ? formatDate(m.completed_at) : (m.created_at ? 'Added ' + formatDate(m.created_at) : '');
+        return '<div class="milestone-item ' + completedClass + '" data-id="' + m.id + '">'
+          + '<div class="milestone-check ' + checked + '" data-id="' + m.id + '">' + checkmark + '</div>'
+          + '<div class="ms-title">' + esc(m.title) + '</div>'
+          + (m.description ? '<div style="font-size:11px;color:var(--muted);">' + esc(m.description) + '</div>' : '')
+          + '<span class="ms-date">' + dateStr + '</span>'
+          + '<button class="milestone-delete" data-id="' + m.id + '" title="Delete">✕</button>'
+          + '</div>';
+      }).join('');
+
+      // Wire up check toggle
+      document.querySelectorAll('.milestone-check').forEach(function(el) {
+        el.addEventListener('click', function() { toggleMilestone(this.dataset.id); });
+      });
+
+      // Wire up delete
+      document.querySelectorAll('.milestone-delete').forEach(function(el) {
+        el.addEventListener('click', function() { deleteMilestone(this.dataset.id); });
+      });
+    }
+
+    async function toggleMilestone(id) {
+      try {
+        var list = $('milestonesList');
+        var items = list.querySelectorAll('.milestone-item');
+        var current = null;
+        items.forEach(function(item) {
+          if (item.dataset.id === id) current = item;
+        });
+        var isCompleted = current && current.classList.contains('completed');
+        var title = current ? current.querySelector('.ms-title').textContent : '';
+
+        var update = isCompleted
+          ? { status: 'pending', completed_at: null }
+          : { status: 'completed', completed_at: new Date().toISOString() };
+
+        const { error } = await supabase
+          .from('milestones')
+          .update(update)
+          .eq('id', id);
+        if (error) throw error;
+
+        // Log activity
+        if (currentMilestoneProjectId) {
+          var action = isCompleted ? 'reopened' : 'completed';
+          supabase.from('activity_log').insert({
+            project_id: currentMilestoneProjectId,
+            type: 'milestone',
+            text: '🎯 Milestone ' + action + ': ' + title
+          }).then().catch(function(){});
+
+          // Check if all milestones completed → auto-generate invoice
+          if (!isCompleted) {
+            autoGenerateInvoice(currentMilestoneProjectId);
+          }
+        }
+
+        if (currentMilestoneProjectId) loadDetailMilestones(currentMilestoneProjectId);
+      } catch (e) { console.error(e); }
+    }
+
+    async function deleteMilestone(id) {
+      try {
+        // Get title before deleting
+        var list = $('milestonesList');
+        var items = list.querySelectorAll('.milestone-item');
+        var title = '';
+        items.forEach(function(item) {
+          if (item.dataset.id === id) {
+            title = item.querySelector('.ms-title').textContent || '';
+          }
+        });
+
+        const { error } = await supabase.from('milestones').delete().eq('id', id);
+        if (error) throw error;
+
+        // Log activity
+        if (currentMilestoneProjectId && title) {
+          supabase.from('activity_log').insert({
+            project_id: currentMilestoneProjectId,
+            type: 'milestone',
+            text: '🗑️ Milestone removed: ' + title
+          }).then().catch(function(){});
+        }
+
+        if (currentMilestoneProjectId) loadDetailMilestones(currentMilestoneProjectId);
+      } catch (e) { console.error(e); }
+    }
+
+    /* ── Auto Invoice Generation ── */
+    async function autoGenerateInvoice(projectId) {
+      try {
+        const { data: ms, error: msErr } = await supabase
+          .from('milestones')
+          .select('status')
+          .eq('project_id', projectId);
+        if (msErr || !ms || !ms.length) return;
+        var allDone = ms.every(function(m) { return m.status === 'completed'; });
+        if (!allDone) return;
+
+        const { data: existing } = await supabase
+          .from('invoices')
+          .select('id')
+          .eq('project_id', projectId)
+          .eq('title', 'Milestone Completion')
+          .limit(1);
+        if (existing && existing.length) return;
+
+        const { data: project } = await supabase
+          .from('projects')
+          .select('name, budget, outstanding')
+          .eq('id', projectId)
+          .single();
+        if (!project) return;
+
+        var invNum = 'INV-' + Date.now().toString(36).toUpperCase();
+        var amount = parseFloat(project.outstanding) || parseFloat(project.budget) || 0;
+        if (amount <= 0) return;
+
+        var dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 15);
+        var dueDateStr = dueDate.toISOString().split('T')[0];
+
+        const { data: inv, error: invErr } = await supabase.from('invoices').insert({
+          project_id: projectId,
+          invoice_num: invNum,
+          title: 'Milestone Completion',
+          amount: amount,
+          due_date: dueDateStr,
+          status: 'unpaid',
+          items: [{ desc: 'Project Completion - ' + (project.name || ''), qty: 1, rate: amount, amount: amount }]
+        }).select().single();
+        if (invErr) throw invErr;
+
+        await supabase.from('activity_log').insert({
+          project_id: projectId,
+          type: 'invoice',
+          text: '🤖 Auto-generated invoice ' + invNum + ' — ' + formatCurrency(amount) + ' (all milestones completed)'
+        });
+
+        console.log('🤖 Auto-invoice created: ' + invNum);
+        if (currentMilestoneProjectId === projectId) {
+          loadDetailInvoices(projectId);
+          loadDetailActivity(projectId);
+        }
+      } catch (e) { console.error('autoGenerateInvoice error:', e); }
+    }
+
+    // Add milestone button
+    document.addEventListener('DOMContentLoaded', function() {
+      // Will wire up after DOM
+    });
+
+    /* ── Detail: Activity ── */
+    async function loadDetailActivity(projectId) {
+      try {
+        const { data, error } = await supabase
+          .from('activity_log')
+          .select('*')
+          .eq('project_id', projectId)
+          .order('created_at', {ascending:false});
+        if (error) throw error;
+        const acts = data || [];
+        const tl = $('detailActivityTimeline');
+        if (!acts.length) {
+          tl.innerHTML = '<div class="empty-state"><p>No activity recorded yet.</p></div>';
+        } else {
+          tl.innerHTML = acts.map(a => `
+            <div class="tl-item">
+              <div class="tl-dot ${a.type||'update'}"></div>
+              <div class="tl-text">${esc(a.text)}</div>
+              <div class="tl-time">${formatDate(a.created_at)}</div>
+            </div>
+          `).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    /* ── Add Project Modal ── */
+    $('addProjectBtn').addEventListener('click', async () => {
+      // Load clients into select
+      const sel = $('projClientSelect');
+      if (!allClients.length) {
+        const { data } = await supabase.from('clients').select('id, name');
+        allClients = data || [];
+      }
+      sel.innerHTML = '<option value="">Select a client…</option>' +
+        allClients.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+      $('projModalError').style.display = 'none';
+      $('addProjectModal').classList.add('open');
+    });
+
+    $('projModalCancel').addEventListener('click', () => {
+      $('addProjectModal').classList.remove('open');
+    });
+
+    $('projModalSave').addEventListener('click', async () => {
+      const name = $('projNameInput').value.trim();
+      const client_id = $('projClientSelect').value;
+      const type = $('projTypeSelect').value;
+      const status = $('projStatusSelect').value;
+      const budget = parseFloat($('projBudgetInput').value) || 0;
+      const deadline = $('projDeadlineInput').value || null;
+
+      if (!name || !client_id) {
+        $('projModalError').textContent = 'Project name and client are required.';
+        $('projModalError').style.display = 'block';
+        return;
+      }
+      $('projModalError').style.display = 'none';
+
+      try {
+        const { data, error } = await supabase.from('projects').insert({
+          name, client_id, type, status, budget,
+          total_paid: 0, outstanding: budget,
+          deadline, start_date: new Date().toISOString().split('T')[0]
+        }).select().single();
+
+        if (error) throw error;
+
+        // Log activity
+        await supabase.from('activity_log').insert({
+          project_id: data.id,
+          type: 'created',
+          text: `Project "${name}" was created.`
+        });
+
+        // Reset form
+        $('projNameInput').value = '';
+        $('projBudgetInput').value = '';
+        $('projDeadlineInput').value = '';
+        $('addProjectModal').classList.remove('open');
+
+        // Reload
+        await loadProjects();
+      } catch (e) {
+        $('projModalError').textContent = 'Error: ' + e.message;
+        $('projModalError').style.display = 'block';
+        console.error(e);
+      }
+    });
+
+    /* ── Add Invoice Modal ── */
+    let invoicePrefill = null; // Set by "Generate Invoice"
+
+    function recalcItems() {
+      const rows = document.querySelectorAll('.item-row');
+      let total = 0;
+      let lastFilledRow = -1;
+      rows.forEach((row, idx) => {
+        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+        const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+        const amt = qty * rate;
+        total += amt;
+        row.querySelector('.item-amount').textContent = formatCurrency(amt);
+        row.querySelector('.item-amount').dataset.raw = amt.toFixed(2);
+        const desc = row.querySelector('.item-desc').value.trim();
+        if (desc && qty > 0 && rate > 0) lastFilledRow = idx;
+        // Remove button: hide for single row, show for multiple
+        const rmBtn = row.querySelector('.remove-item-btn');
+        if (rows.length === 1) {
+          rmBtn.style.opacity = '0';
+          rmBtn.style.pointerEvents = 'none';
+        } else {
+          rmBtn.style.opacity = '1';
+          rmBtn.style.pointerEvents = 'auto';
+        }
+      });
+      $('invItemsTotal').textContent = formatCurrency(total);
+      $('invItemsTotal').dataset.raw = total.toFixed(2);
+    }
+
+    function addItemRow(desc, qty, rate) {
+      const tbody = $('itemsBody');
+      const row = document.createElement('tr');
+      row.className = 'item-row';
+      row.innerHTML = `
+        <td style="padding:6px 8px;"><input type="text" class="item-desc" placeholder="Service description" value="${esc(desc||'')}" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;"></td>
+        <td style="padding:6px 8px;"><input type="number" class="item-qty" value="${qty||1}" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;outline:none;"></td>
+        <td style="padding:6px 8px;"><input type="number" class="item-rate" value="${rate||0}" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:right;outline:none;"></td>
+        <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">$0.00</div></td>
+        <td style="padding:6px 8px;text-align:center;"><button class="remove-item-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;" title="Remove item">×</button></td>`;
+      row.querySelector('.remove-item-btn').addEventListener('click', () => {
+        if (document.querySelectorAll('.item-row').length > 1) {
+          row.remove();
+          recalcItems();
+        }
+      });
+      // Auto-recalc on input
+      row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', recalcItems));
+      tbody.appendChild(row);
+      recalcItems();
+    }
+
+    $('addInvoiceBtn').addEventListener('click', () => {
+      // Reset items
+      $('itemsBody').innerHTML = '';
+      addItemRow('', 1, 0);
+      $('invDueDateInput').value = new Date().toISOString().split('T')[0];
+      $('invStatusSelect').value = 'unpaid';
+      $('invModalError').style.display = 'none';
+      invoicePrefill = null;
+      $('addInvoiceModal').classList.add('open');
+    });
+
+    // Add milestone
+    $('addMilestoneBtn').addEventListener('click', async () => {
+      var input = $('newMilestoneInput');
+      var title = input.value.trim();
+      if (!title || !currentMilestoneProjectId) return;
+      input.disabled = true;
+      try {
+        const { error } = await supabase.from('milestones').insert({
+          project_id: currentMilestoneProjectId,
+          title: title,
+          order_index: 0
+        });
+        if (error) throw error;
+        input.value = '';
+
+        // Log activity
+        supabase.from('activity_log').insert({
+          project_id: currentMilestoneProjectId,
+          type: 'milestone',
+          text: '🆕 Milestone added: ' + title
+        }).then().catch(function(){});
+
+        loadDetailMilestones(currentMilestoneProjectId);
+      } catch (e) {
+        console.error(e);
+        alert('Error adding milestone: ' + e.message);
+      }
+      input.disabled = false;
+    });
+
+    $('newMilestoneInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); $('addMilestoneBtn').click(); }
+    });
+
+    // Open invoice modal with pre-filled items from weekly services
+    function openInvoiceWithPrefill(projectId) {
+      const p = allProjects.find(pr => pr.id == projectId);
+      const services = p && p.weekly_services ? p.weekly_services : [];
+      $('itemsBody').innerHTML = '';
+      if (services.length) {
+        services.forEach(s => addItemRow(s.desc, s.qty || 1, s.rate || 0));
+      } else {
+        addItemRow('', 1, 0);
+      }
+      $('invDueDateInput').value = new Date().toISOString().split('T')[0];
+      $('invStatusSelect').value = 'unpaid';
+      $('invModalError').style.display = 'none';
+      invoicePrefill = { projectId };
+      $('addInvoiceModal').classList.add('open');
+    }
+
+    $('addItemBtn').addEventListener('click', () => addItemRow('', 1, 0));
+
+    $('invModalCancel').addEventListener('click', () => {
+      $('addInvoiceModal').classList.remove('open');
+    });
+
+    $('invModalSave').addEventListener('click', async () => {
+      const rows = document.querySelectorAll('.item-row');
+      const items = [];
+      let hasEmpty = false;
+      let totalAmount = 0;
+
+      rows.forEach(row => {
+        const desc = row.querySelector('.item-desc').value.trim();
+        const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+        const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+        if (desc && qty > 0) {
+          const amt = qty * rate;
+          items.push({ desc, qty, rate, amount: amt });
+          totalAmount += amt;
+        } else if (desc || qty > 0 || rate > 0) {
+          hasEmpty = true;
+        }
+      });
+
+      if (!items.length) {
+        $('invModalError').textContent = 'Add at least one item with a description and quantity.';
+        $('invModalError').style.display = 'block';
+        return;
+      }
+      $('invModalError').style.display = 'none';
+
+      const due_date = $('invDueDateInput').value || null;
+      const status = $('invStatusSelect').value;
+      const title = items[0].desc + (items.length > 1 ? ` +${items.length - 1} more` : '');
+
+      try {
+        const invNum = 'INV-' + Date.now().toString(36).toUpperCase();
+
+        const { data, error } = await supabase.from('invoices').insert({
+          project_id: currentProjectId,
+          invoice_num: invNum,
+          title,
+          amount: totalAmount,
+          due_date,
+          status,
+          items
+        }).select().single();
+
+        if (error) throw error;
+
+        await supabase.from('activity_log').insert({
+          project_id: currentProjectId,
+          type: 'invoice',
+          text: `Invoice ${invNum} created — ${formatCurrency(totalAmount)} (${items.length} item${items.length>1?'s':''})`
+        });
+
+        $('addInvoiceModal').classList.remove('open');
+        loadDetailInvoices(currentProjectId);
+        loadDetailActivity(currentProjectId);
+      } catch (e) {
+        $('invModalError').textContent = 'Error: ' + e.message;
+        $('invModalError').style.display = 'block';
+        console.error(e);
+      }
+    });
+
+    /* ── Invoice Detail View ── */
+    function openInvoiceDetail(inv) {
+      const p = allProjects.find(pr => pr.id == inv.project_id);
+      const cl = p ? allClients.find(c => c.id == p.client_id) : null;
+
+      $('invClientName').textContent = cl ? cl.name : 'Client';
+      $('invClientInfo').innerHTML = (cl ? esc(cl.company||'') : '') + '<br>' + (cl ? esc(cl.email) : '');
+
+      $('invDetailNum').textContent = inv.invoice_num || '—';
+      const created = inv.created_at ? new Date(inv.created_at).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
+      $('invDetailIssueDate').textContent = created;
+      $('invDetailDueDate').textContent = inv.due_date ? new Date(inv.due_date + 'T00:00:00').toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) : '—';
+      $('invDetailProject').textContent = p ? esc(p.name) : '—';
+
+      const statusEl = $('invDetailStatus');
+      statusEl.textContent = inv.status || 'unpaid';
+      statusEl.className = 'badge ' + (inv.status||'unpaid');
+
+      const amt = formatCurrency(inv.amount);
+      $('invDetailAmount').textContent = amt;
+
+      // Build items table — support both old (single title) and new (items array)
+      const itemsRaw = inv.items;
+      const itemsBody = $('invDetailItems');
+      if (itemsRaw && Array.isArray(itemsRaw) && itemsRaw.length) {
+        itemsBody.innerHTML = itemsRaw.map(item => {
+          const itemAmt = formatCurrency(item.amount || (item.qty * item.rate));
+          return `<tr><td><div>${esc(item.desc)}</div></td><td style="text-align:center;">${item.qty}</td><td style="text-align:right;">${formatCurrency(item.rate)}</td><td style="text-align:right;">${itemAmt}</td></tr>`;
+        }).join('');
+      } else {
+        // Legacy: single item from title
+        itemsBody.innerHTML = `<tr><td><div>${esc(inv.title||'Invoice')}</div><div class="inv-item-desc">${p ? 'Project: ' + esc(p.name) : ''}</div></td><td style="text-align:center;">1</td><td style="text-align:right;">${amt}</td><td style="text-align:right;">${amt}</td></tr>`;
+      }
+
+      $('invDetailTotal').textContent = amt;
+
+      $('invoiceDetailModal').classList.add('open');
+    }
+
+    // Invoice detail modal events
+    document.addEventListener('click', (e) => {
+      const modal = $('invoiceDetailModal');
+      if (e.target === modal) modal.classList.remove('open');
+    });
+    $('invDetailClose').addEventListener('click', () => $('invoiceDetailModal').classList.remove('open'));
+    $('invDetailPrint').addEventListener('click', () => window.print());
+
+    /* ── Weekly Services ── */
+    function renderWeeklyServices(projectId) {
+      const p = allProjects.find(pr => pr.id == projectId);
+      if (!p) { $('weeklyServicesSection').innerHTML = ''; return; }
+      const services = p.weekly_services || [];
+      const total = services.reduce((sum, s) => sum + (s.rate * (s.qty || 1)), 0);
+
+      if (!services.length) {
+        $('weeklyServicesSection').innerHTML = `
+          <div class="weekly-card">
+            <div class="wc-header">
+              <h4><span>◈</span> Weekly Services</h4>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-outline btn-sm" id="setupWeeklyBtn">Setup Weekly Services</button>
+              </div>
+            </div>
+            <div class="empty-services">No recurring services configured. <a href="#" id="setupWeeklyLink" style="color:var(--accent);">Set up now</a> for one-click weekly invoicing.</div>
+          </div>`;
+        $('setupWeeklyBtn').addEventListener('click', openWeeklyServicesModal);
+        $('setupWeeklyLink').addEventListener('click', (e) => { e.preventDefault(); openWeeklyServicesModal(); });
+        return;
+      }
+
+      $('weeklyServicesSection').innerHTML = `
+        <div class="weekly-card">
+          <div class="wc-header">
+            <h4><span>◈</span> Weekly Services</h4>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" id="editWeeklyBtn">Edit</button>
+              <button class="btn btn-primary btn-sm" id="genInvoiceBtn">+ Generate Invoice</button>
+            </div>
+          </div>
+          <table class="ws-table">
+            <thead><tr><th>Service</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Rate</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>${services.map(s => `
+              <tr><td>${esc(s.desc)}</td><td style="text-align:center;">${s.qty||1}</td><td style="text-align:right;">${formatCurrency(s.rate||0)}</td><td style="text-align:right;">${formatCurrency((s.rate||0)*(s.qty||1))}</td></tr>
+            `).join('')}</tbody>
+          </table>
+          <div class="wc-total">Weekly Total: <strong>${formatCurrency(total)}</strong></div>
+        </div>`;
+
+      $('editWeeklyBtn').addEventListener('click', openWeeklyServicesModal);
+      $('genInvoiceBtn').addEventListener('click', () => openInvoiceWithPrefill(projectId));
+    }
+
+    function openWeeklyServicesModal() {
+      const p = allProjects.find(pr => pr.id == currentProjectId);
+      const services = (p && p.weekly_services) ? [...p.weekly_services] : [];
+      $('wsModalError').style.display = 'none';
+      renderWSEditRows(services);
+      $('weeklyServicesModal').classList.add('open');
+    }
+
+    function renderWSEditRows(services) {
+      const tbody = $('wsEditBody');
+      tbody.innerHTML = '';
+      if (!services.length) services.push({ desc: '', qty: 1, rate: 0 });
+      services.forEach((s, idx) => {
+        const row = document.createElement('tr');
+        row.className = 'ws-edit-row';
+        row.innerHTML = `
+          <td style="padding:6px 8px;"><input type="text" class="ws-desc" value="${esc(s.desc||'')}" placeholder="Service name" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);outline:none;"></td>
+          <td style="padding:6px 8px;"><input type="number" class="ws-qty" value="${s.qty||1}" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;outline:none;"></td>
+          <td style="padding:6px 8px;"><input type="number" class="ws-rate" value="${s.rate||0}" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:right;outline:none;"></td>
+          <td style="padding:6px 8px;text-align:center;"><button class="ws-remove-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;">×</button></td>`;
+        row.querySelector('.ws-remove-btn').addEventListener('click', () => {
+          if (document.querySelectorAll('.ws-edit-row').length > 1) {
+            row.remove();
+          }
+        });
+        tbody.appendChild(row);
+      });
+    }
+
+    $('wsAddRowBtn').addEventListener('click', () => {
+      const tbody = $('wsEditBody');
+      const row = document.createElement('tr');
+      row.className = 'ws-edit-row';
+      row.innerHTML = `
+        <td style="padding:6px 8px;"><input type="text" class="ws-desc" value="" placeholder="Service name" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);outline:none;"></td>
+        <td style="padding:6px 8px;"><input type="number" class="ws-qty" value="1" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:center;outline:none;"></td>
+        <td style="padding:6px 8px;"><input type="number" class="ws-rate" value="0" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);text-align:right;outline:none;"></td>
+        <td style="padding:6px 8px;text-align:center;"><button class="ws-remove-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;">×</button></td>`;
+      row.querySelector('.ws-remove-btn').addEventListener('click', () => {
+        if (document.querySelectorAll('.ws-edit-row').length > 1) row.remove();
+      });
+      tbody.appendChild(row);
+    });
+
+    $('wsModalCancel').addEventListener('click', () => {
+      $('weeklyServicesModal').classList.remove('open');
+    });
+
+    $('wsModalSave').addEventListener('click', async () => {
+      const rows = document.querySelectorAll('.ws-edit-row');
+      const services = [];
+      rows.forEach(row => {
+        const desc = row.querySelector('.ws-desc').value.trim();
+        const qty = parseInt(row.querySelector('.ws-qty').value) || 1;
+        const rate = parseFloat(row.querySelector('.ws-rate').value) || 0;
+        if (desc) services.push({ desc, qty, rate });
+      });
+
+      if (!services.length) {
+        $('wsModalError').textContent = 'Add at least one service.';
+        $('wsModalError').style.display = 'block';
+        return;
+      }
+      $('wsModalError').style.display = 'none';
+
+      try {
+        const { error } = await supabase
+          .from('projects')
+          .update({ weekly_services: services })
+          .eq('id', currentProjectId);
+
+        if (error) throw error;
+
+        // Update local state
+        const p = allProjects.find(pr => pr.id == currentProjectId);
+        if (p) p.weekly_services = services;
+
+        $('weeklyServicesModal').classList.remove('open');
+        renderWeeklyServices(currentProjectId);
+      } catch (e) {
+        $('wsModalError').textContent = 'Error: ' + e.message;
+        $('wsModalError').style.display = 'block';
+        console.error(e);
+      }
+    });
+
+    // Update project detail to include weekly services render
+    const _origOpenProjectDetail = openProjectDetail;
+    openProjectDetail = function(projectId) {
+      _origOpenProjectDetail(projectId);
+      renderWeeklyServices(projectId);
+    };
+
+    /* ── CONTRACTS ── */
+    let selectedContractId = null;
+
+    async function loadContracts() {
+      $('contractLoading').style.display = 'block';
+      $('contractTableWrap').style.display = 'none';
+      $('contractEmpty').style.display = 'none';
+      try {
+        const { data, error } = await supabase
+          .from('contracts')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        const contracts = data || [];
+        renderContracts(contracts);
+      } catch (e) {
+        $('contractLoading').textContent = 'Error loading contracts: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    async function renderContracts(contracts) {
+      $('contractLoading').style.display = 'none';
+
+      // Ensure clients and projects are loaded
+      if (!allClients.length || !allProjects.length) {
+        const [cr, pr] = await Promise.all([
+          supabase.from('clients').select('*'),
+          supabase.from('projects').select('*')
+        ]);
+        allClients = cr.data || [];
+        allProjects = pr.data || [];
+      }
+
+      const clientMap = {};
+      allClients.forEach(c => clientMap[c.id] = c);
+      const projectMap = {};
+      allProjects.forEach(p => projectMap[p.id] = p);
+
+      if (!contracts.length) {
+        $('contractEmpty').style.display = 'block';
+        $('contractTableWrap').style.display = 'none';
+        return;
+      }
+
+      $('contractTableWrap').style.display = 'block';
+      $('contractsBody').innerHTML = contracts.map(c => {
+        const proj = projectMap[c.project_id];
+        const client = proj ? clientMap[proj.client_id] : null;
+        return `<tr style="cursor:pointer;" data-id="${c.id}">
+          <td><strong>${esc(c.title)}</strong></td>
+          <td>${client ? esc(client.name) : '—'}</td>
+          <td>${proj ? esc(proj.name) : '—'}</td>
+          <td><span class="badge ${c.status || 'draft'}">${c.status || 'draft'}</span></td>
+          <td>${formatDate(c.created_at)}</td>
+          <td><button class="btn btn-outline btn-sm view-contract-btn" data-id="${c.id}">View</button></td>
+        </tr>`;
+      }).join('');
+
+      // Click row to view
+      document.querySelectorAll('#contractsBody tr').forEach(row => {
+        row.addEventListener('click', (e) => {
+          if (e.target.tagName === 'BUTTON') return;
+          viewContract(row.dataset.id);
+        });
+      });
+      document.querySelectorAll('.view-contract-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          viewContract(btn.dataset.id);
+        });
+      });
+    }
+
+    /* ── Template Generation ── */
+    function generateContractContent(templateType, project, client) {
+      const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const clientName = client ? esc(client.name) : '[Client Name]';
+      const budget = esc(project.budget || '0');
+      const half = (parseFloat(project.budget || 0) / 2).toFixed(2);
+      const startDate = project.start_date ? formatDate(project.start_date) : '[Start Date]';
+      const deadline = project.deadline ? formatDate(project.deadline) : '[Deadline]';
+
+      const templates = {
+        'google-ads': `SERVICE AGREEMENT
+
+Date: ${today}
+Between: ${clientName} ("Client")
+And: Marlon Palomares Digital Solutions ("Provider")
+
+1. SERVICES
+Provider shall manage Google Ads campaigns for Client, including keyword research, ad copy creation, bid management, and performance reporting.
+
+2. BUDGET & FEES
+Monthly Management Fee: ₱${budget}
+Ad Spend Budget: Managed by Client's Google Ads account
+Payment Terms: Due within 15 days of invoice date
+
+3. TERM
+This agreement begins on ${startDate} and continues on a month-to-month basis until terminated with 30 days written notice.
+
+4. DELIVERABLES
+- Monthly campaign performance report
+- Keyword optimization and expansion
+- Ad copy testing and iteration
+- Conversion tracking setup and maintenance
+
+5. CONFIDENTIALITY
+Both parties agree to maintain confidentiality of all business information shared during this engagement.
+
+Signed:
+_________________________
+${clientName}
+
+_________________________
+Marlon Palomares`,
+
+        'ghl-automation': `SERVICE AGREEMENT — AUTOMATION PROJECT
+
+Date: ${today}
+Between: ${clientName} ("Client")
+And: Marlon Palomares Digital Solutions ("Provider")
+
+1. SCOPE OF WORK
+Provider shall design, build, and implement automation systems using GoHighLevel (GHL) and Zapier for Client's business operations.
+
+2. PROJECT FEE
+Total Project Fee: ₱${budget}
+Payment Schedule:
+- 50% upfront: ₱${half}
+- 50% upon completion: ₱${half}
+
+3. TIMELINE
+Start Date: ${startDate}
+Target Completion: ${deadline}
+
+4. DELIVERABLES
+- GHL pipeline and CRM setup
+- Automated lead nurturing sequences
+- Zapier workflow integrations
+- Training and documentation
+
+5. REVISIONS
+Two rounds of revisions are included. Additional revisions billed at ₱1,500/hour.
+
+Signed:
+_________________________
+${clientName}
+
+_________________________
+Marlon Palomares`,
+
+        'ads-grant': `SERVICE AGREEMENT — GOOGLE ADS GRANT
+
+Date: ${today}
+Between: ${clientName} ("Client")
+And: Marlon Palomares Digital Solutions ("Provider")
+
+1. SERVICES
+Provider shall manage Client's Google Ad Grant ($10K/month) account, including account setup, campaign optimization, and compliance maintenance.
+
+2. MANAGEMENT FEE
+Monthly Management Fee: ₱${budget}
+Payment Terms: Due within 15 days of invoice date
+
+3. GRANT COMPLIANCE
+Provider will ensure all campaigns comply with Google Ad Grant policies, including:
+- 5% click-through rate minimum
+- Proper ad groups with relevant keywords
+- Geo-targeting and ad scheduling
+
+4. REPORTING
+Monthly performance reports including:
+- Grant spend and utilization
+- Click-through rates and conversions
+- Optimization recommendations
+
+Signed:
+_________________________
+${clientName}
+
+_________________________
+Marlon Palomares`
+      };
+
+      return templates[templateType] || '';
+    }
+
+    /* ── Create Contract Modal ── */
+    $('createContractBtn').addEventListener('click', async () => {
+      $('contractModalError').style.display = 'none';
+      $('contractTitleInput').value = '';
+      $('contractContentInput').value = '';
+      $('contractTemplateSelect').value = '';
+
+      // Load projects into select
+      if (!allProjects.length || !allClients.length) {
+        const [pr, cr] = await Promise.all([
+          supabase.from('projects').select('*'),
+          supabase.from('clients').select('*')
+        ]);
+        allProjects = pr.data || [];
+        allClients = cr.data || [];
+      }
+
+      const clientMap = {};
+      allClients.forEach(c => clientMap[c.id] = c);
+      const sel = $('contractProjectSelect');
+      sel.innerHTML = '<option value="">Select a project…</option>' +
+        allProjects.map(p => {
+          const cl = clientMap[p.client_id];
+          return `<option value="${p.id}">${esc(p.name)} — ${cl ? esc(cl.name) : 'Unknown'}</option>`;
+        }).join('');
+
+      $('createContractModal').classList.add('open');
+    });
+
+    $('contractModalCancel').addEventListener('click', () => {
+      $('createContractModal').classList.remove('open');
+    });
+
+    // Auto-generate content when template selected
+    $('contractTemplateSelect').addEventListener('change', () => {
+      const projectId = $('contractProjectSelect').value;
+      const templateType = $('contractTemplateSelect').value;
+      if (!projectId || !templateType) return;
+
+      const proj = allProjects.find(p => p.id == projectId);
+      if (!proj) return;
+      const client = allClients.find(c => c.id == proj.client_id);
+      if (!client) return;
+
+      const title = proj.name + ' — Service Agreement';
+      $('contractTitleInput').value = title;
+      $('contractContentInput').value = generateContractContent(templateType, proj, client);
+    });
+
+    $('contractModalSave').addEventListener('click', async () => {
+      const project_id = $('contractProjectSelect').value;
+      const template_type = $('contractTemplateSelect').value;
+      const title = $('contractTitleInput').value.trim();
+      const content = $('contractContentInput').value.trim();
+      const errEl = $('contractModalError');
+      errEl.style.display = 'none';
+
+      if (!project_id || !template_type || !title || !content) {
+        errEl.textContent = 'All fields are required. Select a project, template, provide a title, and content.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      // Get client_id from project
+      const proj = allProjects.find(p => p.id == project_id);
+      if (!proj) {
+        errEl.textContent = 'Project not found.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const saveBtn = $('contractModalSave');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+
+      try {
+        const { data, error } = await supabase.from('contracts').insert({
+          project_id,
+          client_id: proj.client_id,
+          title,
+          content,
+          template_type,
+          status: 'draft'
+        }).select().single();
+
+        if (error) throw error;
+
+        // Log activity
+        supabase.from('activity_log').insert({
+          project_id: project_id,
+          type: 'update',
+          text: '📝 Contract created: ' + title
+        }).then().catch(function(){});
+
+        $('createContractModal').classList.remove('open');
+        loadContracts();
+      } catch (e) {
+        errEl.textContent = 'Error: ' + e.message;
+        errEl.style.display = 'block';
+        console.error(e);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Contract';
+      }
+    });
+
+    /* ── Invoices Page ── */
+    async function loadInvoicesPage() {
+      $('invLoading').style.display = 'block';
+      $('invTableWrap').style.display = 'none';
+      $('invEmpty').style.display = 'none';
+      try {
+        const { data, error } = await supabase
+          .from('invoices')
+          .select('*, projects(name, client_id, clients(name))')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        $('invLoading').style.display = 'none';
+        if (!data || !data.length) {
+          $('invEmpty').style.display = 'block';
+          return;
+        }
+        $('invTableWrap').style.display = 'block';
+        $('invoicesAllBody').innerHTML = data.map(function(inv) {
+          var clientName = (inv.projects && inv.projects.clients) ? inv.projects.clients.name : '—';
+          var projectName = inv.projects ? inv.projects.name : '—';
+          return '<tr>'
+            + '<td class="mono">' + esc(inv.invoice_num || '—') + '</td>'
+            + '<td>' + esc(clientName) + '</td>'
+            + '<td>' + esc(projectName) + '</td>'
+            + '<td class="mono">' + formatCurrency(inv.amount) + '</td>'
+            + '<td>' + formatDate(inv.due_date) + '</td>'
+            + '<td><span class="badge ' + (inv.status||'unpaid') + '">' + (inv.status||'unpaid') + '</span></td>'
+            + '</tr>';
+        }).join('');
+      } catch (e) {
+        $('invLoading').textContent = 'Error loading invoices: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    /* ── Contracts ── */
+    async function viewContract(contractId) {
+      selectedContractId = contractId;
+      try {
+        const { data, error } = await supabase
+          .from('contracts')
+          .select('*')
+          .eq('id', contractId)
+          .single();
+        if (error) throw error;
+        if (!data) return;
+
+        const c = data;
+        const proj = allProjects.find(p => p.id == c.project_id);
+        const client = proj ? allClients.find(cl => cl.id == proj.client_id) : null;
+        const clientName = client ? esc(client.name) : '—';
+        const clientEmail = client ? esc(client.email) : '';
+
+        $('viewContractTitle').textContent = c.title;
+        $('viewContractStatus').textContent = c.status || 'draft';
+        $('viewContractStatus').className = 'badge ' + (c.status || 'draft');
+
+        const metaParts = [];
+        if (clientName) metaParts.push(clientName);
+        metaParts.push('Created: ' + formatDate(c.created_at));
+        if (c.sent_at) metaParts.push('Sent: ' + formatDate(c.sent_at));
+        $('viewContractMeta').textContent = metaParts.join(' · ');
+
+        $('viewContractBody').textContent = c.content;
+
+        // Store client email on the send button
+        $('viewContractSendBtn').dataset.clientEmail = clientEmail;
+        $('viewContractSendBtn').dataset.clientName = clientName;
+        $('viewContractSendBtn').dataset.contractId = contractId;
+        $('viewContractSendBtn').dataset.status = c.status;
+
+        // Disable send button if already sent/signed
+        if (c.status === 'sent' || c.status === 'signed') {
+          $('viewContractSendBtn').disabled = true;
+          $('viewContractSendBtn').textContent = c.status === 'signed' ? '✓ Signed' : '✉ Already Sent';
+        } else {
+          $('viewContractSendBtn').disabled = false;
+          $('viewContractSendBtn').textContent = '✉ Send to Client';
+        }
+
+        $('viewContractModal').classList.add('open');
+      } catch (e) {
+        console.error(e);
+        alert('Error loading contract: ' + e.message);
+      }
+    }
+
+    $('viewContractClose').addEventListener('click', () => {
+      $('viewContractModal').classList.remove('open');
+    });
+
+    $('viewContractSendBtn').addEventListener('click', async () => {
+      const btn = $('viewContractSendBtn');
+      const clientEmail = btn.dataset.clientEmail;
+      const contractId = btn.dataset.contractId;
+      const clientName = btn.dataset.clientName;
+
+      if (!clientEmail || clientEmail === '—') {
+        alert('No client email available for this contract.');
+        return;
+      }
+
+      const confirmed = confirm(`Send contract to ${clientName} (${clientEmail})?`);
+      if (!confirmed) return;
+
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+
+        const { error } = await supabase
+          .from('contracts')
+          .update({ status: 'sent', sent_at: new Date().toISOString() })
+          .eq('id', contractId);
+
+        if (error) throw error;
+
+        // Log activity
+        const { data: contractData } = await supabase.from('contracts').select('project_id').eq('id', contractId).single();
+        const projectId = allProjects.find(p => p.id == contractData?.project_id)?.id;
+        await supabase.from('activity_log').insert({
+          project_id: projectId,
+          type: 'update',
+          text: `Contract sent to ${clientName}.`
+        });
+
+        btn.textContent = '✉ Sent';
+        $('viewContractStatus').textContent = 'sent';
+        $('viewContractStatus').className = 'badge sent';
+
+        // Reload contracts list
+        loadContracts();
+      } catch (e) {
+        alert('Error sending contract: ' + e.message);
+        console.error(e);
+        btn.disabled = false;
+        btn.textContent = '✉ Send to Client';
+      }
+    });
+
+    // Download PDF (print)
+    $('viewContractDownloadPdf').addEventListener('click', () => {
+      if ($('viewContractModal').classList.contains('open')) {
+        // Prepare a print-friendly view
+        const title = $('viewContractTitle').textContent;
+        const content = $('viewContractBody').textContent;
+        const printWin = window.open('', '_blank');
+        printWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>${esc(title)}</title>
+            <style>
+              body { font-family: 'Courier New', monospace; padding: 40px; line-height: 1.7; font-size: 13px; max-width: 800px; margin: 0 auto; }
+              h1 { font-size: 20px; text-align: center; margin-bottom: 24px; }
+              pre { white-space: pre-wrap; font-family: 'Courier New', monospace; }
+              @media print { body { padding: 20px; } }
+            </style>
+          </head>
+          <body>
+            <h1>${esc(title)}</h1>
+            <pre>${esc(content)}</pre>
+            <script>
+              window.print();
+              window.close();
+            <\\/script>
+          </body>
+          </html>
+        `);
+        printWin.document.close();
+      }
+    });
+
+    /* ── MESSAGES / CHAT ── */
+    var currentConvId = null;
+    var msgChannel = null;
+
+    function loadMessages() {
+      supabase.from('conversations').select('*, clients!inner(name,email,avatar_initials,avatar_color)').order('last_message_at', { ascending: false }).then(function(r) {
+        if (r.error) { console.error(r.error); return; }
+        renderConvList(r.data || []);
+        updateBadge(r.data || []);
+        if (currentConvId) reopenConv(currentConvId, r.data);
+      });
+    }
+
+    function renderConvList(convs) {
+      var el = document.getElementById('conversationList');
+      if (!convs.length) { el.innerHTML = '<div class="msg-conv-empty">No conversations yet. Admin can start one from a project.</div>'; return; }
+      el.innerHTML = convs.map(function(c) {
+        var cl = c.clients;
+        var name = cl ? cl.name : 'Unknown';
+        var init = cl ? (cl.avatar_initials || name.charAt(0).toUpperCase()) : '?';
+        var color = cl ? (cl.avatar_color || 'av-blue') : 'av-blue';
+        var last = c.last_message || 'No messages yet';
+        var time = c.last_message_at ? formatDate(c.last_message_at) : '';
+        var unread = c.unread_count || 0;
+        var active = currentConvId == c.id ? ' active' : '';
+        return '<div class="msg-conv-item' + active + '" data-conv-id="' + c.id + '" data-client-name="' + esc(name) + '">' +
+          '<div class="msg-conv-avatar">' + init + '</div>' +
+          '<div class="msg-conv-info"><div class="msg-conv-name">' + esc(name) + '</div><div class="msg-conv-last">' + esc(last.slice(0, 60)) + '</div></div>' +
+          '<div class="msg-conv-meta"><div class="msg-conv-time">' + time + '</div>' + (unread > 0 ? '<div class="msg-conv-unread">' + unread + '</div>' : '') + '</div></div>';
+      }).join('');
+
+      document.querySelectorAll('.msg-conv-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          openConversation(parseInt(this.dataset.convId), this.dataset.clientName);
+        });
+      });
+    }
+
+    function updateBadge(convs) {
+      var total = 0;
+      convs.forEach(function(c) { total += (c.unread_count || 0); });
+      var badge = document.getElementById('msgBadge');
+      if (total > 0) { badge.textContent = total > 99 ? '99+' : total; badge.style.display = 'inline'; }
+      else { badge.style.display = 'none'; }
+    }
+
+    function reopenConv(convId, convs) {
+      for (var i = 0; i < convs.length; i++) {
+        if (convs[i].id == convId) { openConversation(convId, convs[i].clients ? convs[i].clients.name : 'Client'); return; }
+      }
+      // Conversation was removed or not loaded, close chat
+      document.getElementById('msgChatArea').style.display = 'none';
+      document.getElementById('msgEmptyState').style.display = 'flex';
+      currentConvId = null;
+    }
+
+    function openConversation(convId, clientName) {
+      currentConvId = convId;
+      document.querySelectorAll('.msg-conv-item').forEach(function(i) { i.classList.remove('active'); });
+      var item = document.querySelector('.msg-conv-item[data-conv-id="' + convId + '"]');
+      if (item) item.classList.add('active');
+
+      document.getElementById('msgEmptyState').style.display = 'none';
+      document.getElementById('msgChatArea').style.display = 'flex';
+      document.getElementById('msgChatHeader').innerHTML = '<h4>💬 ' + esc(clientName) + '</h4><p>Conversation</p>';
+
+      loadMessagesForConv(convId);
+      subscribeMessages(convId);
+    }
+
+    function loadMessagesForConv(convId) {
+      supabase.from('messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true }).then(function(r) {
+        if (r.error) { console.error(r.error); return; }
+        renderMessages(r.data || []);
+
+        // Mark as read
+        supabase.from('messages').update({ read_at: new Date().toISOString() }).eq('conversation_id', convId).eq('sender', 'client').is('read_at', null).then(function() {
+          loadMessages(); // refresh badge
+        });
+      });
+    }
+
+    function renderMessages(msgs) {
+      var el = document.getElementById('msgMessages');
+      if (!msgs.length) { el.innerHTML = '<div class="msg-conv-empty" style="padding:40px;">Start a conversation</div>'; return; }
+      el.innerHTML = msgs.map(function(m) {
+        var side = m.sender == 'admin' ? 'admin' : 'client';
+        var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+        return '<div class="msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + time + '</div></div>';
+      }).join('');
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function subscribeMessages(convId) {
+      if (msgChannel) { supabase.removeChannel(msgChannel); }
+      msgChannel = supabase.channel('messages-' + convId).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + convId }, function(payload) {
+        var el = document.getElementById('msgMessages');
+        var m = payload.new;
+        var side = m.sender == 'admin' ? 'admin' : 'client';
+        var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+        el.innerHTML += '<div class="msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + time + '</div></div>';
+        el.scrollTop = el.scrollHeight;
+        loadMessages(); // refresh conv list + badge
+      }).subscribe();
+    }
+
+    document.getElementById('msgSendBtn').addEventListener('click', function() {
+      sendMessage();
+    });
+    document.getElementById('msgInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    function sendMessage() {
+      var input = document.getElementById('msgInput');
+      var content = input.value.trim();
+      if (!content || !currentConvId) return;
+      input.value = '';
+      supabase.from('messages').insert({ conversation_id: currentConvId, sender: 'admin', content: content }).then(function(r) {
+        if (r.error) { console.error(r.error); input.value = content; return; }
+        // Update conversation last_message
+        supabase.from('conversations').update({ last_message: content, last_message_at: new Date().toISOString() }).eq('id', currentConvId).then();
+      });
+    }
+
+    // Update navigation to include messages
+    document.querySelector('[data-page="messages"]').addEventListener('click', function() {
+      loadMessages();
+    });
+
+    // New conversation
+    document.getElementById('newConvBtn').addEventListener('click', function() {
+      var list = [];
+      for (var i = 0; i < allClients.length; i++) {
+        list.push({ id: allClients[i].id, name: allClients[i].name, email: allClients[i].email });
+      }
+      if (!list.length) { alert('No clients yet.'); return; }
+      var html = 'Select a client to start a conversation:<br><br>';
+      for (var i = 0; i < list.length; i++) {
+        html += '<div class="msg-conv-item" data-cid="' + list[i].id + '" data-cname="' + esc(list[i].name) + '" data-cemail="' + esc(list[i].email) + '" style="padding:10px 14px;">' +
+          '<div class="msg-conv-avatar" style="width:30px;height:30px;font-size:12px;">' + (list[i].name.charAt(0).toUpperCase()) + '</div>' +
+          '<div class="msg-conv-info"><div class="msg-conv-name">' + esc(list[i].name) + '</div><div class="msg-conv-last">' + esc(list[i].email) + '</div></div></div>';
+      }
+      var overlay = document.createElement('div');
+      overlay.className = 'modal-overlay open';
+      overlay.style.display = 'flex';
+      overlay.innerHTML = '<div class="modal" style="max-width:420px;"><h3><span>+</span> New Conversation</h3><div class="msg-conv-list">' + html + '</div><div class="modal-actions" style="margin-top:12px;"><button class="btn btn-outline" id="newConvCancel">Cancel</button></div></div>';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+      document.getElementById('newConvCancel').addEventListener('click', function() { overlay.remove(); });
+      overlay.querySelectorAll('.msg-conv-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var cid = parseInt(this.dataset.cid);
+          var cname = this.dataset.cname;
+          var cemail = this.dataset.cemail;
+          overlay.remove();
+          // Create conversation
+          supabase.from('projects').select('id').eq('client_id', cid).limit(1).then(function(r) {
+            if (r.error || !r.data || !r.data.length) { alert('No project for this client'); return; }
+            supabase.from('conversations').insert({ project_id: r.data[0].id, client_id: cid, subject: 'General' }).select().single().then(function(r2) {
+              if (r2.error) { alert('Error: ' + r2.error.message); return; }
+              loadMessages();
+              setTimeout(function() { openConversation(r2.data.id, cname); }, 200);
+            });
+          });
+        });
+      });
+    });
+
+    // Click outside modal to close
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
