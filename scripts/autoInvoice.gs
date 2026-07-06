@@ -31,7 +31,7 @@ function processWeeklyInvoices() {
   console.log(`🔄 Auto-Invoice Generation: Week of ${weekStr}`);
   
   // 1. Fetch projects with weekly_services from Supabase
-  const projects = fetchWeeklyServiceProjects();
+  const projects = fetchActiveProjects();
   if (!projects || projects.length === 0) {
     console.log('No projects with weekly services found.');
     return;
@@ -94,7 +94,7 @@ function processWeeklyInvoices() {
 /**
  * Fetch projects that have weekly_services enabled
  */
-function fetchWeeklyServiceProjects() {
+function fetchActiveProjects() {
   const url = `${CONFIG.SUPABASE_URL}/rest/v1/projects?select=*,clients!inner(email,name)&status=in.(active,review)&weekly_services=eq.true`;
   const options = {
     method: 'GET',
