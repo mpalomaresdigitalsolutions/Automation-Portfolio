@@ -32,10 +32,7 @@ function processWeeklyInvoices() {
   
   // 1. Fetch projects with weekly_services from Supabase
   const projects = fetchActiveProjects();
-  if (!projects || projects.length === 0) {
-    console.log('No projects with weekly services found.');
-    return;
-  }
+  if (!projects || !projects.length) { console.log('No active projects'); return; }
   
   console.log(`Found ${projects.length} project(s) with weekly services`);
   
