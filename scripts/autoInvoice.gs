@@ -47,44 +47,15 @@ function processWeeklyInvoices() {
     var p = projects[i], services = p.weekly_services;
     if (!services || !services.length) continue;
     try {
-    const dueDate = new Date(today);
-    dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
-    
-    const invoiceNum = '#IV-' + String(nextNum).padStart(5, '0');
-    const amount = Number(project.weekly_amount || project.budget || 0);
-    
-    if (amount <= 0) {
-      console.log(`Skipping ${project.name}: amount is 0`);
-      continue;
-    }
-    
-    const invoiceData = {
-      project_id: project.id,
-      invoice_num: invoiceNum,
-      title: `Week of ${weekStr} — ${CONFIG.INVOICE_DESCRIPTION}`,
-      amount: amount,
-      due_date: dueDate.toISOString().split('T')[0],
-      status: 'sent'
-    };
-    
-    const result = insertInvoice(invoiceData);
-    if (result) {
-      created++;
-      var clientInfo = project.clients || {};
-      results.push({ name: clientInfo.name || project.name, num: invoiceNum, amount: amount });
-      logActivity(project.id, 'invoice', 
-        `Invoice ${invoiceNum} sent — ₱${amount.toLocaleString()}`);
-      
-      // Email invoice to client
-      if (clientInfo.email) {
-        sendInvoiceEmail(clientInfo.email, clientInfo.name || project.name, invoiceNum, amount, dueDate.toISOString().split('T')[0], invoiceData.title);
+      var invoice = createWeeklyInvoice(p, services);
+      if (invoice) {
+        created++;
+        results.push({ name: p.name || p.clients?.name, num: invoice.invoice_num, amount: invoice.amount });
+        nextNum = parseInt(invoice.invoice_num.replace('#IV-', '')) + 1;
       }
-    }
-    
-    nextNum++;
     } catch (e) {
       errors++;
-      console.error(`Error processing project ${project.id}: ${e.toString()}`);
+      console.error(`Error processing project ${p.id}: ${e.toString()}`);
     }
   }
   
@@ -212,6 +183,48 @@ function logActivity(projectId, type, text) {
   } catch (e) {
     console.error('Activity log failed:', e.toString());
   }
+}
+
+
+/**
+ * Create invoice for a single project's weekly services
+ */
+function createWeeklyInvoice(p, services) {
+  var today = new Date();
+  var weekStr = today.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  var lastNum = getLastInvoiceNumber();
+  var nextNum = lastNum + 1;
+  var invoiceNum = '#IV-' + String(nextNum).padStart(5, '0');
+  var amount = Number(p.weekly_amount || p.budget || 0);
+  
+  if (amount <= 0) {
+    console.log('Skipping ' + p.name + ': amount is 0');
+    return null;
+  }
+  
+  var dueDate = new Date(today);
+  dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
+  
+  var invoiceData = {
+    project_id: p.id,
+    invoice_num: invoiceNum,
+    title: 'Week of ' + weekStr + ' — ' + CONFIG.INVOICE_DESCRIPTION,
+    amount: amount,
+    due_date: dueDate.toISOString().split('T')[0],
+    status: 'sent'
+  };
+  
+  var result = insertInvoice(invoiceData);
+  if (!result) return null;
+  
+  var clientInfo = p.clients || {};
+  logActivity(p.id, 'invoice', 'Invoice ' + invoiceNum + ' sent — ₱' + amount.toLocaleString());
+  
+  if (clientInfo.email) {
+    sendInvoiceEmail(clientInfo.email, clientInfo.name || p.name, invoiceNum, amount, dueDate.toISOString().split('T')[0], invoiceData.title);
+  }
+  
+  return { invoice_num: invoiceNum, amount: amount, name: clientInfo.name || p.name };
 }
 
 /**
