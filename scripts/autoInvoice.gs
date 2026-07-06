@@ -45,6 +45,7 @@ function processWeeklyInvoices() {
   for (var i = 0; i < projects.length; i++) {
     var project = projects[i];
     var p = projects[i], services = p.weekly_services;
+    if (!services || !services.length) continue;
     const dueDate = new Date(today);
     dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
     
