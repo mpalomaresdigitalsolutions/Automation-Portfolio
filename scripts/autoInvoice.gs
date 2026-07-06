@@ -39,8 +39,7 @@ function processWeeklyInvoices() {
   // 2. Get last invoice number
   const lastNum = getLastInvoiceNumber();
   let nextNum = lastNum + 1;
-  
-  const created = [];
+  var created = 0, errors = 0, results = [];
   
   // 3. Generate invoice for each project
   projects.forEach(project => {
@@ -66,8 +65,9 @@ function processWeeklyInvoices() {
     
     const result = insertInvoice(invoiceData);
     if (result) {
+      created++;
       var clientInfo = project.clients || {};
-      created.push({ name: clientInfo.name || project.name, num: invoiceNum, amount: amount, clientEmail: clientInfo.email, projectName: clientInfo.name || project.name });
+      results.push({ name: clientInfo.name || project.name, num: invoiceNum, amount: amount });
       logActivity(project.id, 'invoice', 
         `Invoice ${invoiceNum} sent — ₱${amount.toLocaleString()}`);
       
@@ -81,11 +81,11 @@ function processWeeklyInvoices() {
   });
   
   // 4. Send summary email
-  if (created.length > 0) {
-    sendSummaryEmail(created);
+  if (created > 0) {
+    sendSummaryEmail(created, errors, results);
   }
   
-  console.log(`✅ Generated ${created.length} invoice(s)`);
+  console.log(`✅ Generated ${created} invoice(s), ${errors} error(s)`);
 }
 
 /**
@@ -209,11 +209,11 @@ function logActivity(projectId, type, text) {
 /**
  * Send summary email to admin
  */
-function sendSummaryEmail(created) {
+function sendSummaryEmail(created, errors, results) {
   let totalAmount = 0;
   let details = '';
   
-  created.forEach(inv => {
+  results.forEach(inv => {
     totalAmount += inv.amount;
     details += `\n• ${inv.name}: ${inv.num} — ₱${inv.amount.toLocaleString()}`;
   });
@@ -221,7 +221,8 @@ function sendSummaryEmail(created) {
   const weekStr = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric' });
   const subject = `📄 Auto-Invoice: Week of ${weekStr}`;
   const body = `Weekly auto-invoice generation complete.\n\n`
-    + `Generated: ${created.length} invoice(s)\n`
+    + `Created: ${created} invoice(s)\n`
+    + `Errors: ${errors}\n`
     + `Total: ₱${totalAmount.toLocaleString()}\n`
     + `\n--- Details ---${details}\n\n`
     + `✅ All invoices marked as "sent" — due in ${CONFIG.INVOICE_DUE_DAYS} days.`;
