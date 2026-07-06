@@ -46,6 +46,7 @@ function processWeeklyInvoices() {
     var project = projects[i];
     var p = projects[i], services = p.weekly_services;
     if (!services || !services.length) continue;
+    try {
     const dueDate = new Date(today);
     dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
     
@@ -54,7 +55,7 @@ function processWeeklyInvoices() {
     
     if (amount <= 0) {
       console.log(`Skipping ${project.name}: amount is 0`);
-      return;
+      continue;
     }
     
     const invoiceData = {
@@ -81,6 +82,10 @@ function processWeeklyInvoices() {
     }
     
     nextNum++;
+    } catch (e) {
+      errors++;
+      console.error(`Error processing project ${project.id}: ${e.toString()}`);
+    }
   }
   
   // 4. Send summary email
