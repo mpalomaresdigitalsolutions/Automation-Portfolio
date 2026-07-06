@@ -48,7 +48,7 @@ function processWeeklyInvoices() {
     if (!services || !services.length) continue;
     try {
       var invoice = createWeeklyInvoice(p, services);
-      if (invoice) { sendInvoiceEmail(p, invoice, services); created++; }
+      if (invoice) { sendInvoiceEmail(p, invoice, services); created++; } else errors++;
     } catch (e) {
       errors++;
       console.error(`Error processing project ${p.id}: ${e.toString()}`);
