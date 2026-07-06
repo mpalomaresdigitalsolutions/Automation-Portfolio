@@ -42,7 +42,8 @@ function processWeeklyInvoices() {
   var created = 0, errors = 0, results = [];
   
   // 3. Generate invoice for each project
-  projects.forEach(project => {
+  for (var i = 0; i < projects.length; i++) {
+    var project = projects[i];
     const dueDate = new Date(today);
     dueDate.setDate(dueDate.getDate() + CONFIG.INVOICE_DUE_DAYS);
     
@@ -78,7 +79,7 @@ function processWeeklyInvoices() {
     }
     
     nextNum++;
-  });
+  }
   
   // 4. Send summary email
   if (created > 0) {
