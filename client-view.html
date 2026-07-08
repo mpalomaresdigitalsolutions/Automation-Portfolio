@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -546,9 +546,15 @@
     .msg-bubble.admin { align-self:flex-end;background:var(--accent);color:#060810;border-bottom-right-radius:4px; }
     .msg-bubble.client { align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border); }
     .msg-bubble-time { font-size:10px;margin-top:4px;opacity:0.6;font-family:'Space Mono',monospace;text-align:right; }
-    #clientMessages .client-msg { max-width:75%;padding:10px 16px;border-radius:12px;font-size:14px;line-height:1.5;word-wrap:break-word; }
-    #clientMessages .client-msg.admin { align-self:flex-end;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-bottom-right-radius:4px; }
-    #clientMessages .client-msg.client { align-self:flex-start;background:var(--accent);color:#060810;border-bottom-left-radius:4px; }
+    #clientMessages .client-msg { max-width:75%;padding:12px 18px;border-radius:14px;font-size:14px;line-height:1.6;word-wrap:break-word;position:relative; }
+    #clientMessages .client-msg.admin { align-self:flex-end;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    #clientMessages .client-msg.client { align-self:flex-start;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,212,170,0.15); }
+    #clientMessages .msg-bubble-time { font-size:10px;margin-top:6px;opacity:0.7;font-family:'Space Mono',monospace;display:flex;justify-content:flex-end;align-items:center;gap:4px; }
+    #clientMessages .client-msg.client .msg-bubble-time { color:rgba(255,255,255,0.7); }
+    .msg-date-sep { text-align:center;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;padding:12px 0 8px;position:relative; }
+    .msg-date-sep::before, .msg-date-sep::after { content:'';position:absolute;top:50%;height:1px;background:var(--border);width:30%; }
+    .msg-date-sep::before { left:0; }
+    .msg-date-sep::after { right:0; }
   </style>
 </head>
 <body>
@@ -687,6 +693,10 @@
   </div>
 
   <script>
+    async function logNotification(type, message, clientName, relatedId) {
+      try { await supabase.from('notifications').insert({ type, message, client_name: clientName||'', related_id: relatedId||'', is_read: false }); }
+      catch(e) { console.warn('Notif not ready:', e.message); }
+    }
     const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -734,6 +744,7 @@
         }
 
         sessionStorage.setItem('portal_user_id', pu.id);
+        logNotification('client_login', 'Client logged into portal', displayName || email.split('@')[0], '');
         sessionStorage.setItem('portal_email', email);
         sessionStorage.setItem('portal_role', pu.role);
         sessionStorage.setItem('client_id', clientId);
@@ -827,6 +838,34 @@
           ${project.deadline ? `<span class="mono" style="color:var(--muted);font-size:12px;">Due ${formatDate(project.deadline)}</span>` : ''}
         </div>
       `;
+      
+      // Add progress bar
+      $('projectHeader').innerHTML += `
+        <div style="margin-top:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;">
+            <span>Project Progress</span><span id="clientProgressLabel">--%</span>
+          </div>
+          <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
+            <div id="clientProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 0.5s;"></div>
+          </div>
+        </div>
+      `;
+      
+      // Load invoices for progress calculation
+      // Load invoices for progress calculation (with retry)
+      (function loadProgress(retries) {
+        if (retries > 3) return;
+        supabase.from('invoices').select('amount, status').eq('project_id', project.id).then(function(r) {
+          if (r.error) { setTimeout(function() { loadProgress(retries+1); }, 1500 * (retries+1)); return; }
+        var totalInv = 0, paidInv = 0;
+        (r.data || []).forEach(function(inv) {
+          totalInv += parseFloat(inv.amount) || 0;
+          if (inv.status === 'paid') paidInv += parseFloat(inv.amount) || 0;
+        });
+        var pct = project.budget > 0 ? Math.min(100, Math.round(paidInv / project.budget * 100)) : 0;
+        document.getElementById('clientProgressBar').style.width = pct + '%';
+        document.getElementById('clientProgressLabel').textContent = pct + '%';
+      });})(0);
 
       // Stats
       $('statsGrid').innerHTML = `
@@ -839,13 +878,14 @@
       $('loadingState').style.display = 'none';
       $('portalContent').style.display = 'block';
 
-      // Load data tabs
+      // Load data tabs - sequential para hindi ma-overload Supabase
       loadInvoices(project.id);
-      loadMilestones(project.id);
-      loadRecentActivity(project.id);
-      loadDeliverables(project.id);
-      loadActivity(project.id);
-      loadContracts(project.id);
+      setTimeout(function() { loadMilestones(project.id); }, 300);
+      setTimeout(function() { loadRecentActivity(project.id); }, 600);
+      setTimeout(function() { loadDeliverables(project.id); }, 900);
+      setTimeout(function() { loadActivity(project.id); }, 1200);
+      setTimeout(function() { loadContracts(project.id); }, 1500);
+      setTimeout(function() { subscribeContracts(project.id); }, 2000);
 
       // Load upcoming appointments and unread count
       loadUpcomingMeetings(displayName);
@@ -870,11 +910,16 @@
 
     /* ── Invoices ── */
     async function loadInvoices(projectId) {
+      // Log invoice view
+      var clientName = $('invClientName') ? $('invClientName').textContent : '';
+      var projName = document.getElementById('projectName') ? document.getElementById('projectName').textContent : '';
+      logNotification('invoice_viewed', 'Client viewed invoices for ' + projName, clientName, '');
       try {
         const { data, error } = await supabase
           .from('invoices')
           .select('*')
           .eq('project_id', projectId)
+          .in('status', ['sent', 'paid'])
           .order('created_at', { ascending: false });
         if (error) throw error;
         const invoices = data || [];
@@ -883,10 +928,10 @@
           body.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No invoices yet.</p></div></td></tr>';
         } else {
           body.innerHTML = invoices.map(inv => `
-            <tr class="inv-row" data-invoice=\\'${JSON.stringify(inv).replace(/'/g,"&#39;")}\\' style="cursor:pointer;">
+            <tr class="inv-row" data-invoice="${encodeURIComponent(JSON.stringify(inv))}" style="cursor:pointer;">
               <td class="mono">${esc(inv.invoice_num || '—')}</td>
               <td>${esc(inv.title)}</td>
-              <td class="mono">${formatCurrency(inv.amount)}</td>
+              <td class="mono">${formatCurrency(inv.amount, inv.currency)}</td>
               <td>${formatDate(inv.due_date)}</td>
               <td><span class="badge ${inv.status}">${inv.status || 'unpaid'}</span></td>
             </tr>
@@ -895,7 +940,7 @@
           // Click to view invoice detail
           document.querySelectorAll('.inv-row').forEach(row => {
             row.addEventListener('click', () => {
-              const inv = JSON.parse(row.dataset.invoice);
+              const inv = JSON.parse(decodeURIComponent(row.dataset.invoice));
               openInvoiceDetail(inv);
             });
           });
@@ -924,7 +969,7 @@
       statusEl.textContent = inv.status || 'unpaid';
       statusEl.className = 'badge ' + (inv.status||'unpaid');
 
-      const amt = formatCurrency(inv.amount);
+      const amt = formatCurrency(inv.amount, inv.currency);
       $('invDetailAmount').textContent = amt;
 
       // Build items table
@@ -932,8 +977,8 @@
       const itemsBody = $('invDetailItems');
       if (itemsRaw && Array.isArray(itemsRaw) && itemsRaw.length) {
         itemsBody.innerHTML = itemsRaw.map(item => {
-          const itemAmt = formatCurrency(item.amount || (item.qty * item.rate));
-          return `<tr><td><div>${esc(item.desc)}</div></td><td style="text-align:center;">${item.qty}</td><td style="text-align:right;">${formatCurrency(item.rate)}</td><td style="text-align:right;">${itemAmt}</td></tr>`;
+          const itemAmt = formatCurrency(item.amount || (item.qty * item.rate), inv.currency);
+          return `<tr><td><div>${esc(item.desc)}</div></td><td style="text-align:center;">${item.qty}</td><td style="text-align:right;">${formatCurrency(item.rate, inv.currency)}</td><td style="text-align:right;">${itemAmt}</td></tr>`;
         }).join('');
       } else {
         itemsBody.innerHTML = `<tr><td><div>${esc(inv.title||'Invoice')}</div></td><td style="text-align:center;">1</td><td style="text-align:right;">${amt}</td><td style="text-align:right;">${amt}</td></tr>`;
@@ -950,61 +995,91 @@
       if (e.target === modal) modal.classList.remove('open');
     });
     $('invDetailClose').addEventListener('click', () => $('invoiceDetailModal').classList.remove('open'));
-    $('invDetailPrint').addEventListener('click', () => {
+        $('invDetailPrint').addEventListener('click', () => {
       var invNum = $('invDetailNum').textContent || 'invoice';
+      var clientName = $('invClientName') ? $('invClientName').textContent : '';
+      logNotification('pdf_viewed', 'Invoice ' + invNum + ' PDF downloaded by client', clientName, invNum);
+      var invNum = $('invDetailNum').textContent || 'invoice';
+      var clientName = $('invClientName') ? $('invClientName').textContent : 'Client';
+      var clientInfo = $('invClientInfo') ? $('invClientInfo').innerHTML : '';
+      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      var statusEl = $('invDetailStatus');
+      var statusTxt = statusEl ? statusEl.textContent.trim() : 'Sent';
+      var statusClass = 'badge-paid';
+      if (statusTxt.toLowerCase() === 'sent') statusClass = 'badge-sent';
+      else if (statusTxt.toLowerCase() === 'pending') statusClass = 'badge-pending';
+      var totalTxt = $('invDetailTotal') ? $('invDetailTotal').textContent : '';
+      var dueTxt = $('invDetailDueDate') ? $('invDetailDueDate').textContent : '—';
+
       var win = window.open('', '_blank');
-      win.document.write('<!DOCTYPE html><html><head><title>Invoice ' + invNum + '</title>');
-      win.document.write('<style>');
-      win.document.write('body{font-family:"Outfit",sans-serif;padding:48px;max-width:820px;margin:0 auto;color:#111;}');
-      win.document.write('h3{font-size:22px;font-weight:700;margin-bottom:2px;}');
-      win.document.write('h3 span{color:#00a0d4;}');
-      win.document.write('p{font-size:13px;color:#555;line-height:1.6;}');
-      win.document.write('.header{display:flex;justify-content:space-between;margin-bottom:40px;padding-bottom:24px;border-bottom:2px solid #eee;}');
-      win.document.write('.to-title{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:4px;}');
-      win.document.write('.inv-to h4{font-size:18px;margin-bottom:2px;}');
-      win.document.write('.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #eee;}');
-      win.document.write('.meta-item label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#888;display:block;margin-bottom:4px;}');
-      win.document.write('.meta-item div{font-size:15px;font-weight:500;}');
-      win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:32px;}');
-      win.document.write('th{text-align:left;padding:12px 16px;font-size:10px;text-transform:uppercase;color:#888;border-bottom:1px solid #eee;background:#f5f5f5;}');
-      win.document.write('td{padding:14px 16px;font-size:14px;border-bottom:1px solid #eee;}');
-      win.document.write('th:last-child,td:last-child{text-align:right;}');
-      win.document.write('.total td{border-top:2px solid #00a0d4;font-weight:700;font-size:16px;padding-top:16px;}');
-      win.document.write('.notes{background:#f5f5f5;padding:20px;border-radius:8px;margin-bottom:32px;}');
-      win.document.write('.notes label{font-size:10px;text-transform:uppercase;color:#888;display:block;margin-bottom:8px;}');
-      win.document.write('.notes p{font-size:13px;color:#555;line-height:1.6;}');
-      win.document.write('.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;border:1px solid #ccc;}');
+      win.document.write('<!DOCTYPE html><html><head><title>Invoice ' + invNum + '</title><style>');
+      win.document.write('@page{margin:0;}');
+      win.document.write('*{margin:0;padding:0;box-sizing:border-box;}');
+      win.document.write('body{font-family:"Outfit",system-ui,-apple-system,sans-serif;background:#0a0a14;color:#e0e0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;}');
+      win.document.write('.inv-card{background:#12121f;border:1px solid #2a2a40;border-radius:16px;max-width:860px;width:100%;padding:50px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}');
+      win.document.write('.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:30px;border-bottom:1px solid #2a2a40;}');
+      win.document.write('.company h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;}');
+      win.document.write('.company .tagline{font-size:12px;color:#6b6b80;text-transform:uppercase;letter-spacing:2px;margin-top:4px;}');
+      win.document.write('.inv-title{text-align:right;}');
+      win.document.write('.inv-title h2{font-size:28px;font-weight:300;color:#6b6b80;}');
+      win.document.write('.inv-title .num{font-size:16px;color:#fff;font-weight:600;margin-top:4px;}');
+      win.document.write('.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:40px;}');
+      win.document.write('.info-box h3{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#6b6b80;margin-bottom:8px;}');
+      win.document.write('.info-box p{font-size:14px;color:#b0b0c8;}');
+      win.document.write('.info-box .name{font-weight:600;font-size:16px;color:#fff;}');
+      win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:30px;}');
+      win.document.write('thead th{background:rgba(255,255,255,0.03);text-align:left;padding:12px 16px;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#6b6b80;font-family:"Space Mono",monospace;border-bottom:1px solid #2a2a40;}');
+      win.document.write('tbody td{padding:14px 16px;border-bottom:1px solid #1e1e30;font-size:14px;color:#b0b0c8;}');
+      win.document.write('tbody td:last-child{text-align:right;font-weight:600;color:#fff;}');
+      win.document.write('.totals{margin-left:auto;width:320px;}');
+      win.document.write('.total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;color:#b0b0c8;}');
+      win.document.write('.total-row.final{border-top:2px solid #00d4aa;margin-top:8px;padding-top:12px;font-size:18px;font-weight:700;color:#fff;}');
+      win.document.write('.badge-pdf{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}');
+      win.document.write('.badge-paid{background:rgba(0,212,170,0.12);color:#00d4aa;border:1px solid rgba(0,212,170,0.25);}');
+      win.document.write('.badge-sent{background:rgba(100,180,255,0.12);color:#64b4ff;border:1px solid rgba(100,180,255,0.25);}');
+      win.document.write('.badge-pending{background:rgba(255,193,7,0.12);color:#ffc107;border:1px solid rgba(255,193,7,0.25);}');
+      win.document.write('.footer{margin-top:40px;padding-top:20px;border-top:1px solid #2a2a40;text-align:center;font-size:12px;color:#6b6b80;}');
+      win.document.write('.no-print button{background:linear-gradient(135deg,#00d4aa,#00b894);color:#fff;border:none;padding:10px 30px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s;}');
+      win.document.write('.no-print button:hover{opacity:0.85;}');
+      win.document.write('@media print{body{background:#fff!important;padding:0;}.inv-card{box-shadow:none!important;border:none!important;padding:30px;background:#fff!important;}');
+      win.document.write('.company h1{color:#1a1a2e!important;}.inv-title .num{color:#1a1a2e!important;}.info-box .name{color:#1a1a2e!important;}');
+      win.document.write('.info-box p,.total-row{color:#555!important;}.total-row.final{color:#1a1a2e!important;}');
+      win.document.write('tbody td{color:#333!important;}tbody td:last-child{color:#1a1a2e!important;}.no-print{display:none!important;}}');
       win.document.write('</style></head><body>');
-      
-      // From section
-      win.document.write('<div class="header">');
-      win.document.write('<div><h3><span>M</span>palomares</h3><p>Digital Agency<br>admin@mpalomares.com</p></div>');
-      win.document.write('<div class="inv-to"><div class="to-title">Bill To</div><h4>' + ($('invClientName').textContent || 'Client') + '</h4><p>' + ($('invClientInfo').innerHTML || '') + '</p></div>');
+
+      win.document.write('<div class="inv-card">');
+      win.document.write('<div class="inv-header">');
+      win.document.write('<div class="company"><h1>MP Digital Solutions</h1><div class="tagline">Digital Marketing &amp; Automation</div></div>');
+      win.document.write('<div class="inv-title"><h2>INVOICE</h2><div class="num">' + invNum + '</div></div>');
       win.document.write('</div>');
-      
-      // Meta
-      win.document.write('<div class="meta">');
-      var metaFields = ['invDetailNum','invDetailIssueDate','invDetailDueDate','invDetailProject','invDetailStatus','invDetailAmount'];
-      var metaLabels = ['Invoice #','Issue Date','Due Date','Project','Status','Amount Due'];
-      var i = $('invDetailAmount');
-      for (var idx = 0; idx < metaFields.length; idx++) {
-        var el = $(metaFields[idx]);
-        win.document.write('<div class="meta-item"><label>' + metaLabels[idx] + '</label><div>' + (el.innerHTML || '—') + '</div></div>');
-      }
-      win.document.write('</div>');
-      
-      // Items table
+      win.document.write('<div class="info-grid">');
+      win.document.write('<div class="info-box"><h3>Bill To</h3><p class="name">' + clientName + '</p><p>' + clientInfo + '</p></div>');
+      win.document.write('<div class="info-box" style="text-align:right">');
+      win.document.write('<h3>Invoice Details</h3>');
+      win.document.write('<p><strong>Date:</strong> ' + today + '</p>');
+      win.document.write('<p><strong>Due:</strong> ' + dueTxt + '</p>');
+      win.document.write('<p><strong>Status:</strong> <span class="badge-pdf ' + statusClass + '">' + statusTxt + '</span></p>');
+      win.document.write('</div></div>');
+
       var itemsBody = $('invDetailItems');
+      var hasItems = itemsBody && itemsBody.innerHTML.trim().length > 0;
       win.document.write('<table><thead><tr><th style="width:55%;">Description</th><th style="width:15%;">Qty</th><th style="width:15%;">Rate</th><th style="width:15%;">Amount</th></tr></thead>');
-      win.document.write('<tbody>' + itemsBody.innerHTML + '</tbody>');
-      win.document.write('<tfoot><tr class="total"><td colspan="3">Total</td><td>' + ($('invDetailTotal').textContent || '') + '</td></tr></tfoot>');
-      win.document.write('</table>');
-      
-      // Notes
-      win.document.write('<div class="notes"><label>Payment Terms & Notes</label><p>Thank you for your business. Payment is due within 15 days of invoice date. Please include the invoice number in your payment reference.<br><br>For questions regarding this invoice, contact admin@mpalomares.com.</p></div>');
-      
-      win.document.write('<script>window.onload=function(){window.print();window.close();};<\\/script>');
-      win.document.write('</body></html>');
+      win.document.write('<tbody>' + (hasItems ? itemsBody.innerHTML : '<tr><td>Invoice</td><td>1</td><td>' + totalTxt + '</td><td>' + totalTxt + '</td></tr>') + '</tbody></table>');
+
+      win.document.write('<div class="totals">');
+      win.document.write('<div class="total-row"><span>Subtotal</span><span>' + totalTxt + '</span></div>');
+      win.document.write('<div class="total-row final"><span>Total Due</span><span>' + totalTxt + '</span></div>');
+      win.document.write('</div>');
+
+      win.document.write('<div class="footer">');
+      win.document.write('<p>MP Digital Solutions &bull; Digital Marketing &amp; Automation</p>');
+      win.document.write('<p>Thank you for your business!</p></div>');
+
+      win.document.write('<div class="no-print" style="text-align:center;margin-top:30px;">');
+      win.document.write('<button onclick="window.print()">Save as PDF / Print</button>');
+      win.document.write('</div>');
+
+      win.document.write('</div></body></html>');
       win.document.close();
     });
 
@@ -1066,13 +1141,20 @@
     /* ── Contracts ── */
     async function loadContracts(projectId) {
       try {
-        const { data, error } = await supabase
-          .from('contracts')
-          .select('*')
-          .eq('project_id', projectId)
-          .order('created_at', { ascending: false });
+        // Retry up to 3 times on failure
+        var retries = 0;
+        var data, error;
+        while (retries < 3) {
+          var res = await supabase.from('contracts').select('*').eq('project_id', projectId).order('created_at', { ascending: false });
+          data = res.data; error = res.error;
+          if (!error) break;
+          retries++;
+          await new Promise(r => setTimeout(r, 1000 * retries));
+        }
         if (error) throw error;
         const contracts = data || [];
+        console.log('Contracts loaded:', contracts.length, 'for project:', projectId);
+        contracts.forEach(function(c){console.log('  -', c.title, c.status);});
         const list = $('contractsList');
         if (!contracts.length) {
           list.innerHTML = '<div class="empty-state"><p>No contracts yet.</p></div>';
@@ -1116,25 +1198,18 @@
             const title = btn.dataset.title;
             const content = btn.dataset.content;
             const printWin = window.open('', '_blank');
-            printWin.document.write(`
-              <!DOCTYPE html>
-              <html>
-              <head>
-                <title>${title}</title>
-                <style>
-                  body { font-family: 'Courier New', monospace; padding: 40px; line-height: 1.7; font-size: 13px; max-width: 800px; margin: 0 auto; }
-                  h1 { font-size: 20px; text-align: center; margin-bottom: 24px; }
-                  pre { white-space: pre-wrap; font-family: 'Courier New', monospace; }
-                  @media print { body { padding: 20px; } }
-                </style>
-              </head>
-              <body>
-                <h1>${title}</h1>
-                <pre>${content}</pre>
-                <script>window.print();window.close();<\\/script>
-              </body>
-              </html>
-            `);
+            var pdfHtml = '<!DOCTYPE html><html><head><title>' + title + '</title><style>'
+              + 'body{font-family:"Segoe UI",sans-serif;padding:40px;line-height:1.7;font-size:13px;max-width:800px;margin:0 auto;}'
+              + 'h1{font-size:20px;text-align:center;margin-bottom:24px;}'
+              + 'pre{white-space:pre-wrap;font-family:"Courier New",monospace;}'
+              + '@media print{body{padding:20px;}}'
+              + '</style></head><body>'
+              + '<h1>' + title + '</h1>'
+              + '<pre>' + content + '</pre>'
+              + '<div style="text-align:center;margin-top:30px;"><button onclick="window.print()" style="padding:10px 30px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;">Save as PDF / Print</button></div>'
+              + '<script>window.onload=function(){window.print();};<' + '/script>'
+              + '</body></html>';
+            printWin.document.write(pdfHtml);
             printWin.document.close();
           });
         });
@@ -1142,6 +1217,14 @@
         $('contractsList').innerHTML = '<div class="empty-state"><p>Error loading contracts.</p></div>';
         console.error(e);
       }
+    }
+
+    var contractChannel = null;
+    function subscribeContracts(projectId) {
+      if (contractChannel) { try { supabase.removeChannel(contractChannel); } catch(e) {} }
+      contractChannel = supabase.channel('client-cts-' + projectId).on('postgres_changes', { event: '*', schema: 'public', table: 'contracts', filter: 'project_id=eq.' + projectId }, function() {
+        loadContracts(projectId);
+      }).subscribe();
     }
 
     /* ── Upcoming Appointments ── */
@@ -1344,7 +1427,7 @@
         var email = sessionStorage.getItem('portal_email');
         var name = sessionStorage.getItem('portal_display_name') || email;
         var userId = sessionStorage.getItem('portal_user_id');
-        if (!email || !userId) return;
+        if (!email || !userId || userId === 'undefined') return;
 
         // Check if welcome already sent
         const { data: pu } = await supabase
@@ -1395,7 +1478,8 @@
         }
         clientConvId = r.data[0].id;
         fetchClientMessages(clientConvId);
-        subscribeClientMessages(clientConvId);
+        subscribeClientMessages();
+        setupClientTyping(clientConvId);
       });
     }
 
@@ -1409,13 +1493,27 @@
 
     function renderClientMessages(msgs) {
       var el = document.getElementById('clientMessages');
-      if (!msgs.length) { el.innerHTML = '<div class=\"msg-conv-empty\" style=\"padding:40px;text-align:center;color:var(--muted);\">Send a message to your admin.</div>'; return; }
-      el.innerHTML = msgs.map(function(m) {
+      if (!msgs.length) { el.innerHTML = '<div class="msg-conv-empty" style="padding:40px;text-align:center;color:var(--muted);">Send a message to your admin.</div>'; return; }
+      var today = new Date().toDateString();
+      var yesterday = new Date(Date.now() - 86400000).toDateString();
+      var html = '';
+      var lastDate = '';
+      msgs.forEach(function(m) {
+        var msgDate = m.created_at ? new Date(m.created_at).toDateString() : '';
+        if (msgDate && msgDate !== lastDate) {
+          var label = msgDate === today ? 'Today' : msgDate === yesterday ? 'Yesterday' : new Date(m.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+          html += '<div class="msg-date-sep">' + label + '</div>';
+          lastDate = msgDate;
+        }
         var side = m.sender == 'client' ? 'admin' : 'client';
         var label = m.sender == 'admin' ? 'admin' : 'client';
         var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
-        return '<div class=\"client-msg msg-bubble ' + side + '\">' + esc(m.content) + '<div class=\"msg-bubble-time\">' + label + ' · ' + time + '</div></div>';
-      }).join('');
+        var receipt = '';
+        if (m.sender == 'client' && m.read_at) { receipt = '<span style="font-size:9px;">✓✓</span>'; }
+        else if (m.sender == 'client') { receipt = '<span style="font-size:9px;">✓</span>'; }
+        html += '<div class="client-msg msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + label + ' &middot; ' + time + receipt + '</div></div>';
+      });
+      el.innerHTML = html;
       el.scrollTop = el.scrollHeight;
     }
 
@@ -1432,6 +1530,36 @@
       }).subscribe();
     }
 
+    function setupClientTyping(convId) {
+      if (clientTypingChannel) { try { supabase.removeChannel(clientTypingChannel); } catch(e) {} }
+      clientTypingChannel = supabase.channel('typing-' + convId);
+      clientTypingChannel.on('broadcast', { event: 'typing' }, function(payload) {
+        var el = document.getElementById('clientTypingIndicator');
+        if (payload.payload.isTyping) {
+          if (!el) {
+            var msgArea = document.getElementById('clientMessages');
+            if (msgArea) {
+              var div = document.createElement('div');
+              div.id = 'clientTypingIndicator';
+              div.className = 'client-msg msg-bubble client';
+              div.style.cssText = 'padding:8px 16px;font-size:12px;color:var(--muted);font-style:italic;';
+              div.textContent = 'admin typing...';
+              msgArea.parentNode.insertBefore(div, msgArea.nextSibling);
+            }
+          }
+        } else {
+          if (el) el.remove();
+        }
+      }).subscribe();
+    }
+    document.getElementById('clientMsgInput').addEventListener('input', function() {
+      if (!clientConvId || !clientTypingChannel) return;
+      clientTypingChannel.send({ type: 'broadcast', event: 'typing', payload: { isTyping: true, convId: clientConvId } });
+      clearTimeout(this._typingTimer);
+      this._typingTimer = setTimeout(function() {
+        if (clientTypingChannel) clientTypingChannel.send({ type: 'broadcast', event: 'typing', payload: { isTyping: false, convId: clientConvId } });
+      }, 1500);
+    });
     document.getElementById('clientMsgSend').addEventListener('click', function() { sendClientMsg(); });
     document.getElementById('clientMsgInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendClientMsg(); }
@@ -1451,7 +1579,7 @@
             clientConvId = r2.data.id;
             input.value = '';
             supabase.from('messages').insert({ conversation_id: clientConvId, sender: 'client', content: content }).then();
-            subscribeClientMessages(clientConvId);
+            subscribeClientMessages();
           });
         });
         return;

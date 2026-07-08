@@ -183,6 +183,7 @@
       color: var(--muted);
       margin-bottom: 12px;
     }
+    .project-card { position:relative; overflow:hidden; }
     .project-card .proj-meta {
       display: flex;
       gap: 10px;
@@ -511,6 +512,18 @@
     }
 
     @media (max-width: 768px) {
+    #sidebarToggle { display: block !important; }
+    .sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 999; transition: left 0.3s; width: 220px !important; }
+    .sidebar.open { left: 0; }
+    .main { margin-left: 0 !important; padding: 16px !important; }
+    .msg-layout { flex-direction: column; }
+    .msg-sidebar { width: 100% !important; min-width: 100% !important; }
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .project-grid { grid-template-columns: 1fr !important; }
+    .page-header { flex-direction: column; gap: 10px; }
+    .table-wrap { overflow-x: auto; }
+  }
+  @media (max-width: 768px) {
       .sidebar { width: 60px; padding: 16px 0; }
       .sidebar-logo { padding: 0 10px 20px; font-size: 14px; }
       .sidebar-logo small { display: none; }
@@ -736,10 +749,16 @@
     .msg-chat-header h4 { font-size:15px;font-weight:600; }
     .msg-chat-header p { font-size:12px;color:var(--muted);margin-top:2px; }
     .msg-messages { flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:8px; }
-    .msg-bubble { max-width:75%;padding:10px 16px;border-radius:12px;font-size:14px;line-height:1.5;word-wrap:break-word; }
-    .msg-bubble.admin { align-self:flex-end;background:var(--accent);color:#060810;border-bottom-right-radius:4px; }
-    .msg-bubble.client { align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border); }
-    .msg-bubble-time { font-size:10px;margin-top:4px;opacity:0.6;font-family:'Space Mono',monospace;text-align:right; }
+    .msg-bubble { max-width:75%;padding:12px 18px;border-radius:14px;font-size:14px;line-height:1.6;word-wrap:break-word;position:relative; }
+    .msg-bubble.admin { align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(0,212,170,0.15); }
+    .msg-bubble.client { align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    .msg-bubble-time { font-size:10px;margin-top:6px;opacity:0.7;font-family:'Space Mono',monospace;display:flex;justify-content:flex-end;align-items:center;gap:4px; }
+    .msg-bubble.admin .msg-bubble-time { color:rgba(255,255,255,0.7); }
+    .msg-date-sep { text-align:center;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;padding:12px 0 8px;position:relative; }
+    .msg-date-sep::before, .msg-date-sep::after { content:'';position:absolute;top:50%;height:1px;background:var(--border);width:30%; }
+    .msg-date-sep::before { left:0; }
+    .msg-date-sep::after { right:0; }
+    .msg-messages { display:flex;flex-direction:column;gap:6px;padding:16px 20px;overflow-y:auto;flex:1; }
     .msg-input-area { display:flex;gap:12px;padding:16px 24px;border-top:1px solid var(--border);background:var(--bg); }
     .msg-input { flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;resize:none;outline:none; }
     .msg-input:focus { border-color:var(--accent); }
@@ -788,16 +807,61 @@
       .invoice-detail .inv-meta-item .badge { border: 1px solid #ccc; }
       .invoice-detail .inv-actions { display: none; }
     }
+    .notif-badge { margin-left:auto;background:var(--accent3);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;font-family:'Space Mono',monospace;padding:0 4px; }
+    .notif-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px; }
+    .notif-filters { display:flex;gap:6px;flex-wrap:wrap; }
+    .notif-filters .nf-btn { padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all 0.15s; }
+    .notif-filters .nf-btn:hover { border-color:var(--accent);color:var(--text); }
+    .notif-filters .nf-btn.active { background:var(--accent);color:#fff;border-color:var(--accent); }
+    .notif-list { display:flex;flex-direction:column;gap:4px; }
+    .notif-item { display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:all 0.15s; }
+    .notif-item:hover { border-color:var(--accent); }
+    .notif-item.unread { border-left:3px solid var(--accent);background:rgba(0,212,255,0.04); }
+    .notif-item.read { opacity:0.65; }
+    .notif-item.read:hover { opacity:1; }
+    .notif-icon { width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px; }
+    .notif-icon.client_login { background:rgba(100,180,255,0.12);color:#64b4ff; }
+    .notif-icon.invoice_viewed,.notif-icon.invoice_created { background:rgba(255,107,53,0.12);color:#ff6b35; }
+    .notif-icon.invoice_paid { background:rgba(0,212,170,0.12);color:#00d4aa; }
+    .notif-icon.contract_signed { background:rgba(255,193,7,0.12);color:#ffc107; }
+    .notif-icon.pdf_viewed { background:rgba(239,71,111,0.12);color:#ef476f; }
+    .notif-icon.message_sent { background:rgba(160,100,255,0.12);color:#a064ff; }
+    .notif-body { flex:1;min-width:0; }
+    .notif-msg { font-size:13px;color:var(--text);line-height:1.4; }
+    .notif-time { font-size:11px;color:var(--muted);margin-top:3px;font-family:'Space Mono',monospace; }
+    .notif-dot { width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px; }
+    .notif-empty { text-align:center;padding:50px 20px;color:var(--muted); }
+    .notif-empty h3 { font-size:16px;margin-bottom:4px; }
+    .notif-mark-read { font-size:11px;color:var(--accent);cursor:pointer;font-weight:600;background:none;border:none;padding:4px 0;font-family:'Outfit',sans-serif; }
+    .notif-mark-read:hover { text-decoration:underline; }
+    .status-filter { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+    .status-filter .sf-btn { padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;transition:all 0.15s; }
+    .status-filter .sf-btn:hover { border-color:var(--accent);color:var(--text); }
+    .status-filter .sf-btn.active { background:var(--accent);color:#fff;border-color:var(--accent); }
+    .badge.completed { background:rgba(0,212,170,0.12);color:#00d4aa;border:1px solid rgba(0,212,170,0.2); }
+    /* ── Reports ── */
+    .report-stat-up { color:var(--green); }
+    .report-stat-down { color:var(--accent3); }
+    .bar-chart { display:flex; align-items:flex-end; gap:8px; height:160px; padding:10px 0; }
+    .bar-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .bar-fill { width:100%; border-radius:4px 4px 0 0; min-height:4px; transition:height 0.5s; }
+    .bar-label { font-size:9px; color:var(--muted); font-family:'Space Mono',monospace; white-space:nowrap; transform:rotate(-45deg); margin-top:4px; }
+    .bar-val { font-size:10px; color:var(--text); font-weight:600; font-family:'Space Mono',monospace; }
   </style>
 </head>
 <body>
   <div class="app" id="app">
     <!-- Sidebar -->
-    <nav class="sidebar">
-      <div class="sidebar-logo">
-        <span id="topbarLogoText" style="display:inline;">◈ Mpalomares</span>
-        <img id="topbarLogoImg" style="display:none;height:28px;">
-        <small>Admin Portal</small>
+    <button id="sidebarToggle" style="position:fixed;top:12px;left:12px;z-index:1000;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:20px;padding:6px 12px;border-radius:8px;cursor:pointer;display:none;">☰</button>
+    <div id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:998;"></div>
+    <nav class="sidebar" id="mainSidebar">
+      <div class="sidebar-logo" style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <span id="topbarLogoText" style="display:inline;">◈ Mpalomares</span>
+          <img id="topbarLogoImg" style="display:none;height:28px;">
+          <small>Admin Portal</small>
+        </div>
+        <button id="themeToggle" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px;" title="Toggle theme">🌙</button>
       </div>
       <div class="nav-item active" data-page="dashboard">
         <span class="icon">◆</span><span class="nav-label">Dashboard</span>
@@ -817,6 +881,13 @@
       <div class="nav-item" data-page="messages" id="messagesNav">
         <span class="icon">💬</span><span class="nav-label">Messages</span>
         <span id="msgBadge" style="display:none;margin-left:auto;background:var(--accent3);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-family:'Space Mono',monospace;"></span>
+      </div>
+      <div class="nav-item" data-page="notifications" id="notifNav">
+        <span class="icon">🔔</span><span class="nav-label">Notifications</span>
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </div>
+      <div class="nav-item" data-page="reports">
+        <span class="icon">📊</span><span class="nav-label">Reports</span>
       </div>
       <div class="nav-item" data-page="settings">
         <span class="icon">⚙</span><span class="nav-label">Settings</span>
@@ -849,6 +920,15 @@
         <div class="page-header">
           <h2><span>◈</span> Projects</h2>
           <button class="btn btn-primary" id="addProjectBtn">+ Add Project</button>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="text" id="projSearch" placeholder="🔍 Search project or client..." style="flex:1;min-width:200px;padding:9px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
+          <select id="projStatusFilter" style="padding:9px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;cursor:pointer;">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="paused">Paused</option>
+          </select>
         </div>
         <div id="projLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading projects…</div>
         <div class="project-grid" id="projGrid" style="display:none;"></div>
@@ -889,16 +969,24 @@
         </div>
       </div>
 
+      <!-- Notifications Page -->
+      <div class="page" id="page-notifications">
+        <div class="page-header"><h2><span>🔔</span> Notifications</h2></div>
+        <div id="notificationsContent">
+          <p style="text-align:center;padding:40px;color:var(--muted);">Loading notifications...</p>
+        </div>
+      </div>
       <!-- Invoices Page -->
       <div class="page" id="page-invoices">
         <div class="page-header">
           <h2><span>📄</span> Invoices</h2>
+          <button class="btn btn-primary" onclick="openInvoiceForClient()">+ Create Invoice</button>
         </div>
         <div id="invLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading invoices…</div>
         <div class="table-wrap" id="invTableWrap" style="display:none;">
           <table>
             <thead>
-              <tr><th>Invoice #</th><th>Client</th><th>Project</th><th>Amount</th><th>Due Date</th><th>Status</th></tr>
+              <tr><th>Invoice #</th><th>Client</th><th>Project</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody id="invoicesAllBody"></tbody>
           </table>
@@ -936,6 +1024,11 @@
           <h2><span>◎</span> Contracts</h2>
           <button class="btn btn-primary" id="createContractBtn">+ Create Contract</button>
         </div>
+        <div class="status-filter" id="contractFilters">
+          <button class="sf-btn active" onclick="filterContracts('all')">All</button>
+          <button class="sf-btn" onclick="filterContracts('active')">Active</button>
+          <button class="sf-btn" onclick="filterContracts('completed')">Completed</button>
+        </div>
         <div id="contractLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading contracts…</div>
         <div class="table-wrap" id="contractTableWrap" style="display:none;">
           <table>
@@ -957,6 +1050,33 @@
         <div class="empty-state"><div class="big-icon">◉</div><p>Meeting scheduler coming soon.</p></div>
       </div>
 
+      <!-- Reports Page -->
+      <div class="page" id="page-reports">
+        <div class="page-header"><h2><span>📊</span> Reports</h2></div>
+        <div id="reportsLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading reports…</div>
+        <div id="reportsContent" style="display:none;">
+          <div class="stat-grid" id="reportsStats"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+            <div class="card"><div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;">📅 Monthly Revenue</div><div id="reportMonthlyChart" style="min-height:200px;"></div></div>
+            <div class="card"><div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;">📊 Invoice Status Breakdown</div><div id="reportInvoiceChart" style="min-height:200px;"></div></div>
+          </div>
+          <div class="card" style="padding:0;margin-bottom:16px;">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:14px;font-weight:600;">📋 Invoice Details</span>
+              <button class="btn btn-sm btn-outline" onclick="exportReportsCSV()">⬇ Export CSV</button>
+            </div>
+            <div class="table-wrap" style="border:none;">
+              <table><thead><tr><th>Invoice</th><th>Client</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="reportsTableBody"></tbody></table>
+            </div>
+          </div>
+          <div class="card" style="padding:0;">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;">👥 Client Summary</div>
+            <div class="table-wrap" style="border:none;">
+              <table><thead><tr><th>Client</th><th>Projects</th><th>Total Invoiced</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody id="reportsClientBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Settings -->
       <div class="page" id="page-settings">
         <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
@@ -1000,6 +1120,9 @@
         <div class="msg-sidebar-header">
           <h3><span>💬</span> Conversations</h3>
           <button class="btn btn-primary btn-sm" id="newConvBtn" style="font-size:11px;">+ New</button>
+        </div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);">
+          <input type="text" id="convSearch" placeholder="🔍 Search conversations..." style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif;outline:none;">
         </div>
         <div id="conversationList" class="msg-conv-list">
           <div class="msg-conv-empty">No conversations yet.</div>
@@ -1072,37 +1195,38 @@
 
   <!-- Add Invoice Modal -->
   <div class="modal-overlay" id="addInvoiceModal">
-    <div class="modal" style="max-width:640px;">
-      <h3><span>+</span> New Invoice</h3>
+    <div class="modal" style="max-width:700px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+        <h3 style="margin:0;"><span style="color:var(--accent);">+</span> New Invoice</h3>
+        <span style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;">DRAFT</span>
+      </div>
       <div id="invModalError" class="alert alert-error" style="display:none;"></div>
-      <div style="display:flex;gap:12px;margin-bottom:16px;">
-        <div class="form-group" style="flex:1;margin-bottom:0;">
-          <label>Due Date</label>
-          <input type="date" id="invDueDateInput">
-        </div>
-        <div class="form-group" style="flex:1;margin-bottom:0;">
-          <label>Status</label>
-          <select id="invStatusSelect">
-            <option value="unpaid">Unpaid</option>
-            <option value="paid">Paid</option>
-            <option value="overdue">Overdue</option>
-          </select>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px;font-family:'Space Mono',monospace;">Invoice Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Due Date</label><input type="date" id="invDueDateInput" style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;"></div>
+          <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Currency</label><select id="invCurrencySelect" style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;cursor:pointer;"><option value="PHP">₱ PHP</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option></select></div>
+          <div><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Status</label><select id="invStatusSelect" style="width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Outfit',sans-serif;outline:none;cursor:pointer;"><option value="unpaid">Unpaid</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select></div>
         </div>
       </div>
-      <div class="form-group">
-        <label style="display:flex;justify-content:space-between;align-items:center;">
-          <span>Line Items</span>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;">Line Items</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" id="aiGenInvoiceBtn" style="background:linear-gradient(135deg,#a064ff,#6366f1);color:#fff;border:none;">🤖 AI Suggest Items</button>
+          <span id="aiInvGenStatus" style="font-size:11px;color:var(--muted);align-self:center;display:none;">Thinking...</span>
           <button class="btn btn-outline btn-sm" id="addItemBtn" style="font-size:11px;">+ Add Item</button>
-        </label>
-        <div style="margin-top:8px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+        </div>
+      </div>
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
           <table style="width:100%;border-collapse:collapse;" id="itemsTable">
             <thead>
               <tr>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:44%;">Description</th>
-                <th style="padding:10px 12px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Qty</th>
-                <th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Rate</th>
-                <th style="padding:10px 12px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--bg3);width:16%;">Amount</th>
-                <th style="padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg3);width:8%;"></th>
+                <th style="padding:10px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:'Space Mono',monospace;background:var(--bg);border-bottom:1px solid var(--border);width:44%;">Description</th>
+                <th style="padding:10px 14px;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:'Space Mono',monospace;background:var(--bg);border-bottom:1px solid var(--border);width:12%;">Qty</th>
+                <th style="padding:10px 14px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:'Space Mono',monospace;background:var(--bg);border-bottom:1px solid var(--border);width:16%;">Rate</th>
+                <th style="padding:10px 14px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:'Space Mono',monospace;background:var(--bg);border-bottom:1px solid var(--border);width:18%;">Amount</th>
+                <th style="padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);width:10%;"></th>
               </tr>
             </thead>
             <tbody id="itemsBody">
@@ -1110,21 +1234,22 @@
                 <td style="padding:6px 8px;"><input type="text" class="item-desc" placeholder="Service description" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;"></td>
                 <td style="padding:6px 8px;"><input type="number" class="item-qty" value="1" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;outline:none;"></td>
                 <td style="padding:6px 8px;"><input type="number" class="item-rate" value="0" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:right;outline:none;"></td>
-                <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">$0.00</div></td>
+                <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">₱0.00</div></td>
                 <td style="padding:6px 8px;text-align:center;"><button class="remove-item-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;opacity:0;pointer-events:none;" title="Remove item">×</button></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div style="display:flex;justify-content:flex-end;padding:12px 0 0;">
-          <div style="font-size:14px;color:var(--muted);font-family:'Space Mono',monospace;">
-            Total: <strong id="invItemsTotal" style="font-size:18px;color:var(--accent);">$0.00</strong>
+        <div style="display:flex;justify-content:flex-end;padding:16px 4px 0;">
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;">Total Amount</div>
+            <div style="font-size:24px;font-weight:700;color:var(--accent);font-family:'Space Mono',monospace;" id="invItemsTotal">₱0.00</div>
           </div>
         </div>
       </div>
-      <div class="modal-actions" style="margin-top:16px;">
-        <button class="btn btn-outline" id="invModalCancel">Cancel</button>
-        <button class="btn btn-primary" id="invModalSave">Create Invoice</button>
+      <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid var(--border);">
+        <button class="btn btn-outline" id="invModalCancel" style="padding:10px 24px;">Cancel</button>
+        <button class="btn btn-primary" id="invModalSave" style="padding:10px 24px;">Create Invoice</button>
       </div>
     </div>
   </div>
@@ -1197,6 +1322,10 @@
       </div>
       <div class="form-group">
         <label>Contract Content</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <button class="btn btn-outline btn-sm" id="aiGenContractBtn" style="background:linear-gradient(135deg,#a064ff,#6366f1);color:#fff;border:none;">🤖 AI Generate</button>
+          <span id="aiGenStatus" style="font-size:12px;color:var(--muted);align-self:center;display:none;">Generating...</span>
+        </div>
         <textarea id="contractContentInput" rows="18" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:'Space Mono',monospace;outline:none;resize:vertical;line-height:1.6;"></textarea>
       </div>
       <div class="modal-actions">
@@ -1220,6 +1349,7 @@
         </div>
         <div>
           <button class="btn btn-outline" id="viewContractClose">Close</button>
+          <button class="btn btn-outline" id="viewContractCompleteBtn" style="display:none;">✓ Mark Complete</button>
           <button class="btn btn-primary" id="viewContractSendBtn">✉ Send to Client</button>
         </div>
       </div>
@@ -1344,18 +1474,396 @@
       }
       // Auth OK — init app
       loadDashboard();
+      getUnreadCount();
+      startNotifPolling();
+      archiveOldConversations();
+      autoClearNotifications();
+
+    function archiveOldConversations() {
+      try {
+        var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 14);
+        supabase.from('conversations').select('id').is('archived_at', null).lt('last_message_at', cutoff.toISOString()).then(function(r) {
+          if (!r.error && r.data && r.data.length) {
+            var ids = r.data.map(function(c){return c.id;});
+            supabase.from('conversations').update({ archived_at: new Date().toISOString() }).in('id', ids).then();
+          }
+        });
+      } catch(e) {}
+    }
+    function autoClearNotifications() {
+      try {
+        var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 7);
+        supabase.from('notifications').delete().eq('is_read', true).lt('created_at', cutoff.toISOString()).then(function(r) {
+          if (r.error) console.warn('Auto-clear deferred:', r.error.message);
+        });
+      } catch(e) {}
+    }
     })();
+
+    function filterContracts(f) {
+      contractFilter = f;
+      var btns = document.querySelectorAll('#contractFilters .sf-btn');
+      btns.forEach(function(b){b.classList.remove('active');});
+      for (var i=0;i<btns.length;i++) {
+        var attr = btns[i].getAttribute('onclick');
+        if (attr && attr.indexOf("'" + f + "'") > -1) btns[i].classList.add('active');
+      }
+      loadContracts();
+    }
+
+    function deleteContract(contractId) {
+      if (!confirm('Delete this contract permanently? This cannot be undone.')) return;
+      supabase.from('contracts').delete().eq('id', contractId).then(function(r) {
+        if (r.error) { alert('Error: ' + r.error.message); return; }
+        var rows = document.querySelectorAll('#contractsBody tr');
+        rows.forEach(function(row) {
+          if (row.dataset.id == contractId) {
+            row.style.opacity = '0';
+            row.style.transition = 'opacity 0.3s';
+            setTimeout(function() { row.remove(); }, 300);
+          }
+        });
+      });
+    }
+
+    function deleteProject(projectId) {
+      if (!confirm('Delete this project permanently? This cannot be undone.')) return;
+      supabase.from('projects').delete().eq('id', projectId).then(function(r) {
+        if (r.error) { alert('Error: ' + r.error.message); return; }
+        var card = document.querySelector('.project-card[data-id="' + projectId + '"]');
+        if (card) { card.style.opacity = '0'; card.style.transition = 'opacity 0.3s'; setTimeout(function() { card.remove(); }, 300); }
+      });
+    }
+
+    function deleteClient(clientId) {
+      // Count related data first
+      var projCount = allProjects.filter(function(p){return p.client_id == clientId;}).length;
+      var invCount = 0, ctrCount = 0;
+      var clientProjIds = allProjects.filter(function(p){return p.client_id == clientId;}).map(function(p){return p.id;});
+      // Get invoice and contract counts from data
+      var msg = 'Delete this client';
+      if (projCount > 0) {
+        msg += '\n\n⚠ This will also delete:\n';
+        msg += '  • Projects: ' + projCount + '\n';
+        msg += '  • Invoices, contracts, conversations for these projects\n';
+        msg += '\nThis cannot be undone.';
+      } else {
+        msg += ' permanently?';
+      }
+      if (!confirm(msg)) return;
+
+      supabase.from('clients').delete().eq('id', clientId).then(function(r) {
+        if (r.error) { alert('Error: ' + r.error.message); return; }
+        // Remove from local arrays
+        allClients = allClients.filter(function(c){return c.id != clientId;});
+        allProjects = allProjects.filter(function(p){return p.client_id != clientId;});
+        loadClients();
+        loadDashboard();
+      });
+    }
+
+    // Global state
+    var contractFilter = 'all';
+
+    // Theme toggle
+    var savedTheme = localStorage.getItem('admin-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+      themeBtn.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('admin-theme', next);
+        this.textContent = next === 'dark' ? '🌙' : '☀️';
+      });
+    }
+
+    // Mobile sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+      document.getElementById('mainSidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').style.display = document.getElementById('mainSidebar').classList.contains('open') ? 'block' : 'none';
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+      document.getElementById('mainSidebar').classList.remove('open');
+      this.style.display = 'none';
+    });
+    // Close sidebar on nav click (mobile)
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          document.getElementById('mainSidebar').classList.remove('open');
+          document.getElementById('sidebarOverlay').style.display = 'none';
+        }
+      });
+    });
 
     /* ── State ── */
     let allClients = [];
     let allProjects = [];
+    let allInvoices = [];
     let currentProjectId = null;
 
     /* ── Helpers ── */
     function $(id) { return document.getElementById(id); }
+    // Concurrency-limited batch: runs promises max N at a time
+    async function batchQueries(queries, limit) {
+      limit = limit || 3;
+      var results = [];
+      var idx = 0;
+      async function next() {
+        if (idx >= queries.length) return;
+        var i = idx++;
+        results[i] = await queries[i]();
+        await next();
+      }
+      await Promise.all(Array(Math.min(limit, queries.length)).fill().map(next));
+      return results;
+    }
     function esc(s) { let d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-    function formatCurrency(n) { return '$' + parseFloat(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function formatCurrency(n, currency) {
+      if (!currency) currency = 'PHP';
+      var symbols = { PHP:'₱', USD:'$', EUR:'€', GBP:'£', JPY:'¥', AUD:'A$', CAD:'C$' };
+      var sym = symbols[currency] || currency + ' ';
+      return sym + parseFloat(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
     function formatDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); } catch(e) { return d; }}
+    function viewInvoicePdfFig(client, num, title, amount, due, status) {
+      var dueStr = due || '—';
+      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      var statusClass = 'badge-sent';
+      if (status && status.toLowerCase() === 'paid') statusClass = 'badge-paid';
+      else if (status && status.toLowerCase() === 'pending') statusClass = 'badge-pending';
+      var win = window.open('', '_blank');
+      win.document.write('<!DOCTYPE html><html><head><title>Invoice ' + num + '</title><style>');
+      win.document.write('@page{margin:20mm 15mm;}*{margin:0;padding:0;box-sizing:border-box;}');
+      win.document.write('body{font-family:"Segoe UI",sans-serif;color:#1a1a2e;background:#fff;padding:40px;line-height:1.5;}');
+      win.document.write('.hdr{display:flex;justify-content:space-between;margin-bottom:40px;padding-bottom:30px;border-bottom:2px solid #e8e8f0;}');
+      win.document.write('.co h1{font-size:24px;font-weight:800;color:#1a1a2e;letter-spacing:-0.5px;}');
+      win.document.write('.co .tag{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-top:4px;}');
+      win.document.write('.it{text-align:right;}.it h2{font-size:28px;font-weight:300;color:#666;}.it .n{font-size:16px;color:#1a1a2e;font-weight:600;margin-top:4px;}');
+      win.document.write('.g{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:40px;}');
+      win.document.write('.b h3{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#888;margin-bottom:8px;}');
+      win.document.write('.b p{font-size:14px;color:#1a1a2e;}.b .nm{font-weight:600;font-size:16px;}');
+      win.document.write('table{width:100%;border-collapse:collapse;margin-bottom:30px;}');
+      win.document.write('th{background:#f5f5fa;text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#666;border-bottom:2px solid #e8e8f0;}');
+      win.document.write('td{padding:14px 16px;border-bottom:1px solid #f0f0f5;font-size:14px;}td:last-child{text-align:right;font-weight:600;}');
+      win.document.write('.tot{margin-left:auto;width:320px;}.tr{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;}');
+      win.document.write('.tr.f{border-top:2px solid #1a1a2e;margin-top:8px;padding-top:12px;font-size:18px;font-weight:700;}');
+      win.document.write('.bp{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}');
+      win.document.write('.badge-paid{background:#d4edda;color:#155724;}.badge-sent{background:#cce5ff;color:#004085;}.badge-pending{background:#fff3cd;color:#856404;}');
+      win.document.write('.ft{margin-top:50px;padding-top:20px;border-top:1px solid #e8e8f0;text-align:center;font-size:12px;color:#aaa;}');
+      win.document.write('@media print{body{padding:0;}.np{display:none;}}');
+      win.document.write('</style></head><body>');
+      win.document.write('<div class="hdr"><div class="co"><h1>MP Digital Solutions</h1><div class="tag">Digital Marketing &amp; Automation</div></div><div class="it"><h2>INVOICE</h2><div class="n">' + num + '</div></div></div>');
+      win.document.write('<div class="g"><div class="b"><h3>Bill To</h3><p class="nm">' + client + '</p><p>' + title + '</p></div><div class="b" style="text-align:right"><h3>Invoice Details</h3><p><strong>Date:</strong> ' + today + '</p><p><strong>Due:</strong> ' + dueStr + '</p><p><strong>Status:</strong> <span class="bp ' + statusClass + '">' + (status||'Sent') + '</span></p></div></div>');
+      win.document.write('<table><thead><tr><th style="width:60%">Description</th><th style="width:20%">Qty</th><th style="width:20%">Amount</th></tr></thead><tbody><tr><td>' + title + ' — ' + num + '</td><td>1</td><td>' + (amount||0).toLocaleString() + '.00</td></tr></tbody></table>');
+      win.document.write('<div class="tot"><div class="tr"><span>Subtotal</span><span>' + (amount||0).toLocaleString() + '.00</span></div><div class="tr f"><span>Total Due</span><span>' + (amount||0).toLocaleString() + '.00</span></div></div>');
+      win.document.write('<div class="ft"><p>MP Digital Solutions &bull; Digital Marketing &amp; Automation</p><p>Thank you for your business!</p></div>');
+      win.document.write('<div class="np" style="text-align:center;margin-top:30px;"><button onclick="window.print()" style="padding:10px 30px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;">Save as PDF / Print</button></div>');
+      win.document.write('</body></html>'); win.document.close();
+    }
+
+    async function sendInvoiceToClient(invId, invNum) {
+      if (!confirm('Send invoice ' + invNum + ' to client?')) return;
+      try {
+        const { error } = await supabase.from('invoices').update({ status: 'sent' }).eq('id', invId);
+        if (error) throw error;
+        logNotification('invoice_created', 'Invoice ' + invNum + ' sent to client', '', invNum);
+        loadInvoicesPage();
+        alert('✅ Invoice ' + invNum + ' sent!');
+      } catch(e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function deleteInvoice(invId, invNum) {
+      if (!confirm('Delete invoice ' + invNum + '? This cannot be undone.')) return;
+      try {
+        const { error } = await supabase.from('invoices').delete().eq('id', invId);
+        if (error) throw error;
+        // Remove row immediately
+        var rows = document.querySelectorAll('#invoicesAllBody tr');
+        rows.forEach(function(r) {
+          if (r.querySelector('.mono') && r.querySelector('.mono').textContent.trim() === invNum) {
+            r.style.opacity = '0';
+            r.style.transition = 'opacity 0.3s';
+            setTimeout(function() { r.remove(); }, 300);
+          }
+        });
+        logNotification('invoice_viewed', 'Invoice ' + invNum + ' deleted', '', invNum);
+      } catch(e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    /* ── Notifications ── */
+    let notifFilter = 'all', notifTimer = null;
+    async function loadNotifications(filter) {
+      notifFilter = filter || 'all';
+      const el = document.getElementById('notificationsContent');
+      try {
+        let q = supabase.from('notifications').select('*').order('created_at',{ascending:false}).limit(50);
+        if (filter==='unread') q = q.eq('is_read',false);
+        else if (filter&&filter!=='all') q = q.eq('type',filter);
+        const { data, error } = await q;
+        if (error) throw error;
+        if (!data||!data.length) {
+          el.innerHTML = '<div class="notif-empty"><h3>All caught up!</h3><p>'+(filter==='unread'?'No unread notifications.':'No notifications yet.')+'</p></div>';
+          return;
+        }
+        const icons = { client_login:'🔑', invoice_viewed:'📄', invoice_created:'🧾', invoice_paid:'✅', message_sent:'💬', contract_signed:'📝', pdf_viewed:'📎' };
+        el.innerHTML = '<div class="notif-header"><div class="notif-filters">'+
+          '<button class="nf-btn '+(filter==='all'?'active':'')+'" onclick="loadNotifications(&#39;all&#39;)">All</button>'+
+          '<button class="nf-btn '+(filter==='unread'?'active':'')+'" onclick="loadNotifications(&#39;unread&#39;)">Unread</button>'+
+          '<button class="nf-btn '+(filter==='invoice_viewed'?'active':'')+'" onclick="loadNotifications(&#39;invoice_viewed&#39;)">Invoices</button>'+
+          '<button class="nf-btn '+(filter==='client_login'?'active':'')+'" onclick="loadNotifications(&#39;client_login&#39;)">Logins</button>'+
+          '</div>'+(data.some(n=>!n.is_read)?'<button class="notif-mark-read" onclick="markAllRead()">Mark all as read</button>':'')+'</div>'+
+          '<div class="notif-list">'+data.map(n=>{
+            const t=n.type||'generic', icon=icons[t]||'🔔';
+            const d=new Date(n.created_at), diff=Math.floor((Date.now()-d)/1000);
+            const ago=diff<60?'just now':diff<3600?Math.floor(diff/60)+'m ago':diff<86400?Math.floor(diff/3600)+'h ago':diff<604800?Math.floor(diff/86400)+'d ago':d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+            return '<div class="notif-item '+(n.is_read?'read':'unread')+'" onclick="markAsRead('+n.id+')">'+
+              '<div class="notif-icon '+t+'">'+icon+'</div>'+
+              '<div class="notif-body"><div class="notif-msg">'+(n.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div><div class="notif-time">'+ago+(n.client_name?' · '+(n.client_name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'):'')+'</div></div>'+
+              (!n.is_read?'<div class="notif-dot"></div>':'')+'</div>';}).join('')+'</div>';
+      } catch(e) {
+        el.innerHTML = '<p style="text-align:center;padding:40px;color:var(--accent3);">Run the SQL script first.</p>';
+      }
+    }
+    async function getUnreadCount() {
+      try {
+        const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('is_read',false);
+        const b=document.getElementById('notifBadge');
+        if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}else{b.style.display='none';}
+      }catch(e){}
+    }
+    async function markAsRead(id){try{await supabase.from('notifications').update({is_read:true}).eq('id',id);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
+    async function markAllRead(){try{await supabase.from('notifications').update({is_read:true}).eq('is_read',false);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
+    function startNotifPolling(){if(notifTimer)clearInterval(notifTimer);notifTimer=setInterval(getUnreadCount,60000);}
+
+    /* ── Reports ── */
+    async function loadReports() {
+      $('reportsLoading').style.display = 'block';
+      $('reportsContent').style.display = 'none';
+      try {
+        var reportResults = await batchQueries([
+          function(){ return supabase.from('invoices').select('*, projects(name, client_id, clients(name))').order('created_at', { ascending: false }); },
+          function(){ return supabase.from('projects').select('*'); },
+          function(){ return supabase.from('clients').select('*'); }
+        ], 2);
+        var invRes = reportResults[0], projRes = reportResults[1], clientRes = reportResults[2];
+        if (invRes.error) throw invRes.error;
+        var invoices = invRes.data || [];
+        var projects = projRes.data || [];
+        var clients = clientRes.data || [];
+
+        // Stats
+        var totalRevenue = 0, totalPaid = 0, totalOutstanding = 0, totalSent = 0;
+        invoices.forEach(function(inv) {
+          var amt = parseFloat(inv.amount) || 0;
+          totalRevenue += amt;
+          if (inv.status === 'paid') totalPaid += amt;
+          else if (inv.status === 'sent') totalSent += amt;
+          else totalOutstanding += amt;
+        });
+
+        $('reportsStats').innerHTML = ''
+          + '<div class="stat-card"><div class="label">Total Revenue</div><div class="value accent">' + formatCurrency(totalRevenue) + '</div></div>'
+          + '<div class="stat-card"><div class="label">Collected</div><div class="value green">' + formatCurrency(totalPaid) + '</div></div>'
+          + '<div class="stat-card"><div class="label">Outstanding</div><div class="value orange">' + formatCurrency(totalOutstanding) + '</div></div>'
+          + '<div class="stat-card"><div class="label">Active Projects</div><div class="value purple">' + projects.filter(function(p){return p.status==='active'||!p.status;}).length + '</div></div>';
+
+        // Monthly Revenue Chart
+        var monthly = {};
+        invoices.forEach(function(inv) {
+          if (!inv.created_at) return;
+          var m = inv.created_at.slice(0,7);
+          monthly[m] = (monthly[m] || 0) + (parseFloat(inv.amount) || 0);
+        });
+        var months = Object.keys(monthly).sort().slice(-6);
+        var maxVal = Math.max.apply(null, months.map(function(m){return monthly[m];})) || 1;
+        var chartHtml = '<div class="bar-chart">';
+        var monthNames = { '01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec' };
+        months.forEach(function(m) {
+          var parts = m.split('-');
+          var label = monthNames[parts[1]] || parts[1];
+          var pct = (monthly[m] / maxVal * 100);
+          chartHtml += '<div class="bar-item"><div class="bar-val">' + formatCurrency(monthly[m]) + '</div><div class="bar-fill" style="height:' + pct + 'px;background:linear-gradient(180deg,var(--accent),var(--accent2));"></div><div class="bar-label">' + label + '</div></div>';
+        });
+        chartHtml += '</div>';
+        $('reportMonthlyChart').innerHTML = chartHtml;
+
+        // Invoice Status Chart (simple visual bars)
+        var invTotal = invoices.length || 1;
+        var paidCount = invoices.filter(function(i){return i.status==='paid';}).length;
+        var sentCount = invoices.filter(function(i){return i.status==='sent';}).length;
+        var unpaidCount = invoices.length - paidCount - sentCount;
+        var statusChart = ''
+          + '<div style="display:flex;flex-direction:column;gap:10px;">'
+          + '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>✅ Paid (' + paidCount + ')</span><span>' + formatCurrency(totalPaid) + '</span></div><div style="height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:' + (paidCount/invTotal*100) + '%;background:var(--green);border-radius:5px;"></div></div></div>'
+          + '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>📤 Sent (' + sentCount + ')</span><span>' + formatCurrency(totalSent) + '</span></div><div style="height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:' + (sentCount/invTotal*100) + '%;background:#64b4ff;border-radius:5px;"></div></div></div>'
+          + '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>⏳ Unpaid (' + unpaidCount + ')</span><span>' + formatCurrency(totalOutstanding) + '</span></div><div style="height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;"><div style="height:100%;width:' + (unpaidCount/invTotal*100) + '%;background:var(--accent3);border-radius:5px;"></div></div></div>'
+          + '</div>';
+        $('reportInvoiceChart').innerHTML = statusChart;
+
+        // Invoice Details Table
+        $('reportsTableBody').innerHTML = invoices.slice(0, 20).map(function(inv) {
+          var cn = (inv.projects && inv.projects.clients) ? inv.projects.clients.name : '—';
+          return '<tr><td class="mono">' + esc(inv.invoice_num||'—') + '</td><td>' + esc(cn) + '</td><td class="mono">' + formatCurrency(inv.amount) + '</td><td><span class="badge ' + (inv.status||'unpaid') + '">' + (inv.status||'unpaid') + '</span></td><td>' + formatDate(inv.created_at) + '</td></tr>';
+        }).join('');
+
+        // Client Summary
+        var clientMap = {}; clients.forEach(function(c){clientMap[c.id]=c;});
+        var clientData = {};
+        invoices.forEach(function(inv) {
+          var proj = inv.projects;
+          var cid = proj ? proj.client_id : null;
+          if (!cid) return;
+          if (!clientData[cid]) clientData[cid] = { total:0, paid:0, outstanding:0, projects:{}, name: proj.clients ? proj.clients.name : 'Unknown' };
+          var amt = parseFloat(inv.amount) || 0;
+          clientData[cid].total += amt;
+          if (inv.status === 'paid') clientData[cid].paid += amt;
+          else clientData[cid].outstanding += amt;
+          if (proj) clientData[cid].projects[proj.name] = true;
+        });
+        $('reportsClientBody').innerHTML = Object.keys(clientData).map(function(cid) {
+          var d = clientData[cid];
+          var projCount = Object.keys(d.projects).length;
+          return '<tr><td>' + esc(d.name) + '</td><td>' + projCount + '</td><td class="mono">' + formatCurrency(d.total) + '</td><td class="mono" style="color:var(--green);">' + formatCurrency(d.paid) + '</td><td class="mono" style="color:' + (d.outstanding > 0 ? 'var(--accent3)' : 'var(--muted)') + ';">' + formatCurrency(d.outstanding) + '</td></tr>';
+        }).join('');
+
+        $('reportsLoading').style.display = 'none';
+        $('reportsContent').style.display = 'block';
+      } catch(e) {
+        $('reportsLoading').textContent = 'Error: ' + e.message;
+        console.error(e);
+      }
+    }
+
+    function exportReportsCSV() {
+      var rows = [['Invoice #','Client','Amount','Status','Date']];
+      var els = document.querySelectorAll('#reportsTableBody tr');
+      els.forEach(function(tr) {
+        var cols = tr.querySelectorAll('td');
+        if (cols.length >= 5) {
+          rows.push([
+            cols[0].textContent.trim(),
+            cols[1].textContent.trim(),
+            cols[2].textContent.trim(),
+            cols[3].textContent.trim(),
+            cols[4].textContent.trim()
+          ]);
+        }
+      });
+      var csv = rows.map(function(r){return r.join(',');}).join('\n');
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'reports_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click();
+    }
 
     /* ── Navigation ── */
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -1366,6 +1874,8 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const target = $('page-' + page);
         if (target) target.classList.add('active');
+        if (page === 'notifications') loadNotifications();
+        if (page === 'reports') loadReports();
         if (page === 'dashboard') loadDashboard();
         if (page === 'projects') loadProjects();
         if (page === 'invoices') loadInvoicesPage();
@@ -1459,11 +1969,12 @@
       $('dashLoading').style.display = 'block';
       $('dashContent').style.display = 'none';
       try {
-        const [clientsR, projectsR, invoicesR] = await Promise.all([
-          supabase.from('clients').select('*').order('created_at', {ascending:false}),
-          supabase.from('projects').select('*'),
-          supabase.from('invoices').select('*'),
-        ]);
+        var dashResults = await batchQueries([
+          function(){ return supabase.from('clients').select('*').order('created_at', {ascending:false}); },
+          function(){ return supabase.from('projects').select('*'); },
+          function(){ return supabase.from('invoices').select('*'); }
+        ], 2);
+        var clientsR = dashResults[0], projectsR = dashResults[1], invoicesR = dashResults[2];
         if (clientsR.error) throw clientsR.error;
         if (projectsR.error) throw projectsR.error;
         if (invoicesR.error) throw invoicesR.error;
@@ -1521,6 +2032,10 @@
         if (error) throw error;
         allProjects = data || [];
 
+        // Also load invoices for progress calculation
+        const { data: invData } = await supabase.from('invoices').select('id, project_id, amount, status');
+        allInvoices = invData || [];
+
         if (!allClients.length) {
           const { data: cd } = await supabase.from('clients').select('*');
           allClients = cd || [];
@@ -1533,6 +2048,33 @@
       }
     }
 
+    // Project search/filter
+    document.getElementById('projSearch').addEventListener('input', renderProjectGrid);
+    document.getElementById('projStatusFilter').addEventListener('change', renderProjectGrid);
+
+    // Quick action delegation
+    document.getElementById('projGrid').addEventListener('click', function(e) {
+      var btn = e.target.closest('.proj-action');
+      if (!btn) return;
+      e.stopPropagation();
+      var card = btn.closest('.project-card');
+      if (!card) return;
+      var pid = parseInt(card.dataset.id);
+      var action = btn.dataset.action;
+      if (action === 'invoice') {
+        openProjectDetail(pid);
+        setTimeout(function() {
+          var btn = document.getElementById('genInvoiceBtn');
+          if (btn) btn.click();
+        }, 1500);
+      } else if (action === 'message') {
+        document.querySelector('[data-page="messages"]').click();
+      } else if (action === 'contract') {
+        document.querySelector('[data-page="contracts"]').click();
+        setTimeout(function() { document.getElementById('createContractBtn').click(); }, 300);
+      }
+    });
+
     function renderProjectGrid() {
       $('projLoading').style.display = 'none';
       if (!allProjects.length) {
@@ -1542,16 +2084,66 @@
       }
       const clientMap = {};
       allClients.forEach(c => clientMap[c.id] = c);
+      
+      // Apply search + status filter
+      var statusFilter = document.getElementById('projStatusFilter').value;
+      var searchQuery = document.getElementById('projSearch').value.toLowerCase().trim();
+      var filtered = allProjects.filter(function(p) {
+        if (statusFilter !== 'all' && p.status !== statusFilter) return false;
+        if (searchQuery) {
+          var cn = 'unknown';
+          var cl = clientMap[p.client_id];
+          if (cl) cn = cl.name || '';
+          return p.name.toLowerCase().includes(searchQuery) || cn.toLowerCase().includes(searchQuery);
+        }
+        return true;
+      });
+      
+      if (!filtered.length) {
+        $('projGrid').style.display = 'block';
+        $('projGrid').innerHTML = '<div class=\"empty-state\"><div class=\"big-icon\">◈</div><p>' + (searchQuery || statusFilter !== 'all' ? 'No projects match your search.' : 'No projects yet. Click "Add Project" to get started.') + '</p></div>';
+        return;
+      }
       $('projGrid').style.display = 'grid';
-      $('projGrid').innerHTML = allProjects.map(p => {
+      $('projGrid').innerHTML = filtered.map(p => {
         const cl = clientMap[p.client_id];
-        return `<div class="project-card" data-id="${p.id}">
+        // Count invoices for this project
+        var invCount = 0;
+        allInvoices.forEach(function(inv) { if (inv.project_id == p.id) invCount++; });
+
+        // Calculate progress based on invoices paid vs total
+        var totalInv = 0, paidInv = 0;
+        allInvoices.forEach(function(inv) {
+          if (inv.project_id == p.id) {
+            totalInv += parseFloat(inv.amount) || 0;
+            if (inv.status === 'paid') paidInv += parseFloat(inv.amount) || 0;
+          }
+        });
+        var progress = p.budget > 0 ? Math.min(100, Math.round(paidInv / p.budget * 100)) : 0;
+
+        var statusColor = p.status === 'active' ? 'var(--accent)' : p.status === 'completed' ? 'var(--green)' : 'var(--accent3)';
+        return `<div class="project-card" data-id="${p.id}" style="position:relative;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${statusColor};border-radius:var(--radius) var(--radius) 0 0;"></div>
           <div class="proj-name">${esc(p.name)}</div>
-          <div class="proj-client">${cl ? esc(cl.name) : 'Unknown Client'}</div>
+          <div class="proj-client">👤 ${cl ? esc(cl.name) : 'Unknown Client'}</div>
+          <div style="margin:10px 0;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;">
+              <span>Progress</span><span>${progress}%</span>
+            </div>
+            <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">
+              <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 0.5s;"></div>
+            </div>
+          </div>
           <div class="proj-meta">
-            <span class="badge ${p.status}">${p.status || 'active'}</span>
-            <span class="mono" style="color:var(--muted);">${esc(p.type||'')}</span>
-            <span class="mono" style="color:var(--green);">${formatCurrency(p.budget||0)}</span>
+            <span class="badge ${p.status}" style="font-size:10px;">${p.status || 'active'}</span>
+            <span style="font-size:11px;color:var(--muted);">📄 ${invCount} inv</span>
+            <span class="mono" style="color:var(--green);font-size:12px;">${formatCurrency(p.budget||0)}/mo</span>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:6px;">
+            <button class="btn btn-sm btn-outline proj-action" data-action="invoice" title="Create Invoice">📄</button>
+            <button class="btn btn-sm btn-outline proj-action" data-action="message" title="Send Message">💬</button>
+            <button class="btn btn-sm btn-outline proj-action" data-action="contract" title="Create Contract">📝</button>
+            <button class="btn btn-sm" onclick="event.stopPropagation();deleteProject(${p.id})" style="margin-left:auto;background:none;border:1px solid var(--accent3);color:var(--accent3);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">🗑</button>
           </div>
         </div>`;
       }).join('');
@@ -1599,6 +2191,7 @@
           <td>${esc(c.phone||'—')}</td>
           <td>${projCounts[c.id] || 0}</td>
           <td>${formatDate(c.created_at)}</td>
+          <td><button class="btn btn-sm" onclick="event.stopPropagation();deleteClient(${c.id})" style="background:none;border:1px solid var(--accent3);color:var(--accent3);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;">🗑</button></td>
         </tr>
       `).join('');
 
@@ -2145,7 +2738,7 @@
         <td style="padding:6px 8px;"><input type="text" class="item-desc" placeholder="Service description" value="${esc(desc||'')}" style="width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;"></td>
         <td style="padding:6px 8px;"><input type="number" class="item-qty" value="${qty||1}" min="1" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:center;outline:none;"></td>
         <td style="padding:6px 8px;"><input type="number" class="item-rate" value="${rate||0}" min="0" step="0.01" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;text-align:right;outline:none;"></td>
-        <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">$0.00</div></td>
+        <td style="padding:6px 8px;"><div class="item-amount" style="padding:8px;font-size:13px;font-family:'Space Mono',monospace;text-align:right;color:var(--text);">₱0.00</div></td>
         <td style="padding:6px 8px;text-align:center;"><button class="remove-item-btn" style="background:none;border:none;color:var(--accent3);cursor:pointer;font-size:16px;" title="Remove item">×</button></td>`;
       row.querySelector('.remove-item-btn').addEventListener('click', () => {
         if (document.querySelectorAll('.item-row').length > 1) {
@@ -2204,6 +2797,45 @@
       if (e.key === 'Enter') { e.preventDefault(); $('addMilestoneBtn').click(); }
     });
 
+    // Open invoice modal for any client/project
+    function openInvoiceForClient() {
+      if (!allProjects.length || !allClients.length) {
+        alert('No projects or clients available. Create a project first.');
+        return;
+      }
+      // Build client-project selection HTML
+      var html = '<div style="margin-bottom:14px;"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px;">Select Client / Project</label><select id="invClientProjectSelect" style="width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:\'Outfit\',sans-serif;outline:none;">';
+      html += '<option value="">— Select —</option>';
+      allProjects.forEach(function(p) {
+        var cl = allClients.find(function(c){return c.id == p.client_id;});
+        var name = cl ? cl.name : 'Unknown';
+        html += '<option value="' + p.id + '">' + esc(p.name) + ' — ' + esc(name) + '</option>';
+      });
+      html += '</select></div>';
+
+      // Replace items body with a temporary wrapper
+      $('itemsBody').innerHTML = '<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--muted);">Select a project above, then add items</td></tr>';
+      $('invDueDateInput').value = new Date().toISOString().split('T')[0];
+      $('invStatusSelect').value = 'unpaid';
+      $('invModalError').style.display = 'none';
+
+      // Store prefill and show modal
+      invoicePrefill = { fromInvoicesPage: true };
+      $('addInvoiceModal').classList.add('open');
+
+      // Add the selector at the top of the modal content
+      var modalContent = document.querySelector('#addInvoiceModal .modal');
+      var existingSelect = document.getElementById('invClientProjectSelect');
+      if (!existingSelect) {
+        var detailCard = modalContent.querySelector('div[style*="background:var(--bg3)"]');
+        if (detailCard) {
+          var div = document.createElement('div');
+          div.innerHTML = html;
+          detailCard.parentNode.insertBefore(div.firstElementChild, detailCard);
+        }
+      }
+    }
+
     // Open invoice modal with pre-filled items from weekly services
     function openInvoiceWithPrefill(projectId) {
       const p = allProjects.find(pr => pr.id == projectId);
@@ -2224,7 +2856,44 @@
     $('addItemBtn').addEventListener('click', () => addItemRow('', 1, 0));
 
     $('invModalCancel').addEventListener('click', () => {
+      var sel = document.getElementById('invClientProjectSelect');
+      if (sel) sel.remove();
       $('addInvoiceModal').classList.remove('open');
+    });
+
+    // AI Generate invoice items
+    $('aiGenInvoiceBtn').addEventListener('click', async () => {
+      var projSelect = document.getElementById('invClientProjectSelect');
+      var projectId = projSelect && projSelect.value ? parseInt(projSelect.value) : currentProjectId;
+      if (!projectId) { alert('Select a project first.'); return; }
+      var proj = allProjects.find(function(p){return p.id==projectId;});
+      if (!proj) return;
+      var client = allClients.find(function(c){return c.id==proj.client_id;});
+      var btn = $('aiGenInvoiceBtn');
+      var status = $('aiInvGenStatus');
+      btn.disabled = true; status.style.display = 'inline';
+      try {
+        var res = await fetch('https://portfolio-chat-proxy.mpalomaresdigital.workers.dev/generate-invoice-items', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectName: proj.name,
+            serviceType: proj.type || 'Digital Marketing',
+            budget: proj.budget || 0
+          })
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'AI generation failed');
+        // Clear existing items and add AI-generated ones
+        $('itemsBody').innerHTML = '';
+        data.items.forEach(function(item) {
+          addItemRow(item.desc, item.qty || 1, item.rate || 0);
+        });
+      } catch(e) {
+        alert('AI Suggest error: ' + e.message);
+      } finally {
+        btn.disabled = false; status.style.display = 'none';
+      }
     });
 
     $('invModalSave').addEventListener('click', async () => {
@@ -2232,6 +2901,7 @@
       const items = [];
       let hasEmpty = false;
       let totalAmount = 0;
+      const invoiceCurrency = $('invCurrencySelect').value;
 
       rows.forEach(row => {
         const desc = row.querySelector('.item-desc').value.trim();
@@ -2258,29 +2928,42 @@
       const title = items[0].desc + (items.length > 1 ? ` +${items.length - 1} more` : '');
 
       try {
+        // Get project ID - from select if available, fallback to currentProjectId
+        var projSelect = document.getElementById('invClientProjectSelect');
+        var projectId = projSelect && projSelect.value ? parseInt(projSelect.value) : currentProjectId;
+        if (!projectId) {
+          $('invModalError').textContent = 'Select a project first.';
+          $('invModalError').style.display = 'block';
+          return;
+        }
         const invNum = 'INV-' + Date.now().toString(36).toUpperCase();
 
         const { data, error } = await supabase.from('invoices').insert({
-          project_id: currentProjectId,
+          project_id: projectId,
           invoice_num: invNum,
           title,
           amount: totalAmount,
           due_date,
           status,
+          currency: invoiceCurrency,
           items
         }).select().single();
 
         if (error) throw error;
 
         await supabase.from('activity_log').insert({
-          project_id: currentProjectId,
+          project_id: projectId,
           type: 'invoice',
           text: `Invoice ${invNum} created — ${formatCurrency(totalAmount)} (${items.length} item${items.length>1?'s':''})`
         });
 
         $('addInvoiceModal').classList.remove('open');
-        loadDetailInvoices(currentProjectId);
-        loadDetailActivity(currentProjectId);
+        if (projSelect && projSelect.value) {
+          loadInvoicesPage();
+        } else {
+          loadDetailInvoices(currentProjectId);
+          loadDetailActivity(currentProjectId);
+        }
       } catch (e) {
         $('invModalError').textContent = 'Error: ' + e.message;
         $('invModalError').style.display = 'block';
@@ -2481,10 +3164,10 @@
       $('contractTableWrap').style.display = 'none';
       $('contractEmpty').style.display = 'none';
       try {
-        const { data, error } = await supabase
-          .from('contracts')
-          .select('*')
-          .order('created_at', { ascending: false });
+        var query = supabase.from('contracts').select('*');
+        if (contractFilter === 'active') query = query.in('status', ['draft', 'sent', 'signed']);
+        else if (contractFilter === 'completed') query = query.eq('status', 'completed');
+        var { data, error } = await query.order('created_at', { ascending: false });
         if (error) throw error;
         const contracts = data || [];
         renderContracts(contracts);
@@ -2528,7 +3211,8 @@
           <td>${proj ? esc(proj.name) : '—'}</td>
           <td><span class="badge ${c.status || 'draft'}">${c.status || 'draft'}</span></td>
           <td>${formatDate(c.created_at)}</td>
-          <td><button class="btn btn-outline btn-sm view-contract-btn" data-id="${c.id}">View</button></td>
+          <td><button class="btn btn-outline btn-sm view-contract-btn" data-id="${c.id}">View</button>
+          <button class="btn btn-sm" onclick="event.stopPropagation();deleteContract(${c.id})" style="background:none;border:1px solid var(--accent3);color:var(--accent3);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;margin-left:4px;">🗑</button></td>
         </tr>`;
       }).join('');
 
@@ -2710,6 +3394,40 @@ Marlon Palomares`
       $('contractContentInput').value = generateContractContent(templateType, proj, client);
     });
 
+    // AI Generate contract
+    $('aiGenContractBtn').addEventListener('click', async () => {
+      const projectId = $('contractProjectSelect').value;
+      if (!projectId) { alert('Select a project first.'); return; }
+      const proj = allProjects.find(p => p.id == projectId);
+      if (!proj) return;
+      const client = allClients.find(c => c.id == proj.client_id);
+      const clientName = client ? client.name : 'Client';
+      const btn = $('aiGenContractBtn');
+      const status = $('aiGenStatus');
+      btn.disabled = true; status.style.display = 'inline';
+      try {
+        const res = await fetch('https://portfolio-chat-proxy.mpalomaresdigital.workers.dev/generate-contract', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientName: clientName,
+            projectName: proj.name,
+            serviceType: proj.type || 'Digital Marketing Services',
+            budget: proj.budget || 0,
+            startDate: proj.start_date || ''
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'AI generation failed');
+        $('contractTitleInput').value = proj.name + ' — Service Agreement';
+        $('contractContentInput').value = data.content;
+      } catch(e) {
+        alert('AI Generate error: ' + e.message);
+      } finally {
+        btn.disabled = false; status.style.display = 'none';
+      }
+    });
+
     $('contractModalSave').addEventListener('click', async () => {
       const project_id = $('contractProjectSelect').value;
       const template_type = $('contractTemplateSelect').value;
@@ -2767,6 +3485,18 @@ Marlon Palomares`
       }
     });
 
+    // Complete contract button
+    $('viewContractCompleteBtn').addEventListener('click', function() {
+      if (!selectedContractId) return;
+      if (!confirm('Mark this contract as completed?')) return;
+      supabase.from('contracts').update({ status: 'completed' }).eq('id', selectedContractId).then(function(r) {
+        if (r.error) { alert('Error: ' + r.error.message); return; }
+        logNotification('contract_signed', 'Contract marked as completed', '', '');
+        $('viewContractModal').classList.remove('open');
+        loadContracts();
+      });
+    });
+
     /* ── Invoices Page ── */
     async function loadInvoicesPage() {
       $('invLoading').style.display = 'block';
@@ -2791,9 +3521,16 @@ Marlon Palomares`
             + '<td class="mono">' + esc(inv.invoice_num || '—') + '</td>'
             + '<td>' + esc(clientName) + '</td>'
             + '<td>' + esc(projectName) + '</td>'
-            + '<td class="mono">' + formatCurrency(inv.amount) + '</td>'
+            + '<td class="mono">' + formatCurrency(inv.amount, inv.currency) + '</td>'
             + '<td>' + formatDate(inv.due_date) + '</td>'
             + '<td><span class="badge ' + (inv.status||'unpaid') + '">' + (inv.status||'unpaid') + '</span></td>'
+            + '<td><button class="btn btn-sm btn-outline" onclick="event.stopPropagation();viewInvoicePdfFig('
+            + "'" + esc(clientName) + "','" + esc(inv.invoice_num || '') + "','" + esc(inv.title || projectName) + "',"
+            + (inv.amount || 0) + ",'" + formatDate(inv.due_date) + "','" + (inv.status||'unpaid') + "'"
+            + ')">PDF</button>'
+            + (inv.status !== 'sent' && inv.status !== 'paid' ? '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();sendInvoiceToClient(' + inv.id + ',\'' + esc(inv.invoice_num || '') + '\')" style="margin-left:4px;">Send</button>' : '')
+            + '<button class="btn btn-sm" onclick="event.stopPropagation();deleteInvoice(' + inv.id + ',\'' + esc(inv.invoice_num || '') + '\')" style="margin-left:4px;background:none;border:1px solid var(--accent3);color:var(--accent3);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">🗑</button>'
+            + '</td>'
             + '</tr>';
         }).join('');
       } catch (e) {
@@ -2846,6 +3583,9 @@ Marlon Palomares`
           $('viewContractSendBtn').disabled = false;
           $('viewContractSendBtn').textContent = '✉ Send to Client';
         }
+        // Show complete button only when signed
+        var completeBtn = $('viewContractCompleteBtn');
+        completeBtn.style.display = c.status === 'signed' ? 'inline-flex' : 'none';
 
         $('viewContractModal').classList.add('open');
       } catch (e) {
@@ -2865,8 +3605,8 @@ Marlon Palomares`
       const clientName = btn.dataset.clientName;
 
       if (!clientEmail || clientEmail === '—') {
-        alert('No client email available for this contract.');
-        return;
+        // No email, but still send the contract
+        console.warn('No client email available, sending without notification');
       }
 
       const confirmed = confirm(`Send contract to ${clientName} (${clientEmail})?`);
@@ -2892,12 +3632,15 @@ Marlon Palomares`
           text: `Contract sent to ${clientName}.`
         });
 
+        console.log('Contract sent successfully! ID:', contractId, 'Status updated to sent');
+
         btn.textContent = '✉ Sent';
         $('viewContractStatus').textContent = 'sent';
         $('viewContractStatus').className = 'badge sent';
 
         // Reload contracts list
         loadContracts();
+        alert('✅ Contract sent to ' + clientName + '!');
       } catch (e) {
         alert('Error sending contract: ' + e.message);
         console.error(e);
@@ -2948,7 +3691,6 @@ Marlon Palomares`
         if (r.error) { console.error(r.error); return; }
         renderConvList(r.data || []);
         updateBadge(r.data || []);
-        if (currentConvId) reopenConv(currentConvId, r.data);
       });
     }
 
@@ -2980,9 +3722,13 @@ Marlon Palomares`
     function updateBadge(convs) {
       var total = 0;
       convs.forEach(function(c) { total += (c.unread_count || 0); });
-      var badge = document.getElementById('msgBadge');
-      if (total > 0) { badge.textContent = total > 99 ? '99+' : total; badge.style.display = 'inline'; }
-      else { badge.style.display = 'none'; }
+      // Also count messages from client where read_at is null using direct query
+      supabase.from('messages').select('id', { count: 'exact', head: true }).is('read_at', null).eq('sender', 'client').then(function(r) {
+        if (!r.error && r.count) total += r.count;
+        var badge = document.getElementById('msgBadge');
+        if (total > 0) { badge.textContent = total > 99 ? '99+' : total; badge.style.display = 'inline'; }
+        else { badge.style.display = 'none'; }
+      });
     }
 
     function reopenConv(convId, convs) {
@@ -3006,7 +3752,10 @@ Marlon Palomares`
       document.getElementById('msgChatHeader').innerHTML = '<h4>💬 ' + esc(clientName) + '</h4><p>Conversation</p>';
 
       loadMessagesForConv(convId);
+      // Mark client messages as read
+      supabase.from('messages').update({ read_at: new Date().toISOString() }).eq('conversation_id', convId).eq('sender', 'client').is('read_at', null).then(function() { loadMessages(); });
       subscribeMessages(convId);
+      setupTypingIndicator(convId);
     }
 
     function loadMessagesForConv(convId) {
@@ -3024,24 +3773,75 @@ Marlon Palomares`
     function renderMessages(msgs) {
       var el = document.getElementById('msgMessages');
       if (!msgs.length) { el.innerHTML = '<div class="msg-conv-empty" style="padding:40px;">Start a conversation</div>'; return; }
-      el.innerHTML = msgs.map(function(m) {
+      var today = new Date().toDateString();
+      var yesterday = new Date(Date.now() - 86400000).toDateString();
+      var html = '';
+      var lastDate = '';
+      msgs.forEach(function(m) {
+        var msgDate = m.created_at ? new Date(m.created_at).toDateString() : '';
+        if (msgDate && msgDate !== lastDate) {
+          var label = msgDate === today ? 'Today' : msgDate === yesterday ? 'Yesterday' : new Date(m.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+          html += '<div class="msg-date-sep">' + label + '</div>';
+          lastDate = msgDate;
+        }
         var side = m.sender == 'admin' ? 'admin' : 'client';
         var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
-        return '<div class="msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + time + '</div></div>';
-      }).join('');
+        var receipt = '';
+        if (m.sender == 'admin' && m.read_at) { receipt = '<span style="font-size:9px;">✓✓</span>'; }
+        else if (m.sender == 'admin') { receipt = '<span style="font-size:9px;">✓</span>'; }
+        html += '<div class="msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + time + receipt + '</div></div>';
+      });
+      el.innerHTML = html;
       el.scrollTop = el.scrollHeight;
     }
 
+    var typingChannel = null;
+    function setupTypingIndicator(convId) {
+      if (typingChannel) { try { supabase.removeChannel(typingChannel); } catch(e) {} }
+      typingChannel = supabase.channel('typing-' + convId);
+      typingChannel.on('broadcast', { event: 'typing' }, function(payload) {
+        var el = document.getElementById('typingIndicator');
+        if (payload.payload.isTyping) {
+          if (!el) {
+            var chatArea = document.getElementById('msgMessages');
+            if (chatArea) {
+              var div = document.createElement('div');
+              div.id = 'typingIndicator';
+              div.className = 'msg-bubble client';
+              div.style.cssText = 'padding:8px 16px;font-size:12px;color:var(--muted);font-style:italic;';
+              div.textContent = 'typing...';
+              chatArea.parentNode.insertBefore(div, chatArea.nextSibling);
+            }
+          }
+        } else {
+          if (el) el.remove();
+        }
+      }).subscribe();
+    }
+    // Send typing indicator
+    document.getElementById('msgInput').addEventListener('input', function() {
+      if (!currentConvId || !typingChannel) return;
+      typingChannel.send({ type: 'broadcast', event: 'typing', payload: { isTyping: true, convId: currentConvId } });
+      clearTimeout(this._typingTimer);
+      this._typingTimer = setTimeout(function() {
+        if (typingChannel) typingChannel.send({ type: 'broadcast', event: 'typing', payload: { isTyping: false, convId: currentConvId } });
+      }, 1500);
+    });
+
     function subscribeMessages(convId) {
-      if (msgChannel) { supabase.removeChannel(msgChannel); }
-      msgChannel = supabase.channel('messages-' + convId).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + convId }, function(payload) {
+      // Remove old channel properly
+      if (msgChannel) { try { supabase.removeChannel(msgChannel); } catch(e) {} msgChannel = null; }
+      var channelName = 'admin-msgs-' + convId + '-' + Date.now();
+      msgChannel = supabase.channel(channelName).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + convId }, function(payload) {
         var el = document.getElementById('msgMessages');
+        if (!el) return;
         var m = payload.new;
         var side = m.sender == 'admin' ? 'admin' : 'client';
         var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
         el.innerHTML += '<div class="msg-bubble ' + side + '">' + esc(m.content) + '<div class="msg-bubble-time">' + time + '</div></div>';
         el.scrollTop = el.scrollHeight;
-        loadMessages(); // refresh conv list + badge
+        // Just update badge, don't reload everything
+        getUnreadCount();
       }).subscribe();
     }
 

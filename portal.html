@@ -253,6 +253,51 @@
   .da-client { color: var(--accent); font-weight: 600; }
   .da-time { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
+  /* ── Notifications ── */
+  .notif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+  .notif-filters { display: flex; gap: 8px; }
+  .notif-filters .nf-btn { padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'Outfit', sans-serif; transition: all var(--tr); }
+  .notif-filters .nf-btn:hover { border-color: var(--accent); color: var(--text); }
+  .notif-filters .nf-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .notif-list { display: flex; flex-direction: column; gap: 4px; }
+  .notif-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-radius: var(--r); background: var(--card); border: 1px solid var(--border); cursor: pointer; transition: all var(--tr); position: relative; }
+  .notif-item:hover { background: var(--card-hover); }
+  .notif-item.unread { border-left: 3px solid var(--accent); background: rgba(0,212,170,0.04); }
+  .notif-item.read { opacity: 0.7; }
+  .notif-item.read:hover { opacity: 1; }
+  .notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .notif-icon.client_login { background: rgba(100,180,255,0.15); color: #64b4ff; }
+  .notif-icon.invoice_viewed, .notif-icon.invoice_created { background: rgba(255,107,53,0.15); color: var(--accent3); }
+  .notif-icon.invoice_paid { background: rgba(0,212,170,0.15); color: #00d4aa; }
+  .notif-icon.message_sent { background: rgba(160,100,255,0.15); color: #a064ff; }
+  .notif-icon.contract_signed { background: rgba(255,193,7,0.15); color: #ffc107; }
+  .notif-icon.pdf_viewed { background: rgba(239,71,111,0.15); color: #ef476f; }
+  .notif-body { flex: 1; min-width: 0; }
+  .notif-body .notif-msg { font-size: 14px; color: var(--text); line-height: 1.4; }
+  .notif-body .notif-time { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: 'Space Mono', monospace; }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .notif-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .notif-empty svg { width: 48px; height: 48px; opacity: 0.3; margin-bottom: 16px; }
+  .notif-empty h3 { font-size: 16px; color: var(--muted); margin-bottom: 6px; }
+  .notif-empty p { font-size: 13px; }
+  .notif-mark-read { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 600; font-family: 'Outfit', sans-serif; background: none; border: none; padding: 4px 0; }
+  .notif-mark-read:hover { text-decoration: underline; }
+  .notif-badge { position: absolute; top: -4px; right: -4px; background: var(--accent3); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; padding: 0 4px; border: 2px solid var(--bg2); }
+  .notif-nav-item { position: relative; }
+  /* ── Contracts ── */
+  .contract-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 24px; cursor: pointer; transition: all var(--tr); }
+  .contract-card:hover { background: var(--card-hover); }
+  .contract-card .cc-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .contract-card .cc-meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; }
+  .contract-card .cc-meta span { display: flex; align-items: center; gap: 4px; }
+  .contract-card .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .contract-card .badge.draft { background: rgba(255,193,7,0.12); color: #ffc107; border: 1px solid rgba(255,193,7,0.2); }
+  .contract-card .badge.signed { background: rgba(0,212,170,0.12); color: #00d4aa; border: 1px solid rgba(0,212,170,0.2); }
+  .contract-card .badge.sent { background: rgba(100,180,255,0.12); color: #64b4ff; border: 1px solid rgba(100,180,255,0.2); }
+  .contract-content { display: none; margin-top: 16px; padding: 20px; background: var(--bg3); border-radius: var(--r-sm); font-size: 13px; line-height: 1.7; color: var(--text); white-space: pre-wrap; font-family: 'Outfit', sans-serif; }
+  .contract-content.open { display: block; }
+  .contract-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 16px; }
+
   /* Upcoming invoices */
   .dash-upcoming { display: flex; flex-direction: column; gap: 0; }
   .upcoming-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
@@ -321,6 +366,11 @@
     <li class="nav-item" data-page="meetings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       Book Meeting
+    </li>
+    <li class="nav-item notif-nav-item" data-page="notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notifications
+      <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
     </li>
     <li class="nav-item" data-page="messages">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -399,10 +449,73 @@
     </div>
   </div>
   <div class="page" id="page-contracts">
-    <div class="placeholder-page">
-      <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg></div>
-      <h2>Contracts</h2>
-      <p>View and sign project contracts.</p>
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div class="section-tag">Legal</div>
+        <h1>Contracts</h1>
+        <p>Generate and manage client service agreements.</p>
+      </div>
+      <button class="btn-confirm" onclick="openGenerateContract()" style="padding:10px 22px;font-size:13px;">+ Generate Contract</button>
+    </div>
+    <div id="contractsContent">
+      <p style="color:var(--muted);text-align:center;padding:40px;">Loading contracts...</p>
+    </div>
+  </div>
+
+  <!-- ═══ GENERATE CONTRACT MODAL ═══ -->
+  <div class="modal-overlay" id="genContractModal">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:640px;">
+      <h3>Generate Contract</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px;">Select Project</label>
+          <select id="genContractProject" style="width:100%;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;outline:none;font-family:'Outfit',sans-serif;" onchange="autoFillContractTemplate()">
+            <option value="">— Select a project —</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px;">Contract Title</label>
+          <input type="text" id="genContractTitle" placeholder="e.g. Google Ads Management Agreement" style="width:100%;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px;">Contract Terms <span style="color:var(--muted);font-size:11px;">(supports {client}, {type}, {budget}, {startDate}, {deadline})</span></label>
+          <textarea id="genContractContent" rows="14" style="width:100%;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;font-family:'Outfit',sans-serif;resize:vertical;line-height:1.6;">SERVICE AGREEMENT
+
+This Service Agreement ("Agreement") is entered into between MP Digital Solutions ("Company") and {client} ("Client").
+
+1. SERVICES
+Company agrees to provide {type} services to Client.
+
+2. TERM
+This Agreement shall commence on {startDate} and continue until {deadline} unless terminated earlier per Section 5.
+
+3. FEES
+Client agrees to pay a monthly fee of ₱{budget} for the services rendered.
+
+4. PAYMENT TERMS
+Invoices are due within 15 days of receipt. Late payments may incur a 2% monthly fee.
+
+5. TERMINATION
+Either party may terminate this Agreement with 30 days written notice.
+
+6. CONFIDENTIALITY
+Both parties agree to maintain confidentiality of all shared business information.
+
+7. GOVERNING LAW
+This Agreement shall be governed by the laws of the Republic of the Philippines.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date below.
+
+___________________________      ___________________________
+MP Digital Solutions              Client: {client}
+
+Date: _______________             Date: _______________</textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="document.getElementById('genContractModal').classList.remove('open')">Cancel</button>
+        <button class="btn-confirm" onclick="submitGeneratedContract()">Create Contract</button>
+      </div>
     </div>
   </div>
   <div class="page" id="page-meetings">
@@ -417,6 +530,17 @@
       <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       <h2>Messages</h2>
       <p>Direct messaging with your clients.</p>
+    </div>
+  </div>
+  <!-- ═══ NOTIFICATIONS ═══ -->
+  <div class="page" id="page-notifications">
+    <div class="page-header">
+      <div class="section-tag">Activity</div>
+      <h1>Notifications</h1>
+      <p>Stay updated on all client activity and system events.</p>
+    </div>
+    <div id="notificationsContent">
+      <p style="color:var(--muted);text-align:center;padding:40px;">Loading notifications...</p>
     </div>
   </div>
   <!-- ═══ ALL INVOICES ═══ -->
@@ -651,6 +775,7 @@ function openProject(id) {
             <td><div class="actions-cell">
               ${inv.status !== 'paid' ? `<button class="btn btn-pay" onclick="event.stopPropagation();openPayModal('${inv.num}',${inv.amount},'${inv.due}')">Pay Now</button>` : ''}
               <button class="btn btn-icon" onclick="event.stopPropagation();openDetailModal('${inv.num}',${inv.amount},'${inv.due}','${statusLabel}','${inv.title}')" title="View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
+              <button class="btn btn-icon" onclick="event.stopPropagation();viewInvoicePdf('${p.client}','${inv.num}','${inv.title}',${inv.amount},'${inv.due}','${statusLabel}')" title="View PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6"/><path d="M9 12h6"/></svg></button>
             </div></td>
           </tr>`;
         }).join('')}</tbody>
@@ -746,13 +871,15 @@ function openPayModal(num, amount, due) {
   payModal.classList.add('open');
 }
 function closePayModal() { payModal.classList.remove('open'); }
-function confirmPayment() {
+async function confirmPayment() {
+  var payInvNum = document.getElementById('pay-inv-num').textContent;
+  logNotification('invoice_paid', 'Invoice ' + payInvNum + ' marked as paid', '', payInvNum);
   const method = document.querySelector('input[name="payMethod"]:checked').value;
   alert('Payment of ' + document.getElementById('pay-amount').textContent + ' via ' + method.charAt(0).toUpperCase() + method.slice(1) + ' submitted! (Demo)');
   closePayModal();
 }
 
-function openDetailModal(num, amount, due, status, title) {
+async function openDetailModal(num, amount, due, status, title) {
   document.getElementById('det-inv-num').textContent = num;
   document.getElementById('det-amount').textContent = '₱' + amount.toLocaleString('en-PH', { minimumFractionDigits: 2 });
   document.getElementById('det-due').textContent = due;
@@ -984,6 +1111,8 @@ async function submitGeneratedInvoice() {
   openProject(genProjectId);
   renderDashboard();
   renderAllInvoices();
+
+  logNotification('invoice_created', 'Invoice ' + newNum + ' created — ₱' + amount.toLocaleString() + ' for ' + title, projects.find(p => p.id === genProjectId)?.client || '', newNum);
   alert('✅ Invoice ' + newNum + ' created!');
 }
 
@@ -1014,7 +1143,7 @@ async function renderAllInvoices() {
   el.innerHTML = `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;">
       <table class="invoice-table">
-        <thead><tr><th>Invoice #</th><th>Client</th><th>Title</th><th>Due Date</th><th>Amount</th><th>Status</th></tr></thead>
+        <thead><tr><th>Invoice #</th><th>Client</th><th>Title</th><th>Due Date</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>${allInvoices.map(inv => {
           const badgeClass = inv.status === 'paid' ? 'badge-paid' : inv.status === 'sent' ? 'badge-sent' : 'badge-pending';
           const statusLabel = inv.status.charAt(0).toUpperCase() + inv.status.slice(1);
@@ -1025,6 +1154,7 @@ async function renderAllInvoices() {
             <td>${inv.due}</td>
             <td class="inv-amount">₱${(inv.amount || 0).toLocaleString()}.00</td>
             <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
+            <td><button class="btn btn-icon" onclick="event.stopPropagation();viewInvoicePdf('${inv.client || ''}','${inv.num}','${inv.title}',${inv.amount || 0},'${inv.due}','${statusLabel}')" title="View PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h6"/><path d="M9 12h6"/></svg></button></td>
           </tr>`;
         }).join('')}</tbody>
       </table>
@@ -1035,11 +1165,300 @@ async function renderAllInvoices() {
 }
 
 /* ═══════════════════════════════════════
+   CONTRACTS
+   ═══════════════════════════════════════ */
+function openGenerateContract() {
+  const sel = document.getElementById('genContractProject');
+  sel.innerHTML = '<option value="">— Select a project —</option>';
+  projects.forEach(p => {
+    sel.innerHTML += '<option value="' + p.id + '">' + escHtml(p.client) + ' — ' + p.type + '</option>';
+  });
+  document.getElementById('genContractTitle').value = '';
+  document.getElementById('genContractContent').value = '';
+  document.getElementById('genContractModal').classList.add('open');
+}
+
+function autoFillContractTemplate() {
+  const pid = parseInt(document.getElementById('genContractProject').value);
+  if (!pid) return;
+  const p = projects.find(x => x.id === pid);
+  if (!p) return;
+  const template = `SERVICE AGREEMENT
+
+This Service Agreement ("Agreement") is entered into between MP Digital Solutions ("Company") and ${p.client} ("Client").
+
+1. SERVICES
+Company agrees to provide ${p.type} services to Client.
+
+2. TERM
+This Agreement shall commence on ${p.startDate} and continue until ${p.deadline || 'the completion of services'} unless terminated earlier per Section 5.
+
+3. FEES
+Client agrees to pay a monthly fee of ₱${p.budget.toLocaleString()} for the services rendered.
+
+4. PAYMENT TERMS
+Invoices are due within 15 days of receipt. Late payments may incur a 2% monthly fee.
+
+5. TERMINATION
+Either party may terminate this Agreement with 30 days written notice.
+
+6. CONFIDENTIALITY
+Both parties agree to maintain confidentiality of all shared business information.
+
+7. GOVERNING LAW
+This Agreement shall be governed by the laws of the Republic of the Philippines.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date below.
+
+___________________________      ___________________________
+MP Digital Solutions              Client: ${p.client}
+
+Date: _______________             Date: _______________`;
+  document.getElementById('genContractTitle').value = p.type + ' Service Agreement';
+  document.getElementById('genContractContent').value = template;
+}
+
+async function submitGeneratedContract() {
+  const pid = parseInt(document.getElementById('genContractProject').value);
+  const title = document.getElementById('genContractTitle').value.trim();
+  const content_text = document.getElementById('genContractContent').value.trim();
+  if (!pid || !title || !content_text) { alert('Please fill in all fields.'); return; }
+
+  const btn = document.querySelector('#genContractModal .btn-confirm');
+  btn.textContent = 'Creating...'; btn.disabled = true;
+
+  const { error } = await supabase.from('contracts').insert({
+    project_id: pid,
+    title: title,
+    content: content_text,
+    status: 'draft'
+  });
+
+  if (error) { alert('Error: ' + error.message); btn.textContent = 'Create Contract'; btn.disabled = false; return; }
+
+  document.getElementById('genContractModal').classList.remove('open');
+  btn.textContent = 'Create Contract'; btn.disabled = false;
+  logNotification('contract_signed', 'Contract "' + title + '" generated for ' + (projects.find(p => p.id === pid)?.client || ''), projects.find(p => p.id === pid)?.client || '', '');
+  loadContracts();
+  alert('✅ Contract created!');
+}
+
+async function sendContractToClient(contractId, title, projectId) {
+  if (!confirm('Send "' + title + '" to client? They will be able to view and sign it.')) return;
+  try {
+    const { error } = await supabase.from('contracts').update({ status: 'sent' }).eq('id', contractId);
+    if (error) throw error;
+    const p = projects.find(x => x.id === projectId);
+    logNotification('contract_signed', 'Contract "' + title + '" sent to client' + (p ? ' (' + p.client + ')' : ''), p ? p.client : '', '');
+    loadContracts();
+    alert('✅ Contract sent to client!');
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function loadContracts() {
+  const el = document.getElementById('contractsContent');
+  try {
+    const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:48px;height:48px;opacity:0.3;margin-bottom:16px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg><h3 style="font-size:16px;margin-bottom:6px;">No contracts yet</h3><p style="font-size:13px;">Generate a contract from a project template.</p></div>';
+      return;
+    }
+
+    el.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">' + data.map(c => {
+      const p = projects.find(x => x.id === c.project_id);
+      const d = new Date(c.created_at);
+      const dateStr = d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      const badgeClass = c.status || 'draft';
+      const statusLabel = c.status ? c.status.charAt(0).toUpperCase() + c.status.slice(1) : 'Draft';
+      return '<div class="contract-card">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleContractContent(' + c.id + ')">' +
+        '<div><div class="cc-title">' + escHtml(c.title) + '</div>' +
+        '<div class="cc-meta"><span>📅 ' + dateStr + '</span><span>👤 ' + escHtml(p ? p.client : 'Unknown') + '</span></div></div>' +
+        '<span class="badge ' + badgeClass + '">' + statusLabel + '</span></div>' +
+        '<div class="contract-content" id="cc-' + c.id + '">' + escHtml(c.content) +
+        '<div style="margin-top:18px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:16px;">' +
+        (c.status === 'draft' ? '<button class="btn-confirm btn-send-contract" data-id="' + c.id + '" data-title="' + escHtml(c.title).replace(/'/g,'&#39;') + '" data-project="' + (c.project_id || 0) + '" style="padding:8px 18px;font-size:12px;">📤 Send to Client</button>' : '') +
+        (c.status === 'sent' ? '<span style="font-size:13px;color:var(--muted);align-self:center;">⏳ Awaiting client signature</span>' : '') +
+        (c.status === 'signed' ? '<span style="font-size:13px;color:#00d4aa;align-self:center;">✅ Signed by client</span>' : '') +
+        '</div></div></div>';
+    }).join('') + '</div>';
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--accent3);text-align:center;padding:40px;">Error loading contracts. Run the SQL script first.</p>';
+  }
+}
+
+// Event delegation for Send to Client buttons
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-send-contract');
+  if (btn) {
+    e.stopPropagation();
+    const id = parseInt(btn.dataset.id);
+    const title = btn.dataset.title;
+    const projectId = parseInt(btn.dataset.project);
+    sendContractToClient(id, title, projectId);
+  }
+});
+
+function toggleContractContent(id) {
+  const el = document.getElementById('cc-' + id);
+  el.classList.toggle('open');
+}
+
+function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ═══════════════════════════════════════
+   NOTIFICATIONS
+   ═══════════════════════════════════════ */
+let notifFilter = 'all';
+let notifTimer = null;
+
+async function logNotification(type, message, clientName, relatedId) {
+  try { await supabase.from('notifications').insert({ type, message, client_name: clientName||'', related_id: relatedId||'', is_read: false }); }
+  catch(e) { console.warn('Notif table not ready:', e.message); }
+}
+
+async function loadNotifications(filter) {
+  notifFilter = filter || 'all';
+  const el = document.getElementById('notificationsContent');
+  try {
+    let query = supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(50);
+    if (filter === 'unread') query = query.eq('is_read', false);
+    else if (filter && filter !== 'all') query = query.eq('type', filter);
+    const { data, error } = await query;
+    if (error) throw error;
+    if (!data || !data.length) {
+      el.innerHTML = '<div class="notif-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><h3>All caught up!</h3><p>'+(filter==='unread'?'No unread notifications.':'No notifications yet. Activity will appear here.')+'</p></div>';
+      return;
+    }
+    const icons = { client_login:'🔑', invoice_viewed:'📄', invoice_created:'🧾', invoice_paid:'✅', message_sent:'💬', contract_signed:'📝', pdf_viewed:'📎' };
+    el.innerHTML = '<div class="notif-header"><div class="notif-filters">'+
+      '<button class="nf-btn '+(filter==='all'?'active':'')+'" onclick="loadNotifications(&#39;all&#39;)">All</button>'+
+      '<button class="nf-btn '+(filter==='unread'?'active':'')+'" onclick="loadNotifications(&#39;unread&#39;)">Unread</button>'+
+      '<button class="nf-btn '+(filter==='invoice_viewed'?'active':'')+'" onclick="loadNotifications(&#39;invoice_viewed&#39;)">Invoices</button>'+
+      '<button class="nf-btn '+(filter==='client_login'?'active':'')+'" onclick="loadNotifications(&#39;client_login&#39;)">Logins</button>'+
+      '</div>'+(data.some(n=>!n.is_read)?'<button class="notif-mark-read" onclick="markAllRead()">Mark all as read</button>':'')+'</div>'+
+      '<div class="notif-list">'+data.map(n=>{
+        const t=n.type||'generic', icon=icons[t]||'🔔';
+        const d=new Date(n.created_at), diff=Math.floor((Date.now()-d)/1000);
+        const ago=diff<60?'just now':diff<3600?Math.floor(diff/60)+'m ago':diff<86400?Math.floor(diff/3600)+'h ago':diff<604800?Math.floor(diff/86400)+'d ago':d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        return '<div class="notif-item '+(n.is_read?'read':'unread')+'" onclick="markAsRead('+n.id+')">'+
+          '<div class="notif-icon '+t+'">'+icon+'</div>'+
+          '<div class="notif-body"><div class="notif-msg">'+n.message.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div><div class="notif-time">'+ago+(n.client_name?' · '+n.client_name.replace(/&/g,'&amp;').replace(/</g,'&lt;'):'')+'</div></div>'+
+          (!n.is_read?'<div class="notif-dot"></div>':'')+'</div>';}).join('')+'</div>';
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--accent3);text-align:center;padding:40px;">Run the SQL script first to create the notifications table.</p>';
+  }
+}
+
+async function getUnreadCount() {
+  try {
+    const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('is_read',false);
+    const b=document.getElementById('notifBadge');
+    if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}else{b.style.display='none';}
+    return count||0;
+  }catch(e){return 0;}
+}
+
+async function markAsRead(id){try{await supabase.from('notifications').update({is_read:true}).eq('id',id);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
+async function markAllRead(){try{await supabase.from('notifications').update({is_read:true}).eq('is_read',false);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
+function startNotifPolling(){if(notifTimer)clearInterval(notifTimer);notifTimer=setInterval(getUnreadCount,30000);}
+
+/* ═══════════════════════════════════════
    INIT
    ═══════════════════════════════════════ */
 renderProjects();
 renderDashboard();
 renderAllInvoices();
+/* ═══════════════════════════════════════
+   VIEW INVOICE PDF
+   ═══════════════════════════════════════ */
+function viewInvoicePdf(client, num, title, amount, due, status) {
+  logNotification('pdf_viewed', 'Invoice ' + num + ' PDF viewed — ' + title, client, num);
+  const win = window.open('', '_blank');
+  const dueObj = due ? new Date(due + (due.includes(',') ? '' : ', 2026')) : new Date();
+  const dueStr = due || dueObj.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  const today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  win.document.write(`
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Invoice ${num}</title>
+<style>
+  @page { margin: 20mm 15mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1a1a2e; background: #fff; padding: 40px; line-height: 1.5; }
+  .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #e8e8f0; }
+  .company h1 { font-size: 24px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
+  .company .tagline { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+  .invoice-title { text-align: right; }
+  .invoice-title h2 { font-size: 28px; font-weight: 300; color: #666; }
+  .invoice-title .inv-num { font-size: 16px; color: #1a1a2e; font-weight: 600; margin-top: 4px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+  .info-box h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin-bottom: 8px; }
+  .info-box p { font-size: 14px; color: #1a1a2e; }
+  .info-box .name { font-weight: 600; font-size: 16px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+  thead th { background: #f5f5fa; text-align: left; padding: 12px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #666; border-bottom: 2px solid #e8e8f0; }
+  tbody td { padding: 14px 16px; border-bottom: 1px solid #f0f0f5; font-size: 14px; }
+  tbody td:last-child { text-align: right; font-weight: 600; }
+  .totals { margin-left: auto; width: 320px; }
+  .total-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+  .total-row.final { border-top: 2px solid #1a1a2e; margin-top: 8px; padding-top: 12px; font-size: 18px; font-weight: 700; }
+  .status-badge-pdf { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-paid { background: #d4edda; color: #155724; }
+  .badge-sent { background: #cce5ff; color: #004085; }
+  .badge-pending { background: #fff3cd; color: #856404; }
+  .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e8e8f0; text-align: center; font-size: 12px; color: #aaa; }
+  @media print { body { padding: 0; } .no-print { display: none; } }
+</style></head>
+<body>
+  <div class="invoice-header">
+    <div class="company">
+      <h1>MP Digital Solutions</h1>
+      <div class="tagline">Digital Marketing &amp; Automation</div>
+    </div>
+    <div class="invoice-title">
+      <h2>INVOICE</h2>
+      <div class="inv-num">${num}</div>
+    </div>
+  </div>
+  <div class="info-grid">
+    <div class="info-box">
+      <h3>Bill To</h3>
+      <p class="name">${client}</p>
+      <p>${title}</p>
+    </div>
+    <div class="info-box" style="text-align:right">
+      <h3>Invoice Details</h3>
+      <p><strong>Date:</strong> ${today}</p>
+      <p><strong>Due:</strong> ${dueStr}</p>
+      <p><strong>Status:</strong> <span class="status-badge-pdf badge-${(status || 'sent').toLowerCase()}">${status || 'Sent'}</span></p>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th style="width:60%">Description</th><th style="width:20%">Qty</th><th style="width:20%">Amount</th></tr></thead>
+    <tbody>
+      <tr><td>${title} — ${num}</td><td>1</td><td>₱${(amount || 0).toLocaleString()}.00</td></tr>
+    </tbody>
+  </table>
+  <div class="totals">
+    <div class="total-row"><span>Subtotal</span><span>₱${(amount || 0).toLocaleString()}.00</span></div>
+    <div class="total-row final"><span>Total Due</span><span>₱${(amount || 0).toLocaleString()}.00</span></div>
+  </div>
+  <div class="footer">
+    <p>MP Digital Solutions &bull; Digital Marketing &amp; Automation</p>
+    <p>Thank you for your business!</p>
+  </div>
+  <div class="no-print" style="text-align:center;margin-top:30px;">
+    <button onclick="window.print()" style="padding:10px 30px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;">Save as PDF / Print</button>
+  </div>
+</body></html>`);
+  win.document.close();
+}
+
 </script>
   <div class="modal-overlay" id="invGenModal">
     <div class="modal" role="dialog" aria-modal="true" style="max-width:520px;">
