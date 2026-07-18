@@ -78,13 +78,8 @@ ALTER TABLE deliverables ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE portal_users ENABLE ROW LEVEL SECURITY;
 
--- Policies: admin sees all, clients see their own
-CREATE POLICY "admin_all_clients" ON clients FOR ALL USING (true);
-CREATE POLICY "admin_all_projects" ON projects FOR ALL USING (true);
-CREATE POLICY "admin_all_invoices" ON invoices FOR ALL USING (true);
-CREATE POLICY "admin_all_deliverables" ON deliverables FOR ALL USING (true);
-CREATE POLICY "admin_all_activity" ON activity_log FOR ALL USING (true);
-CREATE POLICY "admin_all_users" ON portal_users FOR ALL USING (true);
+-- IMPORTANT: do not use permissive USING (true) policies here. After creating
+-- the schema, run secure-rls-migration.sql to install tenant-aware policies.
 
 -- Insert sample admin
 INSERT INTO portal_users (email, role, display_name)

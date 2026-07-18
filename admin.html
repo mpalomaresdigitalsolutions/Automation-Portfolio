@@ -154,6 +154,29 @@
     .stat-card .value.orange { color: var(--accent3); }
     .stat-card .value.purple { color: var(--accent2); }
 
+    .action-center { margin-bottom: 28px; }
+    .section-heading { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px; }
+    .section-heading h3 { font-size:16px;font-weight:600; }
+    .section-heading p { color:var(--muted);font-size:12px; }
+    .action-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px; }
+    .action-card { appearance:none;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;color:var(--text);font-family:inherit;cursor:pointer;transition:all .18s; }
+    .action-card:hover,.action-card:focus-visible { border-color:var(--accent);transform:translateY(-2px);outline:none;box-shadow:0 8px 26px rgba(0,212,255,.08); }
+    .action-card.urgent { border-left:3px solid #ff4444; }
+    .action-card.review { border-left:3px solid var(--accent2); }
+    .action-card .action-count { font:700 24px 'Space Mono',monospace;margin-bottom:3px; }
+    .action-card .action-label { font-size:13px;font-weight:600; }
+    .action-card .action-help { color:var(--muted);font-size:11px;margin-top:5px; }
+    .quick-actions { display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px; }
+    .ai-panel { position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(123,47,255,.12),rgba(0,212,255,.07));border:1px solid rgba(123,47,255,.28);border-radius:var(--radius);padding:18px;margin-bottom:20px; }
+    .ai-panel::after { content:'AI';position:absolute;right:16px;top:10px;font:700 44px 'Space Mono',monospace;color:rgba(255,255,255,.025);pointer-events:none; }
+    .ai-panel-head { display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px; }
+    .ai-panel-head h3 { font-size:15px;margin-bottom:4px; }
+    .ai-panel-head p { color:var(--muted);font-size:11px; }
+    .ai-output { min-height:48px;padding:13px 14px;background:rgba(6,8,16,.55);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:12px;line-height:1.65;white-space:pre-wrap; }
+    .ai-meta { margin-top:8px;color:var(--muted);font-size:10px; }
+    .ai-inline-btn { align-self:center;background:rgba(123,47,255,.14);border:1px solid rgba(123,47,255,.35);color:#c5a8ff;border-radius:8px;padding:8px 10px;font:600 11px 'Outfit',sans-serif;cursor:pointer;white-space:nowrap; }
+    .ai-inline-btn:hover { border-color:#a064ff;background:rgba(123,47,255,.22); }
+
     /* Project Cards */
     .project-grid {
       display: grid;
@@ -908,6 +931,21 @@
         <div id="dashLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading dashboard…</div>
         <div id="dashContent" style="display:none;">
           <div class="stat-grid" id="dashStats"></div>
+          <div class="quick-actions" aria-label="Quick actions">
+            <button class="btn btn-primary" data-quick-page="projects">+ New Project</button>
+            <button class="btn btn-outline" data-quick-page="invoices">Create Invoice</button>
+            <button class="btn btn-outline" data-quick-page="clients">Add Client</button>
+            <button class="btn btn-outline" data-quick-page="messages">Open Messages</button>
+          </div>
+          <section class="ai-panel" aria-labelledby="adminAiBriefTitle">
+            <div class="ai-panel-head"><div><h3 id="adminAiBriefTitle">✦ AI Daily Brief</h3><p>Priorities, risks, cash flow, and follow-ups from live portal records.</p></div><button class="btn btn-outline btn-sm" id="generateAdminBriefBtn">Generate brief</button></div>
+            <div class="ai-output" id="adminAiBriefOutput">Generate a private operational summary when you are ready.</div>
+            <div class="ai-meta" id="adminAiBriefMeta">AI output requires review before action.</div>
+          </section>
+          <section class="action-center" aria-labelledby="attentionHeading">
+            <div class="section-heading"><div><h3 id="attentionHeading">Needs attention</h3><p>Items that may block delivery or cash flow</p></div></div>
+            <div class="action-grid" id="dashActions"></div>
+          </section>
           <div class="card" style="padding:0;">
             <div style="padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;">Recent Clients</div>
             <div class="table-wrap" style="border:none;"><table><thead><tr><th>Client</th><th>Company</th><th>Email</th><th>Projects</th></tr></thead><tbody id="dashClients"></tbody></table></div>
@@ -927,7 +965,7 @@
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="completed">Completed</option>
-            <option value="paused">Paused</option>
+            <option value="hold">On Hold</option>
           </select>
         </div>
         <div id="projLoading" style="text-align:center;padding:40px;color:var(--muted);">Loading projects…</div>
@@ -1138,6 +1176,7 @@
           <div class="msg-messages" id="msgMessages"></div>
           <div class="msg-input-area">
             <textarea class="msg-input" id="msgInput" placeholder="Type a message..." rows="2"></textarea>
+            <button class="ai-inline-btn" id="adminAiDraftBtn" type="button">✦ AI Draft</button>
             <button class="btn btn-primary" id="msgSendBtn" style="border-radius:8px;padding:10px 20px;">Send</button>
           </div>
         </div>
@@ -1269,9 +1308,7 @@
         <small style="color:var(--muted);font-size:11px;">This will be their login email</small>
       </div>
       <div class="form-group">
-        <label>Password *</label>
-        <input type="password" id="clientPassInput" placeholder="Set a temporary password">
-        <small style="color:var(--muted);font-size:11px;">They can change this later</small>
+        <small style="color:var(--muted);font-size:11px;line-height:1.5;">New clients receive a secure email invitation to create their own password.</small>
       </div>
       <div class="form-group">
         <label>Company</label>
@@ -1454,6 +1491,8 @@
     const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Change to true only after portal-ai and its AI secret are deployed.
+    var PORTAL_AI_ENABLED = false;
 
     /* ── Auth check ── */
     (async function init() {
@@ -1488,7 +1527,7 @@
             supabase.from('conversations').update({ archived_at: new Date().toISOString() }).in('id', ids).then();
           }
         });
-      } catch(e) {}
+      } catch(e) { console.warn('Conversation auto-archive deferred:', e.message); }
     }
     function autoClearNotifications() {
       try {
@@ -1496,7 +1535,7 @@
         supabase.from('notifications').delete().eq('is_read', true).lt('created_at', cutoff.toISOString()).then(function(r) {
           if (r.error) console.warn('Auto-clear deferred:', r.error.message);
         });
-      } catch(e) {}
+      } catch(e) { console.warn('Notification auto-clear deferred:', e.message); }
     }
     })();
 
@@ -1607,6 +1646,70 @@
 
     /* ── Helpers ── */
     function $(id) { return document.getElementById(id); }
+
+    async function invokePortalAI(payload) {
+      if (!PORTAL_AI_ENABLED) {
+        throw new Error('AI preview is installed but not activated. Deploy portal-ai, then enable it in the portal configuration.');
+      }
+      const { data, error } = await supabase.functions.invoke('portal-ai', { body: payload });
+      if (error) {
+        var message = 'The AI assistant is temporarily unavailable.';
+        try {
+          var errorBody = await error.context.json();
+          if (errorBody && errorBody.message) message = errorBody.message;
+        } catch (parseError) {
+          console.warn('AI endpoint returned an unreadable error response.');
+        }
+        throw new Error(message);
+      }
+      if (!data || !data.content) throw new Error('The AI assistant returned no content.');
+      return data;
+    }
+
+    $('generateAdminBriefBtn').addEventListener('click', async function() {
+      var btn = this, output = $('adminAiBriefOutput'), meta = $('adminAiBriefMeta');
+      btn.disabled = true; btn.textContent = 'Analyzing…';
+      output.textContent = 'Reviewing projects, invoices, contracts, and unread messages…';
+      try {
+        var result = await invokePortalAI({ action: 'admin_daily_brief' });
+        output.textContent = result.content;
+        meta.textContent = 'Sources: ' + (result.sources || []).join(', ') + ' · Generated ' + new Date(result.generated_at || Date.now()).toLocaleString();
+      } catch (error) {
+        output.textContent = error.message;
+        meta.textContent = 'No portal records were changed.';
+        console.error('AI daily brief failed:', error.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Refresh brief';
+      }
+    });
+
+    $('adminAiDraftBtn').addEventListener('click', async function() {
+      if (!currentConvId) { alert('Open a client conversation first.'); return; }
+      var btn = this, input = $('msgInput'), original = input.value.trim();
+      btn.disabled = true; btn.textContent = 'Drafting…';
+      try {
+        var instruction = original
+          ? 'Rewrite this draft to be concise, professional, and friendly. Preserve its meaning: ' + original
+          : 'Draft a concise, professional, friendly reply to the latest client message.';
+        var result = await invokePortalAI({ action: 'admin_message_draft', conversation_id: currentConvId, instruction: instruction });
+        input.value = result.content;
+        input.focus();
+      } catch (error) {
+        alert(error.message);
+        console.error('AI message draft failed:', error.message);
+      } finally {
+        btn.disabled = false; btn.textContent = '✦ AI Draft';
+      }
+    });
+
+    async function logAdminNotification(type, message, relatedId) {
+      const { error } = await supabase.rpc('log_admin_notification', {
+        p_type: type,
+        p_message: message,
+        p_related_id: relatedId == null ? null : String(relatedId)
+      });
+      if (error) console.error('Unable to record admin notification:', { type: type, message: error.message });
+    }
     // Concurrency-limited batch: runs promises max N at a time
     async function batchQueries(queries, limit) {
       limit = limit || 3;
@@ -1670,7 +1773,7 @@
       try {
         const { error } = await supabase.from('invoices').update({ status: 'sent' }).eq('id', invId);
         if (error) throw error;
-        logNotification('invoice_created', 'Invoice ' + invNum + ' sent to client', '', invNum);
+        logAdminNotification('invoice_created', 'Invoice ' + invNum + ' sent to client', invId);
         loadInvoicesPage();
         alert('✅ Invoice ' + invNum + ' sent!');
       } catch(e) {
@@ -1692,7 +1795,7 @@
             setTimeout(function() { r.remove(); }, 300);
           }
         });
-        logNotification('invoice_viewed', 'Invoice ' + invNum + ' deleted', '', invNum);
+        logAdminNotification('invoice_deleted', 'Invoice ' + invNum + ' deleted', invId);
       } catch(e) {
         alert('Error: ' + e.message);
       }
@@ -1734,13 +1837,14 @@
     }
     async function getUnreadCount() {
       try {
-        const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('is_read',false);
+        const { count, error } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('is_read',false);
+        if (error) throw error;
         const b=document.getElementById('notifBadge');
         if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}else{b.style.display='none';}
-      }catch(e){}
+      }catch(e){console.warn('Unable to refresh notification count:',e.message);}
     }
-    async function markAsRead(id){try{await supabase.from('notifications').update({is_read:true}).eq('id',id);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
-    async function markAllRead(){try{await supabase.from('notifications').update({is_read:true}).eq('is_read',false);getUnreadCount();loadNotifications(notifFilter);}catch(e){}}
+    async function markAsRead(id){try{const {error}=await supabase.from('notifications').update({is_read:true}).eq('id',id);if(error)throw error;getUnreadCount();loadNotifications(notifFilter);}catch(e){console.error('Unable to mark notification read:',e.message);}}
+    async function markAllRead(){try{const {error}=await supabase.from('notifications').update({is_read:true}).eq('is_read',false);if(error)throw error;getUnreadCount();loadNotifications(notifFilter);}catch(e){console.error('Unable to mark notifications read:',e.message);}}
     function startNotifPolling(){if(notifTimer)clearInterval(notifTimer);notifTimer=setInterval(getUnreadCount,60000);}
 
     /* ── Reports ── */
@@ -1987,6 +2091,10 @@
         const totalPaid = allProjects.reduce((s,p) => s + parseFloat(p.total_paid || 0), 0);
         const totalOutstanding = allProjects.reduce((s,p) => s + parseFloat(p.outstanding || 0), 0);
         const totalInvoiced = invoices.reduce((s,inv) => s + parseFloat(inv.amount || 0), 0);
+        const today = new Date(); today.setHours(0,0,0,0);
+        const overdueInvoices = invoices.filter(inv => inv.status !== 'paid' && inv.due_date && new Date(inv.due_date + 'T00:00:00') < today);
+        const reviewProjects = allProjects.filter(p => p.status === 'review');
+        const activeProjects = allProjects.filter(p => p.status === 'active');
 
         $('dashStats').innerHTML = `
           <div class="stat-card"><div class="label">Clients</div><div class="value accent">${allClients.length}</div></div>
@@ -1996,6 +2104,27 @@
           <div class="stat-card"><div class="label">Outstanding</div><div class="value orange">${formatCurrency(totalOutstanding)}</div></div>
           <div class="stat-card"><div class="label">Invoiced</div><div class="value accent">${formatCurrency(totalInvoiced)}</div></div>
         `;
+
+        $('dashActions').innerHTML = `
+          <button class="action-card urgent" data-action-page="invoices">
+            <div class="action-count">${overdueInvoices.length}</div><div class="action-label">Overdue invoices</div>
+            <div class="action-help">${formatCurrency(overdueInvoices.reduce((s,i)=>s+parseFloat(i.amount||0),0))} requires follow-up</div>
+          </button>
+          <button class="action-card review" data-action-page="projects">
+            <div class="action-count">${reviewProjects.length}</div><div class="action-label">Projects in review</div>
+            <div class="action-help">Waiting for approval or final checks</div>
+          </button>
+          <button class="action-card" data-action-page="projects">
+            <div class="action-count">${activeProjects.length}</div><div class="action-label">Active projects</div>
+            <div class="action-help">Currently in delivery</div>
+          </button>
+          <button class="action-card" data-action-page="messages">
+            <div class="action-count" id="dashUnreadMessages">—</div><div class="action-label">Unread messages</div>
+            <div class="action-help">Client conversations to answer</div>
+          </button>`;
+        supabase.from('messages').select('id',{count:'exact',head:true}).is('read_at',null).eq('sender','client').then(function(r){
+          var el = $('dashUnreadMessages'); if (el) el.textContent = r.error ? '—' : (r.count || 0);
+        });
 
         // Count projects per client
         const projCounts = {};
@@ -2019,6 +2148,17 @@
         console.error(e);
       }
     }
+
+    document.getElementById('dashContent').addEventListener('click', function(e) {
+      var target = e.target.closest('[data-action-page],[data-quick-page]');
+      if (!target) return;
+      var page = target.dataset.actionPage || target.dataset.quickPage;
+      var nav = document.querySelector('.nav-item[data-page="' + page + '"]');
+      if (nav) nav.click();
+      if (target.dataset.quickPage === 'projects') setTimeout(function(){ $('addProjectBtn').click(); }, 0);
+      if (target.dataset.quickPage === 'invoices') setTimeout(openInvoiceForClient, 0);
+      if (target.dataset.quickPage === 'clients') setTimeout(function(){ $('addClientBtn').click(); }, 0);
+    });
 
     /* ── PROJECTS ── */
     async function loadProjects() {
@@ -2201,7 +2341,7 @@
           var c = JSON.parse(this.dataset.client);
           $('clientNameInput').value = c.name;
           $('clientEmailInput').value = c.email;
-          $('clientPassInput').value = '';
+          $('clientEmailInput').disabled = true;
           $('clientCompanyInput').value = c.company || '';
           $('clientPhoneInput').value = c.phone || '';
           $('clientLogoInput').value = c.logo_url || '';
@@ -2220,12 +2360,13 @@
       $('clientModalError').style.display = 'none';
       $('clientNameInput').value = '';
       $('clientEmailInput').value = '';
-      $('clientPassInput').value = '';
+      $('clientEmailInput').disabled = false;
       $('clientCompanyInput').value = '';
       $('clientPhoneInput').value = '';
       $('clientLogoInput').value = '';
       $('clientColorInput').value = '';
-      $('clientModalSave').textContent = 'Create Client';
+      delete $('addClientModal').dataset.editId;
+      $('clientModalSave').textContent = 'Invite Client';
       $('addClientModal').classList.add('open');
     });
     $('clientModalCancel').addEventListener('click', () => {
@@ -2234,7 +2375,6 @@
     $('clientModalSave').addEventListener('click', async () => {
       const name = $('clientNameInput').value.trim();
       const email = $('clientEmailInput').value.trim();
-      const password = $('clientPassInput').value;
       const company = $('clientCompanyInput').value.trim();
       const phone = $('clientPhoneInput').value.trim();
       const logo = $('clientLogoInput').value.trim();
@@ -2250,12 +2390,6 @@
         errEl.style.display = 'block';
         return;
       }
-      if (!editId && password.length < 6) {
-        errEl.textContent = 'Password must be at least 6 characters for new clients.';
-        errEl.style.display = 'block';
-        return;
-      }
-
       const saveBtn = $('clientModalSave');
       saveBtn.disabled = true;
 
@@ -2275,48 +2409,46 @@
           $('addClientModal').classList.remove('open');
           delete $('addClientModal').dataset.editId;
           loadClients();
-          saveBtn.textContent = 'Create Client';
+          saveBtn.textContent = 'Invite Client';
           saveBtn.disabled = false;
           return;
         }
 
-        // Creating new client
-        saveBtn.textContent = 'Creating…';
-
-        // 1. Create auth user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
+        saveBtn.textContent = 'Sending invitation…';
+        const { data: inviteResult, error: inviteError } = await supabase.functions.invoke('invite-portal-client', {
+          body: {
+            name: name,
+            email: email,
+            company: company,
+            phone: phone,
+            logo_url: logo,
+            brand_color: brandColor
+          }
         });
-        if (authError) throw new Error('Auth error: ' + authError.message);
-
-        // 2. Insert into clients table
-        const initials = name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
-        const colors = ['av-blue','av-purple','av-orange','av-green'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-
-        const { data: clientData, error: clientError } = await supabase
-          .from('clients')
-          .insert({ name, email, company, phone, logo_url: logo, brand_color: brandColor, avatar_initials: initials, avatar_color: color })
-          .select()
-          .single();
-        if (clientError) throw new Error('Client insert error: ' + clientError.message);
-
-        // 3. Insert into portal_users
-        const { error: puError } = await supabase
-          .from('portal_users')
-          .insert({ email, role: 'client', client_id: clientData.id, display_name: name });
-        if (puError) throw new Error('Portal user error: ' + puError.message);
+        if (inviteError) {
+          var inviteMessage = 'Unable to send the invitation. Please try again.';
+          try {
+            var errorBody = await inviteError.context.json();
+            if (errorBody && errorBody.message) inviteMessage = errorBody.message;
+          } catch (parseError) {
+            console.warn('Invitation endpoint returned an unreadable error response.');
+          }
+          throw new Error(inviteMessage);
+        }
+        if (!inviteResult || inviteResult.success !== true) {
+          throw new Error((inviteResult && inviteResult.message) || 'Unable to send the invitation.');
+        }
 
         $('addClientModal').classList.remove('open');
         loadClients();
+        alert('Invitation sent to ' + email + '.');
       } catch (e) {
         errEl.textContent = e.message;
         errEl.style.display = 'block';
         console.error(e);
       } finally {
         saveBtn.disabled = false;
-        saveBtn.textContent = 'Create Client';
+        saveBtn.textContent = 'Invite Client';
       }
     });
 
@@ -2507,7 +2639,7 @@
             project_id: currentMilestoneProjectId,
             type: 'milestone',
             text: '🎯 Milestone ' + action + ': ' + title
-          }).then().catch(function(){});
+          }).then().catch(function(error){console.warn('Milestone activity was not recorded:',error.message);});
 
           // Check if all milestones completed → auto-generate invoice
           if (!isCompleted) {
@@ -2540,7 +2672,7 @@
             project_id: currentMilestoneProjectId,
             type: 'milestone',
             text: '🗑️ Milestone removed: ' + title
-          }).then().catch(function(){});
+          }).then().catch(function(error){console.warn('Milestone removal activity was not recorded:',error.message);});
         }
 
         if (currentMilestoneProjectId) loadDetailMilestones(currentMilestoneProjectId);
@@ -2783,7 +2915,7 @@
           project_id: currentMilestoneProjectId,
           type: 'milestone',
           text: '🆕 Milestone added: ' + title
-        }).then().catch(function(){});
+        }).then().catch(function(error){console.warn('Milestone creation activity was not recorded:',error.message);});
 
         loadDetailMilestones(currentMilestoneProjectId);
       } catch (e) {
@@ -3471,7 +3603,7 @@ Marlon Palomares`
           project_id: project_id,
           type: 'update',
           text: '📝 Contract created: ' + title
-        }).then().catch(function(){});
+        }).then().catch(function(error){console.warn('Contract activity was not recorded:',error.message);});
 
         $('createContractModal').classList.remove('open');
         loadContracts();
@@ -3491,7 +3623,7 @@ Marlon Palomares`
       if (!confirm('Mark this contract as completed?')) return;
       supabase.from('contracts').update({ status: 'completed' }).eq('id', selectedContractId).then(function(r) {
         if (r.error) { alert('Error: ' + r.error.message); return; }
-        logNotification('contract_signed', 'Contract marked as completed', '', '');
+        logAdminNotification('contract_completed', 'Contract marked as completed', selectedContractId);
         $('viewContractModal').classList.remove('open');
         loadContracts();
       });

@@ -81,5 +81,30 @@ This project uses **Spec Kit** for spec-driven development:
 - Implementation plans guide development
 - Consistent workflow for feature implementation
 
+## Portal security deployment
+
+The admin and client portals use Supabase Auth and Row Level Security. Before
+using the portal with real client data:
+
+1. Back up the Supabase database and test the migration in a staging project.
+2. Run `secure-rls-migration.sql` in the Supabase SQL editor.
+3. Confirm the admin email exists in `portal_users` with the `admin` role.
+4. Test with two separate client accounts and confirm each client can only read
+   records connected to their own `client_id`.
+5. Keep service-role credentials in Edge Functions or Cloudflare Workers; never
+   place them in browser JavaScript.
+
+The browser uses the public Supabase anon key by design. Data protection depends
+on the RLS policies, so the migration is required before production launch.
+
+## Portal upgrade roadmap
+
+- Phase 1: tenant-aware RLS, action-centered dashboards, and correctness fixes.
+- Phase 2: protected account invitations, soft delete/archive, audit events, and
+  private Supabase Storage buckets.
+- Phase 3: deliverable approval, electronic signatures, payments, and automated
+  client reminders.
+- Phase 4: modular React/TypeScript frontend and AI-assisted weekly reporting.
+
 ## License
 This portfolio is for demonstration purposes. All content is owned by Marlon Palomares Digital Solutions.

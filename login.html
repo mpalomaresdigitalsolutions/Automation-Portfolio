@@ -245,7 +245,7 @@
         if (!r.error && r.data && r.data.data && r.data.data.logo_url) {
           logoEl.innerHTML = '<img src="' + r.data.data.logo_url + '" alt="Company Logo">';
         }
-      }).catch(function() {});
+      }).catch(function(error) { console.warn('Unable to load login branding:', error.message); });
     })();
 
     const form = document.getElementById('loginForm');
@@ -424,6 +424,7 @@
         }
       } catch (e) { /* silent */ }
     })();
+  </script>
   <script>
     var savedLoginTheme = localStorage.getItem('login-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedLoginTheme);

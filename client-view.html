@@ -128,6 +128,30 @@
     .stat-card .value.orange { color: var(--accent3); }
     .stat-card .value.accent { color: var(--accent); }
 
+    .client-action-center { background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(123,47,255,.07));border:1px solid rgba(0,212,255,.18);border-radius:var(--radius);padding:18px;margin-bottom:24px; }
+    .client-action-head { display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px; }
+    .client-action-head h2 { font-size:16px;margin-bottom:3px; }
+    .client-action-head p { color:var(--muted);font-size:12px; }
+    .client-action-list { display:grid;gap:8px; }
+    .client-action-item { display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(6,8,16,.62);border:1px solid var(--border);border-radius:10px;padding:12px 14px; }
+    .client-action-item strong { display:block;font-size:13px; }
+    .client-action-item small { display:block;color:var(--muted);font-size:11px;margin-top:2px; }
+    .client-action-btn { flex:none;background:var(--accent);color:#061018;border:0;border-radius:7px;padding:7px 11px;font:600 11px 'Outfit',sans-serif;cursor:pointer; }
+    .client-action-empty { color:var(--green);font-size:13px;padding:8px 0; }
+    .client-ai-panel { background:linear-gradient(135deg,rgba(123,47,255,.11),rgba(0,212,255,.065));border:1px solid rgba(123,47,255,.25);border-radius:var(--radius);padding:18px;margin-bottom:24px; }
+    .client-ai-head h2 { font-size:16px;margin-bottom:4px; }
+    .client-ai-head p { color:var(--muted);font-size:12px;line-height:1.45; }
+    .client-ai-prompts { display:flex;gap:7px;flex-wrap:wrap;margin:12px 0; }
+    .client-ai-chip { background:rgba(255,255,255,.035);border:1px solid var(--border);color:var(--text);border-radius:18px;padding:6px 10px;font:500 11px 'Outfit',sans-serif;cursor:pointer; }
+    .client-ai-chip:hover { border-color:var(--accent);color:var(--accent); }
+    .client-ai-form { display:flex;gap:8px; }
+    .client-ai-form input { flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font:13px 'Outfit',sans-serif;outline:none; }
+    .client-ai-form input:focus { border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.1); }
+    .client-ai-answer { display:none;margin-top:12px;padding:13px 14px;background:rgba(6,8,16,.55);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:12px;line-height:1.65;white-space:pre-wrap; }
+    .client-ai-meta { display:none;margin-top:7px;color:var(--muted);font-size:10px; }
+    .client-ai-draft { background:rgba(123,47,255,.14);border:1px solid rgba(123,47,255,.35);color:#c5a8ff;border-radius:8px;padding:9px 11px;font:600 11px 'Outfit',sans-serif;cursor:pointer;white-space:nowrap; }
+    @media (max-width:600px) { .client-ai-form{flex-direction:column}.client-ai-form .btn{justify-content:center}.client-ai-draft{padding:8px}.client-ai-prompts{gap:5px} }
+
     /* ── Tabs ── */
     .tabs {
       display: flex; gap: 0;
@@ -577,6 +601,24 @@
       <!-- Project Header -->
       <div class="project-header" id="projectHeader"></div>
 
+      <section class="client-action-center" id="clientActionCenter" aria-labelledby="clientActionHeading">
+        <div class="client-action-head"><div><h2 id="clientActionHeading">Your action center</h2><p>Everything that needs your attention, in one place.</p></div></div>
+        <div class="client-action-list" id="clientActionList"><div style="color:var(--muted);font-size:12px;">Checking for pending actions…</div></div>
+      </section>
+
+      <section class="client-ai-panel" aria-labelledby="clientAiHeading">
+        <div class="client-ai-head"><h2 id="clientAiHeading">✦ Ask about your project</h2><p>Get plain-language answers based only on your authorized project records.</p></div>
+        <div class="client-ai-prompts">
+          <button class="client-ai-chip" data-ai-question="What was completed recently?">Recent progress</button>
+          <button class="client-ai-chip" data-ai-question="What needs my attention right now?">My next actions</button>
+          <button class="client-ai-chip" data-ai-question="Do I have any unpaid or overdue invoices?">Payment status</button>
+          <button class="client-ai-chip" data-ai-question="What is the next project milestone?">Next milestone</button>
+        </div>
+        <div class="client-ai-form"><input id="clientAiQuestion" maxlength="600" placeholder="Ask a question about this project…"><button class="btn" id="clientAiAskBtn">Ask AI</button></div>
+        <div class="client-ai-answer" id="clientAiAnswer" aria-live="polite"></div>
+        <div class="client-ai-meta" id="clientAiMeta">AI answers may need verification.</div>
+      </section>
+
       <!-- Stats -->
       <div class="stat-grid" id="statsGrid"></div>
 
@@ -623,6 +665,7 @@
             </div>
             <div style="display:flex;gap:12px;padding:16px 24px;border-top:1px solid var(--border);background:var(--bg);">
               <textarea id="clientMsgInput" style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;resize:none;outline:none;" placeholder="Type a message..." rows="2"></textarea>
+              <button id="clientAiDraftBtn" class="client-ai-draft" type="button">✦ AI Improve</button>
               <button id="clientMsgSend" style="background:var(--accent);color:#060810;border:none;border-radius:8px;padding:10px 20px;font-weight:600;font-size:13px;cursor:pointer;">Send</button>
             </div>
           </div>
@@ -693,16 +736,21 @@
   </div>
 
   <script>
-    async function logNotification(type, message, clientName, relatedId) {
-      try { await supabase.from('notifications').insert({ type, message, client_name: clientName||'', related_id: relatedId||'', is_read: false }); }
-      catch(e) { console.warn('Notif not ready:', e.message); }
+    async function logNotification(type, message, relatedId) {
+      const { error } = await supabase.rpc('log_portal_notification', {
+        p_type: type,
+        p_message: message,
+        p_related_id: relatedId == null ? null : String(relatedId)
+      });
+      if (error) {
+        console.error('Unable to record portal notification:', { type: type, message: error.message });
+      }
     }
     const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Welcome email webhook — set this after deploying the Google Apps Script
-    var WELCOME_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxfKvHDlzbMAl1xHrLw50aRlOc3S8ZaLRmViRGWInWwMppsdvJJHIIrvi-tTeo_nsLJ/exec';
+    // Change to true only after portal-ai and its AI secret are deployed.
+    var PORTAL_AI_ENABLED = false;
 
     /* ── Auth Check + Load ── */
     (async function init() {
@@ -718,7 +766,7 @@
         // Fetch portal user to verify role and get client_id
         const { data: pu, error: pe } = await supabase
           .from('portal_users')
-          .select('role, client_id, display_name')
+          .select('id, role, client_id, display_name')
           .eq('email', email)
           .single();
 
@@ -744,7 +792,7 @@
         }
 
         sessionStorage.setItem('portal_user_id', pu.id);
-        logNotification('client_login', 'Client logged into portal', displayName || email.split('@')[0], '');
+        logNotification('client_login', 'Client logged into portal', null);
         sessionStorage.setItem('portal_email', email);
         sessionStorage.setItem('portal_role', pu.role);
         sessionStorage.setItem('client_id', clientId);
@@ -788,7 +836,7 @@
             document.getElementById('clientTopbarImg').style.display = 'inline';
             document.getElementById('clientTopbarImg').src = r.data.data.logo_url;
           }
-        }).catch(function() {});
+        }).catch(function(error) { console.warn('Unable to load portal branding:', error.message); });
 
         // Render
         renderClientPortal(project, client, displayName);
@@ -803,6 +851,51 @@
     function esc(s) { let d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
     function formatCurrency(n) { return '$' + parseFloat(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
     function formatDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}); } catch(e) { return d; }}
+
+    async function invokePortalAI(payload) {
+      if (!PORTAL_AI_ENABLED) {
+        throw new Error('AI preview is installed but not activated. Deploy portal-ai, then enable it in the portal configuration.');
+      }
+      const { data, error } = await supabase.functions.invoke('portal-ai', { body: payload });
+      if (error) {
+        var message = 'The AI assistant is temporarily unavailable.';
+        try {
+          var errorBody = await error.context.json();
+          if (errorBody && errorBody.message) message = errorBody.message;
+        } catch (parseError) {
+          console.warn('AI endpoint returned an unreadable error response.');
+        }
+        throw new Error(message);
+      }
+      if (!data || !data.content) throw new Error('The AI assistant returned no content.');
+      return data;
+    }
+
+    async function askClientAI(question) {
+      if (!currentProject || !question.trim()) return;
+      var btn = $('clientAiAskBtn'), answer = $('clientAiAnswer'), meta = $('clientAiMeta');
+      btn.disabled = true; btn.textContent = 'Thinking…';
+      answer.style.display = 'block'; answer.textContent = 'Reviewing your authorized project records…';
+      meta.style.display = 'none';
+      try {
+        var result = await invokePortalAI({ action: 'client_project_assistant', project_id: currentProject.id, question: question.trim() });
+        answer.textContent = result.content;
+        meta.style.display = 'block';
+        meta.textContent = 'Sources: ' + (result.sources || []).join(', ') + ' · AI may make mistakes; verify important details.';
+      } catch (error) {
+        answer.textContent = error.message;
+        meta.style.display = 'block'; meta.textContent = 'No project records were changed.';
+        console.error('Client AI question failed:', error.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Ask AI';
+      }
+    }
+
+    $('clientAiAskBtn').addEventListener('click', function() { askClientAI($('clientAiQuestion').value); });
+    $('clientAiQuestion').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); askClientAI(this.value); } });
+    document.querySelectorAll('[data-ai-question]').forEach(function(btn) {
+      btn.addEventListener('click', function() { $('clientAiQuestion').value = this.dataset.aiQuestion; askClientAI(this.dataset.aiQuestion); });
+    });
 
     /* ── State ── */
     let currentProject = null;
@@ -890,12 +983,46 @@
       // Load upcoming appointments and unread count
       loadUpcomingMeetings(displayName);
       loadUnreadCount();
+      loadClientActions(project.id);
 
-      // Send welcome email if webhook is configured
-      if (WELCOME_WEBHOOK_URL) {
-        sendWelcomeEmail();
+      // Account welcome/invitation email is sent by the protected admin Edge Function.
+      // It must not be triggered from an untrusted client browser.
+    }
+
+    async function loadClientActions(projectId) {
+      var list = $('clientActionList');
+      try {
+        var actions = [];
+        var invResult = await supabase.from('invoices').select('id,invoice_num,amount,due_date,status').eq('project_id', projectId).neq('status','paid').order('due_date',{ascending:true});
+        if (invResult.error) throw invResult.error;
+        var today = new Date(); today.setHours(0,0,0,0);
+        (invResult.data || []).forEach(function(inv) {
+          var overdue = inv.due_date && new Date(inv.due_date + 'T00:00:00') < today;
+          actions.push({ tab:'invoices', title:(overdue ? 'Overdue: ' : 'Payment due: ') + (inv.invoice_num || 'Invoice'), detail:formatCurrency(inv.amount) + (inv.due_date ? ' · Due ' + formatDate(inv.due_date) : ''), cta:'View invoice' });
+        });
+        var contractResult = await supabase.from('contracts').select('id,title,status').eq('project_id',projectId).in('status',['sent','pending','draft']);
+        if (contractResult.error) throw contractResult.error;
+        (contractResult.data || []).forEach(function(contract) {
+          actions.push({ tab:'contracts', title:'Contract awaiting review', detail:contract.title || 'Project agreement', cta:'Review' });
+        });
+        if (!actions.length) {
+          list.innerHTML = '<div class="client-action-empty">✓ You are all caught up. No action is required right now.</div>';
+          return;
+        }
+        list.innerHTML = actions.slice(0,5).map(function(action) {
+          return '<div class="client-action-item"><div><strong>' + esc(action.title) + '</strong><small>' + esc(action.detail) + '</small></div><button class="client-action-btn" data-open-tab="' + action.tab + '">' + esc(action.cta) + '</button></div>';
+        }).join('');
+      } catch (e) {
+        list.innerHTML = '<div style="color:var(--muted);font-size:12px;">Actions are temporarily unavailable. Your project details are still accessible below.</div>';
       }
     }
+
+    document.getElementById('clientActionList').addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-open-tab]');
+      if (!btn) return;
+      var tab = document.querySelector('.tab[data-tab="' + btn.dataset.openTab + '"]');
+      if (tab) { tab.click(); tab.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
 
     /* ── Tab Switching ── */
     document.querySelectorAll('.tab').forEach(tab => {
@@ -911,9 +1038,8 @@
     /* ── Invoices ── */
     async function loadInvoices(projectId) {
       // Log invoice view
-      var clientName = $('invClientName') ? $('invClientName').textContent : '';
       var projName = document.getElementById('projectName') ? document.getElementById('projectName').textContent : '';
-      logNotification('invoice_viewed', 'Client viewed invoices for ' + projName, clientName, '');
+      logNotification('invoice_viewed', 'Client viewed invoices for ' + (projName || 'their project'), projectId);
       try {
         const { data, error } = await supabase
           .from('invoices')
@@ -987,6 +1113,7 @@
       $('invDetailTotal').textContent = amt;
 
       $('invoiceDetailModal').classList.add('open');
+      $('invoiceDetailModal').dataset.invoiceId = inv.id;
     }
 
     // Invoice detail modal events
@@ -997,8 +1124,8 @@
     $('invDetailClose').addEventListener('click', () => $('invoiceDetailModal').classList.remove('open'));
         $('invDetailPrint').addEventListener('click', () => {
       var invNum = $('invDetailNum').textContent || 'invoice';
-      var clientName = $('invClientName') ? $('invClientName').textContent : '';
-      logNotification('pdf_viewed', 'Invoice ' + invNum + ' PDF downloaded by client', clientName, invNum);
+      var invoiceId = $('invoiceDetailModal').dataset.invoiceId;
+      logNotification('pdf_viewed', 'Invoice ' + invNum + ' PDF downloaded by client', invoiceId);
       var invNum = $('invDetailNum').textContent || 'invoice';
       var clientName = $('invClientName') ? $('invClientName').textContent : 'Client';
       var clientInfo = $('invClientInfo') ? $('invClientInfo').innerHTML : '';
@@ -1243,7 +1370,12 @@
           .limit(3);
 
         var section = $('appointmentsSection');
-        if (error || !data || !data.length) {
+        if (error) {
+          console.error('Meeting links are unavailable under the current access policy:', error.message);
+          section.innerHTML = '<div class="appt-empty">📅 Upcoming meetings are temporarily unavailable.</div>';
+          return;
+        }
+        if (!data || !data.length) {
           section.innerHTML = '<div class="appt-empty">📅 No upcoming appointments.</div>';
           return;
         }
@@ -1421,52 +1553,29 @@
       } catch(e) { return ''; }
     }
 
-    /* ── Welcome Email ── */
-    async function sendWelcomeEmail() {
-      try {
-        var email = sessionStorage.getItem('portal_email');
-        var name = sessionStorage.getItem('portal_display_name') || email;
-        var userId = sessionStorage.getItem('portal_user_id');
-        if (!email || !userId || userId === 'undefined') return;
-
-        // Check if welcome already sent
-        const { data: pu } = await supabase
-          .from('portal_users')
-          .select('welcome_sent')
-          .eq('id', userId)
-          .single();
-
-        if (!pu || pu.welcome_sent) return;
-
-        // Send via webhook
-        var res = await fetch(WELCOME_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: email,
-            name: name,
-            portal_url: window.location.origin + '/login.html'
-          })
-        });
-
-        if (res.ok) {
-          // Mark as sent
-          // Start onboarding sequence and mark welcome as sent
-          await supabase.from('portal_users').update({
-            welcome_sent: true,
-            onboarding_step: 1,
-            onboarding_started_at: new Date().toISOString()
-          }).eq('id', userId);
-          console.log('✅ Welcome email sent to ' + email);
-        }
-      } catch (e) {
-        console.error('sendWelcomeEmail error:', e);
-      }
-    }
-
     /* ── Client Messages ── */
     var clientConvId = null;
     var clientMsgChannel = null;
+    var clientTypingChannel = null;
+
+    $('clientAiDraftBtn').addEventListener('click', async function() {
+      if (!clientConvId) { alert('Open or start a conversation before using AI Improve.'); return; }
+      var btn = this, input = $('clientMsgInput'), original = input.value.trim();
+      btn.disabled = true; btn.textContent = 'Improving…';
+      try {
+        var instruction = original
+          ? 'Rewrite this client message so it is clear, polite, and concise. Preserve the meaning: ' + original
+          : 'Draft a clear, polite reply to the latest agency message.';
+        var result = await invokePortalAI({ action: 'client_message_draft', conversation_id: clientConvId, instruction: instruction });
+        input.value = result.content;
+        input.focus();
+      } catch (error) {
+        alert(error.message);
+        console.error('Client AI message draft failed:', error.message);
+      } finally {
+        btn.disabled = false; btn.textContent = '✦ AI Improve';
+      }
+    });
 
     function loadClientMessages() {
       var clientId = sessionStorage.getItem('client_id');

@@ -1,0 +1,452 @@
+================================================================
+CLIENT PORTAL SECURITY AUDIT & REMEDIATION - FINAL REPORT
+================================================================
+Project: dkkriesneublbmrihgvp (Client portal, ap-southeast-1)
+Environment: PRODUCTION
+Date: July 18, 2026
+Prepared by: Claude (Supabase/PostgreSQL security review)
+
+Backup status: NOT VERIFIED by Claude (no dashboard access).
+Please confirm under Supabase Dashboard -> Database -> Backups
+before relying on rollback safety.
+
+================================================================
+1. SECURITY PROBLEMS DISCOVERED (ORIGINAL STATE)
+================================================================
+
+# | Table          | Issue                                              | Severity
+--|----------------|-----------------------------------------------------|----------
+1 | clients        | Any authenticated user could SELECT ALL clients,     | CRITICAL
+  |                | no tenant filter                                     |
+2 | conversations  | Any authenticated user could SELECT ALL conversations| CRITICAL
+3 | messages       | Any authenticated user could SELECT ALL messages;    | CRITICAL
+  |                | table also on Realtime publication -> live cross-    |
+  |                | tenant subscription was possible                     |
+4 | notifications  | WITH CHECK (true) on INSERT - fully open, any user   | CRITICAL
+  |                | could spoof notifications for anyone                 |
+5 | activity_log   | INSERT only checked "authenticated", no client/      | MEDIUM
+  |                | project scoping                                      |
+6 | contracts      | INSERT only checked "authenticated", no client       | MEDIUM
+  |                | scoping                                              |
+7 | is_admin() /   | SECURITY DEFINER functions missing fixed             | MEDIUM
+  | my_client_id() | search_path                                          |
+8 | soft_delete_   | Same missing search_path; also executable by anon/   | MEDIUM
+  | row() /        | authenticated (should be cron/trigger-only)          |
+  | purge_old_     |                                                       |
+  | soft_deletes() |                                                       |
+9 | Auth settings  | Leaked-password protection (HaveIBeenPwned) disabled | LOW
+10| Design         | Two parallel helper-function families in use:       | LOW
+  | inconsistency  | is_admin()/my_client_id() (JWT email-based) vs      |
+  |                | is_admin_user()/current_user_client_id() (auth.uid()|
+  |                | -> auth.users join). Both work correctly for real    |
+  |                | logged-in users, but duplicate logic is a           |
+  |                | maintenance/consistency risk.                        |
+
+IMPORTANT: Real data already existed in this database BEFORE Wave 1
+was applied (2 clients, 4 portal users, 2 conversations, 6 messages).
+This means items #1-4 were live exposure risks with actual data
+during the window before the fix - not just theoretical.
+
+================================================================
+2. DATABASE OBJECTS CHANGED
+================================================================
+
+WAVE 1 - APPLIED to production:
+  Rewrote 6 RLS policies:
+    - clients:        SELECT policy
+    - conversations:  SELECT policy
+    - messages:       SELECT policy
+    - notifications:  INSERT policy
+    - activity_log:   INSERT policy
+    - contracts:      INSERT policy
+  All now scoped to: is_admin() OR (own client_id / project_id / email)
+
+WAVE 2 - DRAFTED ONLY, NOT YET APPLIED (awaiting approval):
+  Hardens in place (no policy changes needed):
+    - is_admin()                 -> adds fixed search_path
+    - my_client_id()             -> adds fixed search_path
+    - soft_delete_row()          -> adds fixed search_path
+    - purge_old_soft_deletes()   -> adds fixed search_path
+  Also revokes EXECUTE on soft_delete_row() and
+  purge_old_soft_deletes() from anon/authenticated roles
+  (these should only run via trigger/cron, not be client-callable).
+
+================================================================
+3. POLICIES ADDED / REMOVED / MODIFIED
+================================================================
+
+See Wave 1 SQL migration (Section 9) for exact before/after policy
+definitions. Summary: 6 policies replaced in Wave 1. 0 policies
+touched in Wave 2 (function bodies hardened only, policies untouched
+by design, to avoid touching the 30 other policies that reference
+them).
+
+================================================================
+4. REALTIME AND STORAGE POLICIES
+================================================================
+
+REALTIME:
+  - Realtime publication (supabase_realtime) includes: conversations,
+    messages.
+  - Because their SELECT policies are now properly scoped by
+    client_id, Realtime automatically respects the same row-level
+    filtering. No separate Realtime-specific configuration was
+    required - fixing the RLS policy was sufficient.
+  - Before the fix, this was the most dangerous vector: a client
+    could subscribe live and receive every other client's messages
+    and conversations in real time, not just via one-off queries.
+
+STORAGE:
+  - Zero storage buckets currently exist in this project.
+  - No exposure risk today, but any future file-upload feature MUST
+    use private buckets + tenant-aware storage.objects policies or
+    short-lived signed URLs. Flagging this now so it's designed
+    correctly from day one rather than retrofitted.
+
+================================================================
+5. TEST MATRIX - RESULTS (LIVE IMPERSONATION TEST, NOT JUST
+   POLICY INSPECTION)
+================================================================
+
+Methodology: Created two disposable synthetic clients
+(ZZTEST_ISOLATION_CLIENT_A / B) with their own portal_users,
+projects, conversations, messages, contracts, and notifications.
+Used PostgreSQL role + JWT-claim impersonation (SET LOCAL ROLE
+authenticated + SET LOCAL "request.jwt.claims") inside transactions
+to simulate real login sessions for Client A, Client B, Admin, and
+Anonymous. All test data was then hard-deleted (bypassing the
+soft-delete trigger) and row counts were verified to match the
+exact pre-test baseline.
+
+Test                                                        | Result
+-------------------------------------------------------------|--------
+Anonymous reads any table (clients, conversations, messages,  | PASS
+contracts, notifications, portal_users)                       | (0 rows
+                                                               | everywhere)
+Admin reads all clients/conversations/messages/contracts/     | PASS
+notifications                                                 | (sees all,
+                                                               | minus
+                                                               | soft-
+                                                               | deleted)
+Client A reads own clients/conversations/messages/contracts   | PASS
+Client B reads own clients/conversations/messages/contracts   | PASS
+Client A cannot read Client B's data by guessing IDs          | PASS
+  (confirmed via the SELECT isolation tests - zero cross-      |
+  visibility in either direction)                              |
+Client A tries to INSERT a message into Client B's            | PASS
+conversation                                                   | (blocked,
+                                                               | RLS error)
+Client A tries to INSERT a notification spoofing Client B's   | PASS
+email                                                          | (blocked,
+                                                               | RLS error)
+Client A tries to INSERT a contract tagged to Client B         | PASS
+                                                               | (blocked,
+                                                               | RLS error)
+Client cannot change own role/client_id                       | NOT
+                                                               | DIRECTLY
+                                                               | RE-TESTED
+                                                               | this round
+                                                               | - but
+                                                               | portal_users
+                                                               | UPDATE
+                                                               | policy
+                                                               | requires
+                                                               | is_admin(),
+                                                               | no client-
+                                                               | writable
+                                                               | path exists
+Realtime respects tenant isolation                             | INFERRED,
+                                                               | NOT LOAD-
+                                                               | TESTED
+                                                               | (Realtime
+                                                               | enforces
+                                                               | RLS
+                                                               | automatic-
+                                                               | ally once
+                                                               | SELECT
+                                                               | policy is
+                                                               | scoped)
+
+RESULT: No failed tests in this round.
+
+FAILED / INCOMPLETE ITEMS (be aware of these gaps):
+  1. "Client cannot change own role/client_id" - inferred from
+     policy definition, not independently re-tested with a live
+     UPDATE attempt this round.
+  2. Realtime isolation was inferred from the fixed SELECT policy,
+     not confirmed with an actual live WebSocket subscription test.
+  3. admin.html / client-view.html compatibility - NOT TESTED AT ALL
+     (see Section 6).
+  4. Account-invitation flow (supabase.auth.signUp() from admin
+     frontend) - NOT reviewed or replaced with a protected Edge
+     Function yet, per the original spec's requirement.
+  5. Wave 2 (function hardening) has NOT been applied yet - still
+     pending your approval.
+
+================================================================
+6. COMPATIBILITY WITH admin.html AND client-view.html
+================================================================
+
+NOT CHECKED. These files live on your local D:\Automation-Portfolio\
+drive, outside Claude's sandboxed environment, and were not uploaded
+to this conversation. If either page:
+  - calls supabase.auth.signUp() directly from the browser, or
+  - relies on any of the now-scoped policies returning unscoped
+    data (e.g. expects to see all clients/conversations in a
+    dropdown),
+...it should be manually click-tested end to end. Upload the files
+or paste the relevant Supabase call sites in a future session for a
+direct review.
+
+================================================================
+7. REMAINING RISKS / MANUAL STEPS
+================================================================
+
+1. Confirm a recent backup exists (Dashboard -> Database ->
+   Backups) - still unverified by Claude.
+2. Apply Wave 2 (function hardening) - drafted, safe, awaiting your
+   go-ahead.
+3. Enable "Leaked Password Protection" in Auth settings - 1-click,
+   independent of any migration.
+4. Build the protected account-invitation Edge Function to replace
+   direct supabase.auth.signUp() calls from admin.html, per the
+   original spec.
+5. Manually review admin.html / client-view.html against the new
+   policies.
+6. (Optional, low priority) Consolidate is_admin()/is_admin_user()
+   and my_client_id()/current_user_client_id() into a single
+   function family for maintainability.
+
+================================================================
+8. ROLLBACK INSTRUCTIONS (WAVE 1)
+================================================================
+
+Only use this if you explicitly want to revert to the INSECURE
+pre-fix state (not recommended - this reopens the cross-tenant
+leaks documented in Section 1):
+
+BEGIN;
+DROP POLICY IF EXISTS clients_select_own_or_admin ON public.clients;
+CREATE POLICY clients_select_authenticated ON public.clients
+  FOR SELECT
+  USING ((auth.role() = 'authenticated') AND deleted_at IS NULL);
+
+DROP POLICY IF EXISTS conversations_select_own_or_admin ON public.conversations;
+CREATE POLICY conversations_select ON public.conversations
+  FOR SELECT
+  USING ((auth.role() = 'authenticated') AND deleted_at IS NULL);
+
+DROP POLICY IF EXISTS messages_select_own_or_admin ON public.messages;
+CREATE POLICY messages_select ON public.messages
+  FOR SELECT
+  USING ((auth.role() = 'authenticated') AND deleted_at IS NULL);
+
+DROP POLICY IF EXISTS notifications_insert_scoped ON public.notifications;
+CREATE POLICY notifications_insert ON public.notifications
+  FOR INSERT
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS activity_insert_scoped ON public.activity_log;
+CREATE POLICY auth_insert_activity ON public.activity_log
+  FOR INSERT
+  WITH CHECK ((auth.role() = 'authenticated'));
+
+DROP POLICY IF EXISTS contracts_insert_scoped ON public.contracts;
+CREATE POLICY authenticated_insert ON public.contracts
+  FOR INSERT
+  WITH CHECK ((auth.role() = 'authenticated'));
+COMMIT;
+
+================================================================
+9. WAVE 1 MIGRATION SQL (APPLIED TO PRODUCTION)
+================================================================
+
+-- WAVE 1: Critical cross-tenant leak fixes
+-- Client portal project: dkkriesneublbmrihgvp
+-- Transactional + idempotent (safe to re-run)
+
+BEGIN;
+
+-- 1. clients: was readable by ANY authenticated user, now scoped
+DROP POLICY IF EXISTS clients_select_authenticated ON public.clients;
+CREATE POLICY clients_select_own_or_admin
+  ON public.clients
+  FOR SELECT
+  USING (
+    (is_admin() OR id = my_client_id())
+    AND deleted_at IS NULL
+  );
+
+-- 2. conversations: was readable by ANY authenticated user, now scoped
+DROP POLICY IF EXISTS conversations_select ON public.conversations;
+CREATE POLICY conversations_select_own_or_admin
+  ON public.conversations
+  FOR SELECT
+  USING (
+    (is_admin() OR client_id = my_client_id())
+    AND deleted_at IS NULL
+  );
+
+-- 3. messages: was readable by ANY authenticated user, now scoped via parent conversation
+DROP POLICY IF EXISTS messages_select ON public.messages;
+CREATE POLICY messages_select_own_or_admin
+  ON public.messages
+  FOR SELECT
+  USING (
+    (
+      is_admin()
+      OR conversation_id IN (
+        SELECT id FROM public.conversations WHERE client_id = my_client_id()
+      )
+    )
+    AND deleted_at IS NULL
+  );
+
+-- 4. notifications: was WITH CHECK (true) -- fully open insert
+-- Table has no client_id; it has client_email (text). SELECT policy is
+-- already admin-only, so this table is an admin-facing alert feed populated
+-- by client actions. Scope insert so a client can only create a notification
+-- tagged with their own email, not spoof another client's.
+DROP POLICY IF EXISTS notifications_insert ON public.notifications;
+CREATE POLICY notifications_insert_scoped
+  ON public.notifications
+  FOR INSERT
+  WITH CHECK (
+    is_admin()
+    OR client_email = auth.email()
+  );
+
+-- 5. activity_log: insert had no client scoping, only "authenticated"
+DROP POLICY IF EXISTS auth_insert_activity ON public.activity_log;
+CREATE POLICY activity_insert_scoped
+  ON public.activity_log
+  FOR INSERT
+  WITH CHECK (
+    is_admin()
+    OR project_id IN (
+      SELECT id FROM public.projects WHERE client_id = my_client_id()
+    )
+  );
+
+-- 6. contracts: insert had no client scoping, only "authenticated"
+DROP POLICY IF EXISTS authenticated_insert ON public.contracts;
+CREATE POLICY contracts_insert_scoped
+  ON public.contracts
+  FOR INSERT
+  WITH CHECK (
+    is_admin()
+    OR client_id = my_client_id()
+  );
+
+COMMIT;
+
+STATUS: Applied successfully. Verified live against pg_policies
+after apply - all 6 policies confirmed matching this definition.
+Security advisor re-run afterward: the "RLS Policy Always True"
+warning for notifications_insert is gone. No new warnings
+introduced.
+
+================================================================
+10. WAVE 2 MIGRATION SQL (DRAFTED - NOT YET APPLIED)
+================================================================
+
+-- WAVE 2: Function hardening (fixed search_path), no policy rewrites needed
+-- Client portal project: dkkriesneublbmrihgvp
+-- Transactional + idempotent
+
+BEGIN;
+
+-- 1. Harden is_admin() in place (30 policies reference this name; keep it stable)
+CREATE OR REPLACE FUNCTION public.is_admin()
+ RETURNS boolean
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+  SELECT EXISTS (
+    SELECT 1 FROM public.portal_users
+    WHERE email = auth.email()
+    AND role = 'admin'
+  );
+$function$;
+
+-- 2. Harden my_client_id() in place (30 policies reference this name; keep it stable)
+CREATE OR REPLACE FUNCTION public.my_client_id()
+ RETURNS bigint
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+  SELECT client_id FROM public.portal_users
+  WHERE email = auth.email()
+  LIMIT 1;
+$function$;
+
+-- 3. Harden purge_old_soft_deletes() -- logic unchanged, only search_path added
+CREATE OR REPLACE FUNCTION public.purge_old_soft_deletes()
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+BEGIN
+  DELETE FROM public.messages WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.conversations WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.deliverables WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.milestones WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.invoices WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.contracts WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.activity_log WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.projects WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+  DELETE FROM public.clients WHERE deleted_at IS NOT NULL AND deleted_at < now() - interval '7 days';
+END;
+$function$;
+
+-- 4. Harden soft_delete_row() -- logic unchanged, only search_path added
+CREATE OR REPLACE FUNCTION public.soft_delete_row()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+BEGIN
+  EXECUTE format('UPDATE public.%I SET deleted_at = now() WHERE id = $1', TG_TABLE_NAME)
+  USING OLD.id;
+  RETURN NULL; -- cancels the actual DELETE
+END;
+$function$;
+
+-- 5. Restrict execute grants: these two are cron/trigger-only, not client-callable
+REVOKE EXECUTE ON FUNCTION public.soft_delete_row() FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.purge_old_soft_deletes() FROM anon, authenticated;
+
+COMMIT;
+
+STATUS: NOT YET APPLIED. Awaiting explicit approval.
+
+================================================================
+11. BOTTOM LINE
+================================================================
+
+The condition you set - "Do not deploy real client data until
+Client A is proven unable to access Client B's records" - has been
+met and verified live:
+
+  - Client A could NOT read Client B's clients, conversations,
+    messages, or contracts records.
+  - Client B could NOT read Client A's records either (bidirectional
+    check).
+  - Client A's write attempts to inject data into Client B's
+    conversation, notifications, and contracts were all blocked by
+    RLS with an explicit policy-violation error.
+  - Test data was synthetic and fully removed afterward; production
+    row counts were verified identical to the pre-test baseline.
+
+Still open before you'd want to call this "fully done": Wave 2
+application, the admin.html/client-view.html manual check, the
+account-invitation Edge Function, and enabling leaked-password
+protection.
+
+================================================================
+END OF REPORT
+================================================================
