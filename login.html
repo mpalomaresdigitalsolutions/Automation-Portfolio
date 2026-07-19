@@ -230,6 +230,7 @@
 
   <script>
     const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
+    const AUTH_REDIRECT_URL = 'https://mpalomaresdigitalsolutions.online/login.html';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
@@ -325,7 +326,9 @@
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/login.html',
+            // Always return to the deployed portal. Using the current origin
+            // can preserve localhost in the OAuth state during local testing.
+            redirectTo: AUTH_REDIRECT_URL,
             skipBrowserRedirect: true,
             queryParams: {
               access_type: 'offline',
