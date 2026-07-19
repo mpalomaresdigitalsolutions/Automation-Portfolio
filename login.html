@@ -234,7 +234,9 @@
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         autoRefreshToken: true,
-        persistSession: true
+        persistSession: true,
+        detectSessionInUrl: false,
+        flowType: 'pkce'
       }
     });
 
@@ -323,20 +325,33 @@
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/login.html'
+            redirectTo: window.location.origin + '/login.html',
+            skipBrowserRedirect: true,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'select_account'
+            }
           }
         });
 
         if (error) {
           showError(error.message || 'Google sign-in failed.');
-          googleBtn.disabled = false;
-          googleBtn.innerHTML = `...`; // will reset below
           resetGoogleBtn();
+          return;
         }
-        // If no error, browser redirects to Google — nothing more to do
+
+        if (!data || !data.url) {
+          showError('Google authorization could not be started. Please check your connection and try again.');
+          resetGoogleBtn();
+          return;
+        }
+
+        // Navigate explicitly so the button cannot remain stuck when automatic
+        // browser redirection is blocked or omitted by the auth client.
+        window.location.assign(data.url);
       } catch (err) {
         console.error('Google sign-in error:', err);
-        showError('Google sign-in failed. Please try again.');
+        showError(err && err.message ? err.message : 'Google sign-in failed. Please try again.');
         resetGoogleBtn();
       }
     });
@@ -361,6 +376,7 @@
 
       if (portalError || !portalUser) {
         showError('Account not found in portal. Please contact an administrator.');
+        resetGoogleBtn();
         return;
       }
 
@@ -377,52 +393,74 @@
         window.location.href = 'client-view.html';
       } else {
         showError('Unknown user role. Please contact an administrator.');
+        resetGoogleBtn();
       }
     }
 
-    // Handle OAuth redirect (Google callback)
-    (async function handleHashFragment() {
+    // Handle OAuth redirect (PKCE query callback plus legacy hash sessions).
+    (async function handleOAuthCallback() {
       try {
-        // Supabase stores session in the URL hash fragment after OAuth redirect
+        const params = new URLSearchParams(window.location.search);
+        const oauthError = params.get('error_description') || params.get('error');
+        if (oauthError) {
+          showError(decodeURIComponent(oauthError.replace(/\+/g, ' ')));
+          history.replaceState(null, '', window.location.pathname);
+          resetGoogleBtn();
+          return;
+        }
+
+        const code = params.get('code');
+        if (code) {
+          googleBtn.disabled = true;
+          googleBtn.innerHTML = '<span class="spinner"></span> Completing sign-in…';
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          history.replaceState(null, '', window.location.pathname);
+          if (error) {
+            showError(error.message || 'Google authorization could not be completed.');
+            resetGoogleBtn();
+            return;
+          }
+          if (data && data.session && data.session.user) {
+            await handlePostLogin(data.session.user.email);
+            return;
+          }
+          showError('Google sign-in completed without a valid session. Please try again.');
+          resetGoogleBtn();
+          return;
+        }
+
+        // Retain compatibility with older implicit-flow callback URLs.
         const hash = window.location.hash;
         if (hash && hash.includes('access_token')) {
-          // Session is auto-parsed by supabase-js — retrieve it
-          const { data: { session }, error } = await supabase.auth.getSession();
+          const hashParams = new URLSearchParams(hash.slice(1));
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          const { data: { session }, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
           if (error) {
-            console.error('Session retrieval error:', error);
+            showError(error.message || 'Unable to restore the Google session.');
+            resetGoogleBtn();
             return;
           }
           if (session && session.user) {
             const email = session.user.email;
-            // Clean hash from URL
             history.replaceState(null, '', window.location.pathname);
             await handlePostLogin(email);
-          }
-        } else {
-          // Check if already logged in (normal session check)
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session) {
-            const email = session.user.email;
-            const { data: portalUser } = await supabase
-              .from('portal_users')
-              .select('role, client_id, display_name')
-              .eq('email', email)
-              .single();
-            if (portalUser) {
-              sessionStorage.setItem('portal_user_id', portalUser.id);
-              sessionStorage.setItem('portal_email', email);
-              sessionStorage.setItem('portal_role', portalUser.role);
-              sessionStorage.setItem('portal_display_name', portalUser.display_name || '');
-              if (portalUser.role === 'admin') {
-                window.location.href = 'admin.html';
-              } else if (portalUser.role === 'client') {
-                sessionStorage.setItem('client_id', portalUser.client_id || '');
-                window.location.href = 'client-view.html';
-              }
-            }
+            return;
           }
         }
-      } catch (e) { /* silent */ }
+
+        // Normal page load: resume a valid existing session if present.
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (session && session.user) await handlePostLogin(session.user.email);
+      } catch (error) {
+        console.error('OAuth callback error:', error);
+        showError(error && error.message ? error.message : 'Unable to complete Google sign-in.');
+        resetGoogleBtn();
+      }
     })();
   </script>
   <script>
