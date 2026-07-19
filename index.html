@@ -155,6 +155,43 @@
   .pb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; flex-shrink: 0; }
   .pb-text { font-family: 'Space Mono', monospace; font-size: 0.64rem; letter-spacing: 0.08em; color: var(--green); text-transform: uppercase; }
 
+  /* Purposeful 3D automation workflow */
+  .automation-system { width: min(440px, 38vw); aspect-ratio: 1/1; position: relative; perspective: 1000px; animation: fade-up 0.8s ease 0.5s both; }
+  .automation-scene { position: absolute; inset: 7%; transform-style: preserve-3d; transition: transform .18s ease-out; }
+  .automation-core { position: absolute; inset: 31%; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(0,212,255,.32), rgba(123,47,255,.18) 48%, rgba(6,8,16,.94) 70%); border: 1px solid rgba(0,212,255,.5); box-shadow: 0 0 70px rgba(0,212,255,.2), inset 0 0 32px rgba(123,47,255,.18); transform: translateZ(65px); }
+  .automation-core::before, .automation-core::after { content:''; position:absolute; border-radius:50%; border:1px solid rgba(0,212,255,.16); animation: system-orbit 9s linear infinite; }
+  .automation-core::before { inset:-30%; }
+  .automation-core::after { inset:-58%; border-style:dashed; animation-duration:15s; animation-direction:reverse; }
+  .core-portrait { position:absolute; inset:6%; width:88%; height:88%; object-fit:cover; object-position:50% 22%; border-radius:50%; filter:saturate(.9) contrast(1.03); }
+  .automation-core::after { z-index:1; }
+  .core-shade { position:absolute; inset:6%; z-index:2; border-radius:50%; background:linear-gradient(to top,rgba(6,8,16,.88) 2%,rgba(6,8,16,.08) 55%,transparent 72%); pointer-events:none; }
+  .core-copy { text-align:center; position:absolute; z-index:3; left:50%; bottom:10%; transform:translateX(-50%); width:100%; text-shadow:0 2px 10px rgba(0,0,0,.9); }
+  .core-copy strong { display:block; font:700 .66rem 'Space Mono', monospace; letter-spacing:.06em; color:#fff; }
+  .core-copy span { display:block; margin-top:.12rem; font:400 .45rem 'Space Mono', monospace; letter-spacing:.1em; color:var(--green); text-transform:uppercase; }
+  .system-node { position:absolute; width:108px; padding:.72rem .8rem; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:linear-gradient(145deg,rgba(15,19,34,.95),rgba(6,8,16,.88)); box-shadow:0 14px 35px rgba(0,0,0,.38); backdrop-filter:blur(12px); transform-style:preserve-3d; }
+  .system-node::before { content:''; width:7px; height:7px; display:inline-block; margin-right:.45rem; border-radius:50%; background:var(--node-color,var(--accent)); box-shadow:0 0 12px var(--node-color,var(--accent)); }
+  .system-node strong { font:700 .65rem 'Space Mono',monospace; letter-spacing:.04em; }
+  .system-node span { display:block; margin-top:.32rem; font-size:.68rem; color:var(--muted); }
+  .node-ads { --node-color:#4285f4; top:5%; left:2%; transform:translateZ(20px) rotateY(4deg); }
+  .node-crm { --node-color:var(--accent2); top:5%; right:0; transform:translateZ(5px) rotateY(-4deg); }
+  .node-ai { --node-color:var(--accent); bottom:4%; left:0; transform:translateZ(35px) rotateY(4deg); }
+  .node-book { --node-color:var(--green); bottom:4%; right:0; transform:translateZ(18px) rotateY(-4deg); }
+  .system-line { position:absolute; height:1px; width:32%; left:34%; top:50%; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:.65; transform-origin:center; }
+  .system-line::after { content:''; position:absolute; width:6px; height:6px; top:-2.5px; border-radius:50%; background:var(--green); box-shadow:0 0 12px var(--green); animation:data-pulse 2.2s ease-in-out infinite; }
+  .line-1 { transform:rotate(45deg); } .line-2 { transform:rotate(-45deg); } .line-3 { transform:rotate(135deg); } .line-4 { transform:rotate(-135deg); }
+  .line-2::after,.line-4::after { animation-delay:-1.1s; }
+  .system-status { position:absolute; left:50%; bottom:-2%; transform:translateX(-50%); display:flex; align-items:center; gap:.45rem; white-space:nowrap; padding:.45rem .8rem; border:1px solid rgba(0,255,136,.25); border-radius:30px; background:rgba(6,8,16,.82); color:var(--green); font:400 .58rem 'Space Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
+  .system-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+  @keyframes system-orbit { to { transform:rotate(360deg); } }
+  @keyframes data-pulse { from { left:0; opacity:0; } 20%,80% { opacity:1; } to { left:100%; opacity:0; } }
+  .results-strip { position:relative; z-index:2; display:grid; grid-template-columns:repeat(4,1fr); margin:-2rem 5vw 5rem; border:1px solid var(--border); border-radius:var(--r); background:rgba(11,14,26,.82); backdrop-filter:blur(18px); overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.25); }
+  .hero > .hero-profile { display:none; }
+  .result-proof { padding:1.45rem 1.6rem; border-right:1px solid var(--border); }
+  .result-proof:last-child { border-right:0; }
+  .result-value { font:700 clamp(1.35rem,2.4vw,2rem) 'Space Mono',monospace; color:var(--accent); line-height:1.1; }
+  .result-label { margin-top:.45rem; color:var(--muted); font-size:.78rem; line-height:1.45; }
+  .result-source { margin-top:.55rem; color:rgba(255,255,255,.36); font:400 .55rem 'Space Mono',monospace; letter-spacing:.07em; text-transform:uppercase; }
+
   section { padding: 6rem 5vw; }
   .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
   .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
@@ -519,8 +556,10 @@
   #chat-send:disabled { opacity: 0.35; transform: none; }
   #chat-send svg { width: 16px; height: 16px; fill: #060810; }
 
-  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero-profile { display: flex; justify-content: center; order: -1; margin-bottom: 2rem; } .profile-frame { width: 200px; height: 240px; } }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
   @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
+  @media (max-width: 520px) { .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
 
   /* ═══════ TYPEWRITER ═══════ */
   .typewriter-text { color: var(--accent); font-weight: 700; }
@@ -620,6 +659,17 @@
 
       </div>
     </div>
+    <div class="automation-system" id="automation-system" aria-label="Interactive lead automation workflow">
+      <div class="automation-scene" id="automation-scene">
+        <div class="system-line line-1"></div><div class="system-line line-2"></div><div class="system-line line-3"></div><div class="system-line line-4"></div>
+        <div class="system-node node-ads"><strong>Google Ads</strong><span>High-intent lead</span></div>
+        <div class="system-node node-crm"><strong>GHL CRM</strong><span>Capture + qualify</span></div>
+        <div class="system-node node-ai"><strong>AI Agent</strong><span>Instant follow-up</span></div>
+        <div class="system-node node-book"><strong>Calendar</strong><span>Booked appointment</span></div>
+        <div class="automation-core"><img class="core-portrait" src="Profile.png" alt="Marlon Palomares"><div class="core-shade"></div><div class="core-copy"><strong>MARLON</strong><span>System operator</span></div></div>
+      </div>
+      <div class="system-status">Workflow processing live</div>
+    </div>
     <div class="hero-profile tilt-container" id="hero-profile-tilt">
       <div class="profile-glow"></div>
       <div class="profile-frame tilt-card" id="profile-tilt-card">
@@ -630,6 +680,13 @@
     </div>
     <div class="scroll-indicator"><div class="scroll-line"></div> Scroll to explore</div>
   </section>
+
+  <div class="results-strip reveal" aria-label="Selected client outcomes">
+    <div class="result-proof"><div class="result-value">67% less</div><div class="result-label">Wasted advertising spend</div><div class="result-source">Nonprofit case study</div></div>
+    <div class="result-proof"><div class="result-value">211% better</div><div class="result-label">Conversion performance</div><div class="result-source">Campaign optimization</div></div>
+    <div class="result-proof"><div class="result-value">&lt; 5 min</div><div class="result-label">Automated lead response time</div><div class="result-source">GHL + Zapier workflow</div></div>
+    <div class="result-proof"><div class="result-value">$10K/mo</div><div class="result-label">Advertising budget managed</div><div class="result-source">US service business</div></div>
+  </div>
 
   <div class="marquee-wrap">
     <div class="marquee">
@@ -1637,6 +1694,21 @@ if (tiltContainer && tiltCard) {
 }
 
 /* ═══════ 3. COUNT-UP NUMBERS ═══════ */
+const automationSystem = document.getElementById('automation-system');
+const automationScene = document.getElementById('automation-scene');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (automationSystem && automationScene && !reduceMotion.matches && window.matchMedia('(pointer:fine)').matches) {
+  automationSystem.addEventListener('pointermove', function(e) {
+    const rect = automationSystem.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - .5;
+    const y = (e.clientY - rect.top) / rect.height - .5;
+    automationScene.style.transform = `rotateX(${-y * 9}deg) rotateY(${x * 11}deg)`;
+  });
+  automationSystem.addEventListener('pointerleave', function() {
+    automationScene.style.transform = '';
+  });
+}
+
 const countUpObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
