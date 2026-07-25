@@ -616,6 +616,18 @@
       width:36px;height:36px;border:1px solid var(--border);border-radius:9px;background:var(--bg3);
       color:var(--text);font-size:20px;line-height:1;cursor:pointer;
     }
+    .client-message-header-actions { display:flex;align-items:center;gap:7px; }
+    .client-message-alert-btn { padding:7px 9px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font:600 11px 'Outfit',sans-serif;cursor:pointer; }
+    .client-message-alert-btn:hover { border-color:var(--accent);color:var(--accent); }
+    .client-message-alert-btn.enabled { color:var(--green);border-color:rgba(0,255,136,.3); }
+    .client-message-toast-stack { position:fixed;right:22px;top:22px;z-index:1100;width:min(360px,calc(100vw - 32px));pointer-events:none; }
+    .client-message-toast { display:flex;gap:11px;align-items:flex-start;padding:14px 15px;border:1px solid rgba(0,212,255,.25);border-radius:11px;background:rgba(11,14,26,.97);box-shadow:0 16px 45px rgba(0,0,0,.45);pointer-events:auto;cursor:pointer;animation:clientToastIn .22s ease; }
+    .client-message-toast-icon { width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,.12);flex:none; }
+    .client-message-toast-body { flex:1;min-width:0; }
+    .client-message-toast-title { font-size:13px;font-weight:600; }
+    .client-message-toast-text { margin-top:2px;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .client-message-toast-close { border:0;background:none;color:var(--muted);font-size:17px;cursor:pointer; }
+    @keyframes clientToastIn { from { opacity:0;transform:translateY(-8px); } to { opacity:1;transform:none; } }
     #tab-messages #clientChatArea { flex:1;height:auto!important;border:0!important;border-radius:0!important;min-height:0; }
     #tab-messages #clientMessages { min-height:0; }
     body.message-drawer-open { overflow:hidden; }
@@ -709,7 +721,10 @@
         <div class="tab-content message-drawer" id="tab-messages" role="dialog" aria-modal="true" aria-labelledby="messageDrawerTitle" aria-hidden="true">
           <div class="message-drawer-header">
             <div><h2 id="messageDrawerTitle">Messages</h2><p>Chat with your project admin</p></div>
-            <button class="message-drawer-close" id="messageDrawerClose" type="button" aria-label="Close messages">&times;</button>
+            <div class="client-message-header-actions">
+              <button class="client-message-alert-btn" id="clientMessageAlertsBtn" type="button">🔔 Alerts</button>
+              <button class="message-drawer-close" id="messageDrawerClose" type="button" aria-label="Close messages">&times;</button>
+            </div>
           </div>
           <div id="clientChatArea" style="display:flex;flex-direction:column;height:400px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
             <div id="clientMessages" style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:8px;">
@@ -1039,6 +1054,7 @@
       // Load upcoming appointments and unread count
       loadUpcomingMeetings(displayName);
       loadUnreadCount();
+      initClientMessageNotifications();
       loadClientActions(project.id);
 
       // Account welcome/invitation email is sent by the protected admin Edge Function.
@@ -1623,6 +1639,65 @@
     var clientMsgChannel = null;
     var clientTypingChannel = null;
 
+    function clientMessagePreview(content) {
+      var text = String(content || '').replace(/\s+/g, ' ').trim();
+      return text.length > 90 ? text.slice(0, 87) + '...' : text;
+    }
+
+    function showClientMessageToast(content) {
+      var stack = document.getElementById('clientMessageToastStack');
+      if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'clientMessageToastStack';
+        stack.className = 'client-message-toast-stack';
+        stack.setAttribute('aria-live', 'polite');
+        document.body.appendChild(stack);
+      }
+      var toast = document.createElement('div');
+      toast.className = 'client-message-toast';
+      toast.innerHTML = '<div class="client-message-toast-icon">💬</div><div class="client-message-toast-body"><div class="client-message-toast-title">New message from your admin</div><div class="client-message-toast-text"></div></div><button class="client-message-toast-close" aria-label="Dismiss">&times;</button>';
+      toast.querySelector('.client-message-toast-text').textContent = clientMessagePreview(content);
+      toast.querySelector('.client-message-toast-close').addEventListener('click', function(e) { e.stopPropagation(); toast.remove(); });
+      toast.addEventListener('click', function() { openMessageDrawer(); toast.remove(); });
+      stack.appendChild(toast);
+      setTimeout(function() { if (toast.isConnected) toast.remove(); }, 7000);
+    }
+
+    function showClientBrowserNotification(content) {
+      if (!('Notification' in window) || Notification.permission !== 'granted' || document.visibilityState === 'visible') return;
+      var note = new Notification('New message from your admin', { body: clientMessagePreview(content), tag: 'client-admin-message' });
+      note.onclick = function() { window.focus(); openMessageDrawer(); note.close(); };
+    }
+
+    function updateClientAlertButton() {
+      var btn = document.getElementById('clientMessageAlertsBtn');
+      if (!btn || !('Notification' in window)) return;
+      if (Notification.permission === 'granted') {
+        btn.textContent = '🔔 Alerts on';
+        btn.classList.add('enabled');
+      } else if (Notification.permission === 'denied') {
+        btn.textContent = '🔕 Blocked';
+      }
+    }
+
+    function initClientMessageNotifications() {
+      updateClientAlertButton();
+      var clientId = sessionStorage.getItem('client_id');
+      if (!clientId) return;
+      supabase.from('conversations').select('id').eq('client_id', clientId).order('last_message_at', { ascending:false }).limit(1).then(function(r) {
+        if (!r.error && r.data && r.data.length) {
+          clientConvId = r.data[0].id;
+          subscribeClientMessages(clientConvId);
+        }
+      });
+    }
+
+    document.getElementById('clientMessageAlertsBtn').addEventListener('click', async function() {
+      if (!('Notification' in window)) { this.textContent = 'Not supported'; return; }
+      if (Notification.permission === 'default') await Notification.requestPermission();
+      updateClientAlertButton();
+    });
+
     $('clientAiDraftBtn').addEventListener('click', async function() {
       if (!clientConvId) { alert('Open or start a conversation before using AI Improve.'); return; }
       var btn = this, input = $('clientMsgInput'), original = input.value.trim();
@@ -1696,10 +1771,18 @@
       clientMsgChannel = supabase.channel('client-msg-' + convId).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + convId }, function(payload) {
         var m = payload.new;
         if (m.sender == 'admin') {
+          var drawerOpen = document.getElementById('tab-messages').classList.contains('open');
           var el = document.getElementById('clientMessages');
           var time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
-          el.innerHTML += '<div class=\"client-msg msg-bubble client\">' + esc(m.content) + '<div class=\"msg-bubble-time\">admin · ' + time + '</div></div>';
-          el.scrollTop = el.scrollHeight;
+          if (drawerOpen) {
+            el.innerHTML += '<div class="client-msg msg-bubble client">' + esc(m.content) + '<div class="msg-bubble-time">admin &middot; ' + time + '</div></div>';
+            el.scrollTop = el.scrollHeight;
+            supabase.from('messages').update({ read_at:new Date().toISOString() }).eq('id', m.id).then(function() { loadUnreadCount(); });
+          } else {
+            showClientMessageToast(m.content);
+            loadUnreadCount();
+          }
+          showClientBrowserNotification(m.content);
         }
       }).subscribe();
     }

@@ -319,6 +319,17 @@
     // Google Sign-In
     googleBtn.addEventListener('click', async () => {
       hideError();
+
+      // PKCE stores its code verifier in origin-scoped browser storage. If the
+      // portal was opened from www, a preview URL, or localhost, first move to
+      // the same canonical origin that receives the OAuth callback.
+      const canonicalAuthUrl = new URL(AUTH_REDIRECT_URL);
+      if (window.location.origin !== canonicalAuthUrl.origin) {
+        canonicalAuthUrl.searchParams.set('start_oauth', 'google');
+        window.location.assign(canonicalAuthUrl.toString());
+        return;
+      }
+
       googleBtn.disabled = true;
       googleBtn.innerHTML = '<span class="spinner"></span> Signing in…';
 
@@ -415,6 +426,14 @@
           return;
         }
 
+        // Complete the canonical-origin handoff before generating the PKCE
+        // verifier, ensuring the verifier and callback use the same storage.
+        if (params.get('start_oauth') === 'google') {
+          history.replaceState(null, '', window.location.pathname);
+          googleBtn.click();
+          return;
+        }
+
         const code = params.get('code');
         if (code) {
           googleBtn.disabled = true;
@@ -422,7 +441,10 @@
           const { data, error } = await supabase.auth.exchangeCodeForSession(code);
           history.replaceState(null, '', window.location.pathname);
           if (error) {
-            showError(error.message || 'Google authorization could not be completed.');
+            const message = error.message || '';
+            showError(message.includes('code verifier')
+              ? 'This Google sign-in attempt expired or started on another site address. Please try again from this page.'
+              : message || 'Google authorization could not be completed.');
             resetGoogleBtn();
             return;
           }

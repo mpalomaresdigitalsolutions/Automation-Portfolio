@@ -786,6 +786,17 @@
     .msg-input-area { position:sticky;bottom:0;z-index:2;display:flex;gap:12px;padding:16px 24px;border-top:1px solid var(--border);background:var(--bg); }
     .msg-input { flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;resize:none;outline:none; }
     .msg-input:focus { border-color:var(--accent); }
+    .message-alert-btn { padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--muted);font:600 11px 'Outfit',sans-serif;cursor:pointer; }
+    .message-alert-btn:hover { border-color:var(--accent);color:var(--accent); }
+    .message-alert-btn.enabled { color:var(--green);border-color:rgba(0,255,136,.3); }
+    .message-toast-stack { position:fixed;right:22px;top:22px;z-index:1300;display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100vw - 32px));pointer-events:none; }
+    .message-toast { display:flex;gap:11px;align-items:flex-start;padding:14px 15px;border:1px solid rgba(0,212,255,.25);border-radius:11px;background:rgba(11,14,26,.97);box-shadow:0 16px 45px rgba(0,0,0,.45);pointer-events:auto;animation:messageToastIn .22s ease;cursor:pointer; }
+    .message-toast-icon { width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,.12);flex:none; }
+    .message-toast-body { flex:1;min-width:0; }
+    .message-toast-title { font-size:13px;font-weight:600; }
+    .message-toast-text { margin-top:2px;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .message-toast-close { border:0;background:none;color:var(--muted);font-size:17px;cursor:pointer; }
+    @keyframes messageToastIn { from { opacity:0;transform:translateY(-8px); } to { opacity:1;transform:none; } }
     @media (max-width:768px) {
       #page-messages { height:calc(100dvh - 32px);min-height:480px; }
       .msg-layout { position:relative;display:block; }
@@ -1173,7 +1184,10 @@
       <div class="msg-sidebar">
         <div class="msg-sidebar-header">
           <h3><span>💬</span> Conversations</h3>
-          <button class="btn btn-primary btn-sm" id="newConvBtn" style="font-size:11px;">+ New</button>
+          <div style="display:flex;gap:7px;">
+            <button class="message-alert-btn" id="adminMessageAlertsBtn" type="button">🔔 Alerts</button>
+            <button class="btn btn-primary btn-sm" id="newConvBtn" style="font-size:11px;">+ New</button>
+          </div>
         </div>
         <div style="padding:8px 12px;border-bottom:1px solid var(--border);">
           <input type="text" id="convSearch" placeholder="🔍 Search conversations..." style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;font-family:'Outfit',sans-serif;outline:none;">
@@ -1531,6 +1545,7 @@
       loadDashboard();
       getUnreadCount();
       startNotifPolling();
+      initAdminMessageNotifications();
       archiveOldConversations();
       autoClearNotifications();
 
@@ -3833,6 +3848,83 @@ Marlon Palomares`
     /* ── MESSAGES / CHAT ── */
     var currentConvId = null;
     var msgChannel = null;
+    var adminMessageNotifChannel = null;
+
+    function messagePreview(content) {
+      var text = String(content || '').replace(/\s+/g, ' ').trim();
+      return text.length > 90 ? text.slice(0, 87) + '...' : text;
+    }
+
+    function showAdminMessageToast(content, convId) {
+      var stack = document.getElementById('adminMessageToastStack');
+      if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'adminMessageToastStack';
+        stack.className = 'message-toast-stack';
+        stack.setAttribute('aria-live', 'polite');
+        document.body.appendChild(stack);
+      }
+      var toast = document.createElement('div');
+      toast.className = 'message-toast';
+      toast.innerHTML = '<div class="message-toast-icon">💬</div><div class="message-toast-body"><div class="message-toast-title">New message from a client</div><div class="message-toast-text"></div></div><button class="message-toast-close" aria-label="Dismiss">&times;</button>';
+      toast.querySelector('.message-toast-text').textContent = messagePreview(content);
+      toast.querySelector('.message-toast-close').addEventListener('click', function(e) { e.stopPropagation(); toast.remove(); });
+      toast.addEventListener('click', function() {
+        var nav = document.querySelector('[data-page="messages"]');
+        if (nav) nav.click();
+        setTimeout(function() {
+          var item = document.querySelector('.msg-conv-item[data-conv-id="' + convId + '"]');
+          if (item) item.click();
+        }, 300);
+        toast.remove();
+      });
+      stack.appendChild(toast);
+      setTimeout(function() { if (toast.isConnected) toast.remove(); }, 7000);
+    }
+
+    function showAdminBrowserNotification(content, convId) {
+      if (!('Notification' in window) || Notification.permission !== 'granted' || document.visibilityState === 'visible') return;
+      var note = new Notification('New client message', { body: messagePreview(content), tag: 'admin-message-' + convId });
+      note.onclick = function() {
+        window.focus();
+        var nav = document.querySelector('[data-page="messages"]');
+        if (nav) nav.click();
+        note.close();
+      };
+    }
+
+    function updateAdminAlertButton() {
+      var btn = document.getElementById('adminMessageAlertsBtn');
+      if (!btn || !('Notification' in window)) return;
+      if (Notification.permission === 'granted') {
+        btn.textContent = '🔔 Alerts on';
+        btn.classList.add('enabled');
+      } else if (Notification.permission === 'denied') {
+        btn.textContent = '🔕 Blocked';
+      }
+    }
+
+    function initAdminMessageNotifications() {
+      updateAdminAlertButton();
+      if (adminMessageNotifChannel) return;
+      adminMessageNotifChannel = supabase.channel('admin-message-notifications')
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:'sender=eq.client' }, function(payload) {
+          var m = payload.new;
+          var chatIsVisible = currentConvId == m.conversation_id && document.getElementById('page-messages').classList.contains('active') && document.visibilityState === 'visible';
+          if (chatIsVisible) {
+            supabase.from('messages').update({ read_at:new Date().toISOString() }).eq('id', m.id).then();
+          }
+          loadMessages();
+          if (!chatIsVisible) showAdminMessageToast(m.content, m.conversation_id);
+          showAdminBrowserNotification(m.content, m.conversation_id);
+        }).subscribe();
+    }
+
+    document.getElementById('adminMessageAlertsBtn').addEventListener('click', async function() {
+      if (!('Notification' in window)) { this.textContent = 'Not supported'; return; }
+      if (Notification.permission === 'default') await Notification.requestPermission();
+      updateAdminAlertButton();
+    });
 
     function loadMessages() {
       supabase.from('conversations').select('*, clients!inner(name,email,avatar_initials,avatar_color)').order('last_message_at', { ascending: false }).then(function(r) {
