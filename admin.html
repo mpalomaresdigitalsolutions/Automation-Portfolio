@@ -477,6 +477,29 @@
     }
     .dl-item .dl-name { font-size: 13px; font-weight: 500; }
     .dl-item .dl-meta { font-size: 11px; color: var(--muted); }
+    .dl-workflow-card { align-items:flex-start;gap:14px; }
+    .dl-workflow-main { flex:1;min-width:0; }
+    .dl-workflow-actions { display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end; }
+    .dl-status { display:inline-flex;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.35px; }
+    .dl-status.pending_review { background:rgba(0,212,255,.11);color:var(--accent); }
+    .dl-status.approved { background:rgba(0,255,136,.11);color:var(--green); }
+    .dl-status.revision_requested { background:rgba(255,107,53,.12);color:var(--accent3); }
+    .dl-feedback { margin-top:7px;padding:8px 10px;border-left:2px solid var(--accent3);background:rgba(255,107,53,.06);font-size:11px;color:var(--muted); }
+    .approval-list { display:flex;flex-direction:column;gap:10px; }
+    .approval-card { padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius); }
+    .approval-card-head { display:flex;justify-content:space-between;align-items:flex-start;gap:12px; }
+    .approval-card h4 { font-size:14px;margin-bottom:4px; }
+    .approval-card-meta { color:var(--muted);font-size:11px; }
+    .approval-card-body { margin-top:11px;color:var(--text);font-size:13px;line-height:1.55;white-space:pre-wrap; }
+    .approval-impact-grid { margin-top:11px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px; }
+    .approval-impact { padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--muted); }
+    .approval-impact strong { display:block;color:var(--text);margin-top:2px;font-size:12px; }
+    .approval-status { padding:4px 9px;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap; }
+    .approval-status.pending { background:rgba(0,212,255,.11);color:var(--accent); }
+    .approval-status.approved { background:rgba(0,255,136,.11);color:var(--green); }
+    .approval-status.changes_requested,.approval-status.declined { background:rgba(255,107,53,.12);color:var(--accent3); }
+    .approval-response { margin-top:11px;padding:9px 11px;border-left:2px solid var(--accent);background:rgba(0,212,255,.05);font-size:11px;color:var(--muted); }
+    @media(max-width:700px){.approval-impact-grid{grid-template-columns:1fr}.approval-card-head{flex-direction:column}}
 
     /* Client list table in dashboard */
     .client-avatar {
@@ -1008,6 +1031,7 @@
         <div class="detail-tabs" id="detailTabs">
           <div class="detail-tab active" data-tab="invoices">Invoices</div>
           <div class="detail-tab" data-tab="deliverables">Deliverables</div>
+          <div class="detail-tab" data-tab="approvals">Approvals</div>
           <div class="detail-tab" data-tab="milestones">🎯 Milestones</div>
           <div class="detail-tab" data-tab="activity">Activity</div>
         </div>
@@ -1017,7 +1041,12 @@
             <div class="table-wrap" id="detailInvoicesWrap"><table><thead><tr><th>Invoice #</th><th>Title</th><th>Amount</th><th>Due Date</th><th>Status</th></tr></thead><tbody id="detailInvoicesBody"></tbody></table></div>
           </div>
           <div class="tab-content" id="tab-deliverables">
+            <div style="margin-bottom:12px;text-align:right;"><button class="btn btn-primary btn-sm" id="addDeliverableBtn">+ Upload Deliverable</button></div>
             <div class="dl-list" id="detailDeliverablesList"></div>
+          </div>
+          <div class="tab-content" id="tab-approvals">
+            <div style="margin-bottom:12px;text-align:right;"><button class="btn btn-primary btn-sm" id="addApprovalBtn">+ New Approval Request</button></div>
+            <div class="approval-list" id="detailApprovalsList"></div>
           </div>
           <div class="tab-content" id="tab-milestones">
             <div style="margin-bottom:16px;">
@@ -2511,6 +2540,7 @@
       // Load tabs
       loadDetailInvoices(projectId);
       loadDetailDeliverables(projectId);
+      loadDetailApprovals(projectId);
       loadDetailMilestones(projectId);
       loadDetailActivity(projectId);
       switchDetailTab('invoices');
@@ -2572,7 +2602,7 @@
       try {
         const { data, error } = await supabase
           .from('deliverables')
-          .select('*')
+          .select('*, deliverable_versions(*)')
           .eq('project_id', projectId)
           .order('uploaded_at', {ascending:false});
         if (error) throw error;
@@ -2582,14 +2612,216 @@
           list.innerHTML = '<div class="empty-state"><p>No deliverables yet.</p></div>';
         } else {
           list.innerHTML = dels.map(d => {
-            const size = d.file_size ? (d.file_size / 1024).toFixed(1) + ' KB' : '—';
-            return `<div class="dl-item">
-              <div><div class="dl-name">📄 ${esc(d.name)}</div><div class="dl-meta">${size} · ${formatDate(d.uploaded_at)}</div></div>
+            const versions = (d.deliverable_versions || []).sort((a,b) => b.version_number-a.version_number);
+            const latest = versions[0];
+            const size = latest && latest.file_size ? formatFileSize(latest.file_size) : (d.file_size || '—');
+            const status = d.review_status || 'pending_review';
+            return `<div class="dl-item dl-workflow-card">
+              <div class="dl-workflow-main">
+                <div class="dl-name">📄 ${esc(d.name)} <span class="dl-status ${status}">${status.replace(/_/g,' ')}</span></div>
+                <div class="dl-meta">Version ${d.current_version || versions.length || 1} · ${size} · ${formatDate(latest ? latest.uploaded_at : d.uploaded_at)}</div>
+                ${d.review_feedback ? `<div class="dl-feedback">Client feedback: ${esc(d.review_feedback)}</div>` : ''}
+              </div>
+              <div class="dl-workflow-actions">
+                ${latest ? `<button class="btn btn-outline btn-sm" onclick="openDeliverableFile('${esc(latest.file_path)}')">View</button>` : ''}
+                <button class="btn btn-outline btn-sm" onclick="openDeliverableUpload(${d.id},'${escAttr(d.name)}',${(d.current_version || versions.length || 0)+1})">Upload new version</button>
+              </div>
             </div>`;
           }).join('');
         }
       } catch (e) { console.error(e); }
     }
+
+    function formatFileSize(bytes) {
+      var n = Number(bytes);
+      if (!n) return '—';
+      if (n < 1024) return n + ' B';
+      if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+      return (n / 1048576).toFixed(1) + ' MB';
+    }
+
+    function escAttr(value) {
+      return esc(String(value || '').replace(/\r?\n/g,' ')).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    }
+
+    async function openDeliverableFile(path) {
+      const { data, error } = await supabase.storage.from('deliverables').createSignedUrl(path, 300);
+      if (error || !data) { alert('Unable to open this file.'); return; }
+      window.open(data.signedUrl, '_blank', 'noopener');
+    }
+
+    function openDeliverableUpload(deliverableId, name, nextVersion) {
+      var overlay = document.createElement('div');
+      overlay.className = 'modal-overlay open';
+      overlay.innerHTML = `<div class="modal">
+        <h3><span>↑</span> ${deliverableId ? 'Upload New Version' : 'New Deliverable'}</h3>
+        <div class="form-group"><label>Deliverable name</label><input id="deliverableNameInput" maxlength="160" value="${esc(name || '')}" ${deliverableId ? 'readonly' : ''}></div>
+        <div class="form-group"><label>File (maximum 50 MB)</label><input id="deliverableFileInput" type="file"></div>
+        <div class="form-group"><label>Version notes</label><textarea id="deliverableNotesInput" rows="3" maxlength="1000" placeholder="What changed in this version?"></textarea></div>
+        <div id="deliverableUploadError" class="alert alert-error" style="display:none;"></div>
+        <div class="modal-actions"><button class="btn btn-outline" id="deliverableUploadCancel">Cancel</button><button class="btn btn-primary" id="deliverableUploadSave">Upload v${nextVersion || 1}</button></div>
+      </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#deliverableUploadCancel').onclick = function() { overlay.remove(); };
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+      overlay.querySelector('#deliverableUploadSave').onclick = async function() {
+        var btn = this, errEl = overlay.querySelector('#deliverableUploadError');
+        var title = overlay.querySelector('#deliverableNameInput').value.trim();
+        var file = overlay.querySelector('#deliverableFileInput').files[0];
+        var notes = overlay.querySelector('#deliverableNotesInput').value.trim();
+        if (!title || !file) { errEl.textContent = 'Enter a name and choose a file.'; errEl.style.display='block'; return; }
+        if (file.size > 52428800) { errEl.textContent = 'File must be 50 MB or smaller.'; errEl.style.display='block'; return; }
+        btn.disabled = true; btn.textContent = 'Uploading…'; errEl.style.display='none';
+        var createdDeliverableId = deliverableId;
+        var isNewDeliverable = !deliverableId;
+        var versionNumber = nextVersion || 1;
+        try {
+          if (!createdDeliverableId) {
+            const { data: created, error: createError } = await supabase.from('deliverables').insert({
+              project_id: currentProjectId, name:title, file_size:String(file.size),
+              review_status:'draft', current_version:0
+            }).select().single();
+            if (createError) throw createError;
+            createdDeliverableId = created.id;
+          }
+          var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+          var filePath = currentProjectId + '/' + createdDeliverableId + '/v' + versionNumber + '-' + Date.now() + '-' + safeName;
+          const { error: uploadError } = await supabase.storage.from('deliverables').upload(filePath, file, { upsert:false });
+          if (uploadError) throw uploadError;
+          const { error: versionError } = await supabase.from('deliverable_versions').insert({
+            deliverable_id:createdDeliverableId, version_number:versionNumber, file_name:file.name,
+            file_path:filePath, file_size:file.size, notes:notes || null
+          });
+          if (versionError) {
+            await supabase.storage.from('deliverables').remove([filePath]);
+            throw versionError;
+          }
+          const { error: updateError } = await supabase.from('deliverables').update({
+            current_version:versionNumber, review_status:'pending_review', reviewed_at:null,
+            review_feedback:null, file_size:String(file.size), uploaded_at:new Date().toISOString()
+          }).eq('id', createdDeliverableId);
+          if (updateError) throw updateError;
+          await supabase.from('activity_log').insert({ project_id:currentProjectId, type:'update', text:'📦 Deliverable uploaded: ' + title + ' (v' + versionNumber + ')' });
+          overlay.remove();
+          loadDetailDeliverables(currentProjectId);
+          loadDetailActivity(currentProjectId);
+        } catch (error) {
+          if (isNewDeliverable && createdDeliverableId) {
+            await supabase.from('deliverables').delete().eq('id', createdDeliverableId);
+          }
+          errEl.textContent = error.message || 'Upload failed.';
+          errEl.style.display='block'; btn.disabled=false; btn.textContent='Try again';
+        }
+      };
+    }
+
+    document.getElementById('addDeliverableBtn').addEventListener('click', function() {
+      openDeliverableUpload(null, '', 1);
+    });
+
+    var adminApprovalRequests = [];
+    async function loadDetailApprovals(projectId) {
+      var list = document.getElementById('detailApprovalsList');
+      try {
+        const { data, error } = await supabase.from('approval_requests')
+          .select('*, approval_responses(*)').eq('project_id', projectId)
+          .order('created_at', { ascending:false });
+        if (error) throw error;
+        var requests = data || [];
+        adminApprovalRequests = requests;
+        if (!requests.length) {
+          list.innerHTML = '<div class="empty-state"><p>No approval requests yet.</p></div>';
+          return;
+        }
+        list.innerHTML = requests.map(function(r) {
+          var responses = (r.approval_responses || []).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});
+          var latest = responses[0];
+          return `<div class="approval-card">
+            <div class="approval-card-head"><div><h4>${esc(r.title)}</h4><div class="approval-card-meta">${r.priority.toUpperCase()} priority · Created ${formatDate(r.created_at)}${r.due_date?' · Due '+formatDate(r.due_date):''}</div></div><span class="approval-status ${r.status}">${r.status.replace(/_/g,' ')}</span></div>
+            <div class="approval-card-body">${esc(r.description)}</div>
+            ${r.expected_benefit?`<div class="approval-response"><strong>Expected benefit:</strong> ${esc(r.expected_benefit)}</div>`:''}
+            <div class="approval-impact-grid">
+              <div class="approval-impact">Cost impact<strong>${Number(r.cost_impact||0)>0?formatCurrency(r.cost_impact):'No additional cost'}</strong></div>
+              <div class="approval-impact">Timeline impact<strong>${esc(r.timeline_impact||'No change')}</strong></div>
+              <div class="approval-impact">Response deadline<strong>${r.due_date?formatDate(r.due_date):'No deadline'}</strong></div>
+            </div>
+            ${latest?`<div class="approval-response"><strong>Client response:</strong> ${latest.decision.replace(/_/g,' ')}${latest.feedback?' — '+esc(latest.feedback):''}</div>`:''}
+            ${r.status==='pending'?`<div style="margin-top:11px;text-align:right;"><button class="btn btn-outline btn-sm" onclick="cancelApprovalRequest(${r.id})">Cancel request</button></div>`:''}
+            ${r.status==='changes_requested'?`<div style="margin-top:11px;text-align:right;"><button class="btn btn-primary btn-sm" onclick="openApprovalRequestById(${r.id})">Revise &amp; resubmit</button></div>`:''}
+          </div>`;
+        }).join('');
+      } catch (error) {
+        list.innerHTML = '<div class="empty-state"><p>Approval Center requires its Supabase migration.</p></div>';
+        console.error('Unable to load approvals:', error);
+      }
+    }
+
+    function openApprovalRequestById(id) {
+      var request=adminApprovalRequests.find(function(r){return r.id==id;});
+      if(request)openApprovalRequestModal(request);
+    }
+
+    function openApprovalRequestModal(existing) {
+      existing=existing||null;
+      var overlay = document.createElement('div');
+      overlay.className = 'modal-overlay open';
+      overlay.innerHTML = `<div class="modal" style="max-width:600px;max-height:90vh;overflow-y:auto;">
+        <h3><span>✓</span> ${existing?'Revise Approval Request':'New Approval Request'}</h3>
+        <div class="form-group"><label>Suggestion title</label><input id="approvalTitleInput" maxlength="160" placeholder="e.g. Add automated follow-up sequence" value="${existing?esc(existing.title):''}"></div>
+        <div class="form-group"><label>Suggestion details</label><textarea id="approvalDescriptionInput" rows="5" maxlength="4000" placeholder="Explain what you recommend and why…">${existing?esc(existing.description):''}</textarea></div>
+        <div class="form-group"><label>Expected benefit</label><textarea id="approvalBenefitInput" rows="2" maxlength="1000" placeholder="Expected result for the client">${existing?esc(existing.expected_benefit||''):''}</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group"><label>Additional cost</label><input id="approvalCostInput" type="number" min="0" step="0.01" value="${existing?Number(existing.cost_impact||0):0}"></div>
+          <div class="form-group"><label>Timeline impact</label><input id="approvalTimelineInput" maxlength="200" placeholder="e.g. Adds 3 business days" value="${existing?esc(existing.timeline_impact||''):''}"></div>
+          <div class="form-group"><label>Priority</label><select id="approvalPriorityInput"><option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
+          <div class="form-group"><label>Response deadline</label><input id="approvalDueInput" type="date" value="${existing&&existing.due_date?existing.due_date:''}"></div>
+        </div>
+        <div id="approvalModalError" class="alert alert-error" style="display:none;"></div>
+        <div class="modal-actions"><button class="btn btn-outline" id="approvalModalCancel">Cancel</button><button class="btn btn-primary" id="approvalModalSave">Send for approval</button></div>
+      </div>`;
+      document.body.appendChild(overlay);
+      if(existing)overlay.querySelector('#approvalPriorityInput').value=existing.priority||'normal';
+      overlay.querySelector('#approvalModalCancel').onclick = function(){overlay.remove();};
+      overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+      overlay.querySelector('#approvalModalSave').onclick = async function() {
+        var btn=this, errorEl=overlay.querySelector('#approvalModalError');
+        var title=overlay.querySelector('#approvalTitleInput').value.trim();
+        var description=overlay.querySelector('#approvalDescriptionInput').value.trim();
+        if(title.length<3||description.length<3){errorEl.textContent='Add a clear title and description.';errorEl.style.display='block';return;}
+        btn.disabled=true;btn.textContent='Sending…';errorEl.style.display='none';
+        try {
+          const { data:{ user } } = await supabase.auth.getUser();
+          var payload={
+            project_id:currentProjectId,title:title,description:description,
+            expected_benefit:overlay.querySelector('#approvalBenefitInput').value.trim()||null,
+            cost_impact:Number(overlay.querySelector('#approvalCostInput').value)||0,
+            timeline_impact:overlay.querySelector('#approvalTimelineInput').value.trim()||null,
+            priority:overlay.querySelector('#approvalPriorityInput').value,
+            due_date:overlay.querySelector('#approvalDueInput').value||null,
+            status:'pending',submitted_at:new Date().toISOString(),
+            created_by_email:user&&user.email?user.email:'admin'
+          };
+          var requestQuery=existing
+            ? supabase.from('approval_requests').update(Object.assign({},payload,{updated_at:new Date().toISOString(),decided_at:null})).eq('id',existing.id)
+            : supabase.from('approval_requests').insert(payload);
+          const { error } = await requestQuery;
+          if(error)throw error;
+          await supabase.from('activity_log').insert({project_id:currentProjectId,type:'update',text:(existing?'🔄 Approval request resubmitted: ':'📋 Approval requested: ')+title});
+          overlay.remove();loadDetailApprovals(currentProjectId);loadDetailActivity(currentProjectId);
+        } catch(error) {
+          errorEl.textContent=error.message||'Unable to create approval request.';errorEl.style.display='block';btn.disabled=false;btn.textContent='Try again';
+        }
+      };
+    }
+
+    async function cancelApprovalRequest(id) {
+      if(!confirm('Cancel this approval request?'))return;
+      const { error }=await supabase.from('approval_requests').update({status:'cancelled',updated_at:new Date().toISOString()}).eq('id',id).eq('status','pending');
+      if(error){alert(error.message);return;}
+      loadDetailApprovals(currentProjectId);
+    }
+
+    document.getElementById('addApprovalBtn').addEventListener('click', openApprovalRequestModal);
 
     /* ── Detail: Milestones ── */
     var currentMilestoneProjectId = null;
