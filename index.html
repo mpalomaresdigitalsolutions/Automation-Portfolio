@@ -563,6 +563,8 @@
   .assistant-icon { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 0; }
   .assistant-icon-section { width: 36px; height: 36px; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
   .assistant-icon-fab { width: 150px; height: 150px; }
+  .chat-label { position: absolute; right: calc(100% + 12px); bottom: 24px; width: max-content; padding: 0.55rem 0.8rem; border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; background: rgba(11,14,26,0.94); color: var(--muted); font-size: 0.72rem; line-height: 1.45; text-align: left; pointer-events: none; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+  .chat-label strong { color: var(--text); font-size: 0.78rem; }
   .chat-avatar { width: 38px; height: 38px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: none; }
   .chat-header-info { flex: 1; }
   .chat-header-name { font-size: 0.88rem; font-weight: 700; color: var(--text); line-height: 1.2; }
@@ -982,6 +984,7 @@
 <button id="chat-fab" onclick="toggleChat()" title="Chat with Marlon's AI Assistant">
   <div class="fab-badge"></div>
   <img class="assistant-icon assistant-icon-fab" src="images/chatbot-icon-400.gif" alt="Open Marlon AI Assistant" width="150" height="150">
+  <span class="chat-label"><strong>Chat with me</strong><br>I'm Marlon, AI Assistant</span>
 </button>
 
 <!-- CHATBOT WINDOW -->
@@ -1558,7 +1561,11 @@ async function submitContactForm(){
   let aiReply='';
   try{
     if(PROXY_URL&&!isLocalPreview()){
-      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',turnstile_required:!isLocalPreview(),turnstile_token:turnstileToken,messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client first name: ${fname}\nService: ${service}\nMessage: "${message}"\n\nWrite a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
+      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'deepseek-chat',turnstile_required:!isLocalPreview(),turnstile_token:turnstileToken,messages:[{role:'system',content:buildSystem(service)},{role:'user',content:`Client first name: ${fname}
+Service: ${service}
+Message: "${message}"
+
+Write a warm reply to ${fname}.`}],max_tokens:200,temperature:0.72,stream:false})});
       if(!r.ok)throw new Error('API '+r.status);
       const d=await r.json();
       const choice0 = d && d.choices && d.choices[0];
@@ -1591,7 +1598,10 @@ async function saveToSheet(d){
 }
 
 function showCfErr(msg){const e=document.getElementById('cf-error');e.textContent=msg;e.style.display='block';}
-function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>');}
+function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/
+
+/g,'<br><br>').replace(/
+/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>');}
 function resetContactForm(){turnstileToken='';if(window.turnstile)window.turnstile.reset();document.getElementById('cf-reply-card').style.display='none';document.getElementById('cf-form-body').style.opacity='1';document.getElementById('cf-form-body').style.pointerEvents='auto';['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');document.getElementById('cf-error').style.display='none';document.getElementById('cf-saved-badge').classList.remove('show');}
 
 
