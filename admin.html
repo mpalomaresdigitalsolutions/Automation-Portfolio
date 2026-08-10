@@ -1553,6 +1553,15 @@
     // Change to true only after portal-ai and its AI secret are deployed.
     var PORTAL_AI_ENABLED = false;
 
+    async function getAdminAuthHeaders() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        window.location.href = 'login.html';
+        throw new Error('Admin session expired. Please sign in again.');
+      }
+      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` };
+    }
+
     /* ── Auth check ── */
     (async function init() {
       const { data: { session }, error } = await supabase.auth.getSession();
@@ -3270,7 +3279,7 @@
       try {
         var res = await fetch('https://portfolio-chat-proxy.mpalomaresdigital.workers.dev/generate-invoice-items', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await getAdminAuthHeaders(),
           body: JSON.stringify({
             projectName: proj.name,
             serviceType: proj.type || 'Digital Marketing',
@@ -3803,7 +3812,7 @@ Marlon Palomares`
       try {
         const res = await fetch('https://portfolio-chat-proxy.mpalomaresdigital.workers.dev/generate-contract', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await getAdminAuthHeaders(),
           body: JSON.stringify({
             clientName: clientName,
             projectName: proj.name,

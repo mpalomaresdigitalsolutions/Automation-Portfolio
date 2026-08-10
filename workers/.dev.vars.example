@@ -2,5 +2,8 @@
 # Copy this to .dev.vars and fill in your actual values
 DS_KEY=your_deepseek_api_key_here
 ALLOWED_ORIGIN=https://mpalomaresdigitalsolutions.site
-RATE_LIMIT=20
+RATE_LIMIT=12
+ADMIN_TOKEN=replace_with_a_long_random_admin_token
 TURNSTILE_SECRET=your_turnstile_secret_here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_supabase_anon_key_here

@@ -4,13 +4,10 @@ compatibility_date = "2025-04-01"
 account_id = "7727bfc4627263a4d0776348c0ba3f96"
 
 [vars]
-ALLOWED_ORIGIN = "https://mpalomaresdigitalsolutions.site"
-RATE_LIMIT = "20"
+ALLOWED_ORIGIN = "https://mpalomaresdigitalsolutions.site,https://www.mpalomaresdigitalsolutions.site"
+RATE_LIMIT = "12"
 
-# ====================================================
-# Required environment variables — set via Cloudflare Dashboard
-# ====================================================
-# DS_KEY           — DeepSeek API key (required)
-# ALLOWED_ORIGIN   — Your portfolio domain, e.g. https://mpalomaresdigitalsolutions.site
-# RATE_LIMIT       — Max requests per IP per minute (default: 20)
-# TURNSTILE_SECRET — Cloudflare Turnstile secret key (optional, for CAPTCHA)
+# Set secrets with: wrangler secret put DS_KEY / ADMIN_TOKEN / TURNSTILE_SECRET
+# ADMIN_TOKEN protects the contract and invoice generator routes.
+SUPABASE_URL = "https://dkkriesneublbmrihgvp.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY"
