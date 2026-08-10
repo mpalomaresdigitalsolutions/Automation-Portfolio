@@ -130,3 +130,4 @@ coverage.xml
 .env
 .env.*
 !.env.example
+credentials.env.txt
