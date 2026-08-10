@@ -4,7 +4,7 @@ compatibility_date = "2025-04-01"
 account_id = "7727bfc4627263a4d0776348c0ba3f96"
 
 [vars]
-ALLOWED_ORIGIN = "https://mpalomaresdigitalsolutions.site,https://www.mpalomaresdigitalsolutions.site"
+ALLOWED_ORIGIN = "https://mpalomaresdigitalsolutions.site,https://www.mpalomaresdigitalsolutions.site,https://mpalomaresdigitalsolutions.online,https://www.mpalomaresdigitalsolutions.online"
 RATE_LIMIT = "12"
 
 # Set secrets with: wrangler secret put DS_KEY / ADMIN_TOKEN / TURNSTILE_SECRET

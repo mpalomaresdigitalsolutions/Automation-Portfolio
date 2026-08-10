@@ -8,7 +8,7 @@ function json(data, status, corsHeaders) {
 }
 function resolveAllowedOrigin(request, env) {
   const origin = request.headers.get('Origin');
-  const allowed = String(env.ALLOWED_ORIGIN || '').split(',').map(v => v.trim()).filter(Boolean);
+  const allowed = [...new Set([...String(env.ALLOWED_ORIGIN || '').split(',').map(v => v.trim()).filter(Boolean), 'https://mpalomaresdigitalsolutions.online'])];
   if (!origin) return allowed[0] || null;
   return allowed.includes(origin) ? origin : null;
 }
