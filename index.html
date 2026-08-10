@@ -1598,11 +1598,7 @@ async function saveToSheet(d){
 }
 
 function showCfErr(msg){const e=document.getElementById('cf-error');e.textContent=msg;e.style.display='block';}
-function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/
-
-/g,'<br><br>').replace(/
-/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>');}
-function resetContactForm(){turnstileToken='';if(window.turnstile)window.turnstile.reset();document.getElementById('cf-reply-card').style.display='none';document.getElementById('cf-form-body').style.opacity='1';document.getElementById('cf-form-body').style.pointerEvents='auto';['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');document.getElementById('cf-error').style.display='none';document.getElementById('cf-saved-badge').classList.remove('show');}
+function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;font-weight:600;">$1</a>');}function resetContactForm(){turnstileToken='';if(window.turnstile)window.turnstile.reset();document.getElementById('cf-reply-card').style.display='none';document.getElementById('cf-form-body').style.opacity='1';document.getElementById('cf-form-body').style.pointerEvents='auto';['cf-fname','cf-lname','cf-email','cf-message'].forEach(id=>document.getElementById(id).value='');document.getElementById('cf-error').style.display='none';document.getElementById('cf-saved-badge').classList.remove('show');}
 
 
 /* ══════════════════════════════════════════
