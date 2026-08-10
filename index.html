@@ -993,7 +993,7 @@
     <div class="chat-avatar"><img class="assistant-icon" src="images/chatbot-icon-400.gif" alt="Marlon AI Assistant" width="38" height="38"></div>
     <div class="chat-header-info">
       <div class="chat-header-name">Marlon's AI Assistant</div>
-      <div class="chat-header-status"><div class="chat-status-dot"></div> Online · Powered by DeepSeek</div>
+      <div class="chat-header-status"><div class="chat-status-dot"></div> <span id="chat-status-text">Online · Powered by DeepSeek</span></div>
     </div>
     <button class="chat-close-btn" aria-expanded="false" aria-controls="chat-window">✕</button>
   </div>
@@ -1606,6 +1606,7 @@ function fmtReply(t){return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/
 ══════════════════════════════════════════ */
 let chatHistory=[],chatOpen=false;
 function toggleChat(){chatOpen=!chatOpen;const win=document.getElementById('chat-window'),fab=document.getElementById('chat-fab');win.classList.toggle('open',chatOpen);fab.setAttribute('aria-expanded',String(chatOpen));if(chatOpen)setTimeout(()=>document.getElementById('chat-input').focus(),320);}
+function setChatStatus(text,online){const label=document.getElementById('chat-status-text'),dot=document.querySelector('.chat-status-dot');if(label)label.textContent=text;if(dot)dot.style.background=online?'var(--green)':'#ffb454';}
 function sendSuggestion(btn){document.getElementById('chat-input').value=btn.textContent;document.getElementById('chat-suggestions').style.display='none';sendChat();}
 function setSafeMessage(target,text){
   if(!target)return;
@@ -1629,11 +1630,11 @@ function extractChatErrorMessage(data,status){if(data&&data.error)return data.er
 async function sendChat(){
   const input=document.getElementById('chat-input'),send=document.getElementById('chat-send'),text=input.value.trim();if(!text)return;input.value='';input.style.height='auto';document.getElementById('chat-suggestions').style.display='none';appendMsg('user',text);chatHistory.push({role:'user',content:text});send.disabled=true;showTyping();
   try{
-    const known=buildKnownChatReply(text);if(known){hideTyping();chatHistory.push({role:'assistant',content:known});appendMsg('bot',known);return;}
-    if(isLocalPreview()||!PROXY_URL){hideTyping();appendMsg('bot',buildOfflineChatReply(text));return;}
-    const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHistory.slice(-10)})});let data=null;try{data=await res.json();}catch(e){data=null;}if(!res.ok)throw new Error(extractChatErrorMessage(data,res.status)||('API '+res.status));
-    const reply=(data&&data.reply)||'Sorry, I had trouble responding. Please try again!';hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply);
-  }catch(err){hideTyping();const prefix=isLocalPreview()?'Local preview note: the live AI proxy is not reachable here. ':'',reason=err&&err.message&&!/^\s*API\s+\d+/i.test(err.message)?`(${err.message}) `:'';appendMsg('bot',`${prefix}${reason}${buildOfflineChatReply(text)}`);if(typeof console!=='undefined'&&console&&typeof console.warn==='function')console.warn('Chat error:',err);
+    const known=buildKnownChatReply(text);if(known){setChatStatus('Offline · Quick reply',false);hideTyping();chatHistory.push({role:'assistant',content:known});appendMsg('bot',known);return;}
+    if(isLocalPreview()||!PROXY_URL){setChatStatus('Offline · Local preview',false);hideTyping();appendMsg('bot',buildOfflineChatReply(text));return;}
+    setChatStatus('Connecting…',false);const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHistory.slice(-10)})});let data=null;try{data=await res.json();}catch(e){data=null;}if(!res.ok)throw new Error(extractChatErrorMessage(data,res.status)||('API '+res.status));
+    const reply=(data&&data.reply)||'Sorry, I had trouble responding. Please try again!';setChatStatus('Online · Powered by DeepSeek',true);hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply);
+  }catch(err){setChatStatus('Offline · Try again later',false);hideTyping();const prefix=isLocalPreview()?'Local preview note: the live AI proxy is not reachable here. ':'',reason=err&&err.message&&!/^\s*API\s+\d+/i.test(err.message)?`(${err.message}) `:'';appendMsg('bot',`${prefix}${reason}${buildOfflineChatReply(text)}`);if(typeof console!=='undefined'&&console&&typeof console.warn==='function')console.warn('Chat error:',err);
   }finally{send.disabled=false;input.focus();}
 }
 document.getElementById('chat-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
