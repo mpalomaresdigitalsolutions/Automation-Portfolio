@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /portal.html
+Disallow: /client-view.html
+Disallow: /login.html
+Disallow: /supabase/
+Disallow: /migrations/
+Disallow: /scripts/
 
 Sitemap: https://mpalomaresdigitalsolutions.online/sitemap.xml

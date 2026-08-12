@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com 'unsafe-inline';
+  style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data:;
+">
+<title>Junk Removal Lead Machine — Case Study | Marlon Palomares</title>
+<meta name="description" content="Junk Removal Lead Machine Google Ads case study by Marlon Palomares — high-intent search campaigns driving consistent inbound calls and form fills at a profitable CPA.">
+<link rel="canonical" href="https://mpalomaresdigitalsolutions.online/case_study.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mpalomaresdigitalsolutions.online/case_study.html">
+<meta property="og:title" content="Junk Removal Lead Machine | Marlon Palomares">
+<meta property="og:description" content="Google Ads for a US junk removal company — high-intent leads at sustainable CPA with a $10K/mo budget.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060810;
+    --bg2:     #0b0e1a;
+    --bg3:     #0f1322;
+    --accent:  #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --green:   #00ff88;
+    --text:    #e8eeff;
+    --muted:   #6b7299;
+    --card:    rgba(255,255,255,0.03);
+    --border:  rgba(255,255,255,0.07);
+    --r:       12px;
+    --glow:    0 0 40px rgba(0,212,255,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px var(--accent); }
+  .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(0,212,255,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: transform 0.3s cubic-bezier(.23,1,.32,1), width 0.2s, height 0.2s, border-color 0.2s; }
+
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
+
+  .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
+  .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -8s; }
+  .orb-3 { width: 350px; height: 350px; background: var(--accent3); top: 50%; left: 55%; animation-delay: -14s; }
+  @keyframes orb-drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-50px) scale(1.1); } 100% { transform: translate(-40px,30px) scale(0.9); } }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5vw; backdrop-filter: blur(20px); background: rgba(6,8,16,0.7); border-bottom: 1px solid var(--border); animation: slide-down 0.6s ease both; }
+  @keyframes slide-down { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+  .logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); letter-spacing: 0.05em; }
+  .logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 1.6rem; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: 0.85rem; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; transition: color 0.2s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.3s ease; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-dropdown { position: relative; }
+  .nav-dropdown > a { display: flex; align-items: center; gap: 0.3rem; }
+  .nav-dropdown > a::after { display: none; }
+  .nav-dropdown-arrow { font-size: 0.6rem; transition: transform 0.2s; }
+  .nav-dropdown:hover .nav-dropdown-arrow { transform: rotate(180deg); }
+  .nav-dropdown-menu { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); background: rgba(11,14,26,0.97); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; min-width: 210px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; transform: translateX(-50%) translateY(-6px); z-index: 200; }
+  .nav-dropdown:hover .nav-dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+  .nav-dropdown-menu a { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; border-radius: 5px; font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+  .nav-dropdown-menu a:hover { background: rgba(0,212,255,0.08); color: var(--text); }
+  .nav-dropdown-menu a::after { display: none !important; }
+  .nav-dropdown-menu .dm-icon { width: 22px; text-align: center; font-size: 0.85rem; flex-shrink: 0; }
+  .nav-dropdown-menu hr { border: none; border-top: 1px solid var(--border); margin: 0.3rem 0; }
+
+  .nav-cta { font-family: 'Space Mono', monospace; font-size: 0.78rem; padding: 0.55rem 1.3rem; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); text-decoration: none; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; letter-spacing: 0.06em; }
+  .nav-cta:hover { background: rgba(0,212,255,0.1); box-shadow: 0 0 20px rgba(0,212,255,0.25); transform: translateY(-1px); }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  .page-hero { padding: 9rem 5vw 4rem; border-bottom: 1px solid var(--border); animation: fade-up 0.7s ease both; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; border: 1px solid rgba(0,212,255,0.3); background: rgba(0,212,255,0.06); border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem; width: fit-content; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,212,255,0); } }
+  .page-title { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 1rem; }
+  .page-title .grad { background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 55%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .page-sub { font-size: 1rem; color: var(--muted); max-width: 620px; line-height: 1.85; margin-bottom: 2rem; }
+  .page-sub strong { color: var(--text); }
+  .breadcrumb { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb span { opacity: 0.4; }
+
+  section { padding: 5rem 5vw; }
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 0.6rem; }
+  .section-sub { color: var(--muted); max-width: 560px; line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.92rem; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 3.5rem; }
+  .stat-box { background: var(--bg); padding: 2rem 1.5rem; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease, background 0.25s; }
+  .stat-box.in-view { opacity: 1; transform: none; }
+  .stat-box:hover { background: var(--bg2); }
+  .stat-num { font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 0.4rem; }
+  .stat-num.up   { color: var(--green); }
+  .stat-num.down { color: var(--accent3); }
+  .stat-num.blue { color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); }
+
+  .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .case-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--card); opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
+  .case-card.in-view { opacity: 1; transform: none; }
+  .case-card:hover { border-color: rgba(0,212,255,0.35); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow); transform: translateY(-4px) !important; }
+  .card-img-wrap { overflow: hidden; position: relative; aspect-ratio: 16/9; background: var(--bg2); }
+  .card-img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform 0.4s ease; }
+  .case-card:hover .card-img { transform: scale(1.03); }
+  .card-body { padding: 1.3rem 1.4rem; }
+  .card-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; padding: 0.2rem 0.65rem; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-block; margin-bottom: 0.75rem; }
+  .ct-blue   { background: rgba(0,212,255,0.1);  color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
+  .ct-purple { background: rgba(123,47,255,0.1); color: #a78bfa;        border: 1px solid rgba(123,47,255,0.2); }
+  .ct-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
+  .ct-green  { background: rgba(0,255,136,0.1);  color: var(--green);   border: 1px solid rgba(0,255,136,0.2); }
+  .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .card-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+  .card-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; font-size: 0.8rem; font-weight: 600; color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  .card-link:hover { color: var(--text); }
+
+  .insight-box { border: 1px solid rgba(0,212,255,0.18); border-radius: var(--r); padding: 2rem 2.2rem; background: rgba(0,212,255,0.04); margin-bottom: 2rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .insight-box.in-view { opacity: 1; transform: none; }
+  .insight-box h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.7rem; color: var(--accent); }
+  .insight-box p { font-size: 0.88rem; color: var(--muted); line-height: 1.8; }
+  .insight-box p strong { color: var(--text); }
+
+  .cta-band { margin: 0 5vw 4rem; border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 3rem 2.5rem; background: rgba(0,212,255,0.04); display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .cta-band h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+  .cta-band p  { font-size: 0.9rem; color: var(--muted); max-width: 420px; line-height: 1.7; }
+  .cta-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; background: var(--accent); color: var(--bg); font-weight: 700; font-size: 0.9rem; text-decoration: none; border-radius: 4px; transition: transform 0.2s, box-shadow 0.25s; box-shadow: 0 0 30px rgba(0,212,255,0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.5); }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: 1px solid var(--border); color: var(--text); font-weight: 500; font-size: 0.9rem; text-decoration: none; border-radius: 4px; background: var(--card); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+  .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
+
+  footer { padding: 2rem 5vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .page-hero { padding-top: 7rem; }
+    section { padding: 3.5rem 5vw; }
+    .cta-band { padding: 2rem 1.5rem; }
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Article",
+  "headline":"Junk Removal Google Ads Case Study",
+  "description":"How a junk removal lead-generation campaign used high-intent Google Ads, conversion tracking, and follow-up automation.",
+  "url":"https://mpalomaresdigitalsolutions.online/case_study.html",
+  "author":{"@type":"Person","name":"Marlon Palomares","url":"https://mpalomaresdigitalsolutions.online/"},
+  "publisher":{"@type":"Person","name":"Marlon Palomares"},
+  "datePublished":"2025-01-01",
+  "dateModified":"2026-08-13",
+  "inLanguage":"en-PH"
+}
+</script></head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav>
+  <div class="logo">MP<span>.dev</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#experience">Experience</a></li>
+    <li><a href="index.html#certifications">Certs</a></li>
+    <li class="nav-dropdown">
+      <a href="#top">More Work <span class="nav-dropdown-arrow">▾</span></a>
+      <div class="nav-dropdown-menu">
+        <a href="meta.html" target="_blank"><span class="dm-icon">📘</span> Meta Ads Work</a>
+        <a href="ghl-work-samples.html" target="_blank"><span class="dm-icon">🤖</span> GHL Work Samples</a>
+        <a href="zapier-automation-workflow.html" target="_blank"><span class="dm-icon">⚡</span> Zapier Automation</a>
+        <hr>
+        <a href="resilience-therapy-case-study.html" target="_blank"><span class="dm-icon">🧠</span> Resilience Therapy</a>
+        <a href="certifications.html" target="_blank"><span class="dm-icon">🏆</span> All Certifications</a>
+      </div>
+    </li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="login.html" target="_blank">Client Portal</a></li>
+  </ul>
+  <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="nav-cta">[ Book a Call ↗ ]</a>
+</nav>
+
+<div class="wrapper">
+
+  <div class="page-hero" id="top">
+    <div class="hero-badge"><span class="badge-dot"></span> Case Study · Google Ads · Lead Gen</div>
+    <h1 class="page-title">Junk Removal<br><span class="grad">Lead Machine.</span></h1>
+    <p class="page-sub">A US junk removal company needed <strong>consistent inbound calls and form fills</strong> — not impressions. I built and managed Google Search campaigns around high-intent keywords that delivered qualified leads at a <strong>profitable cost per acquisition</strong>, sustained on a $10K/month budget.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> <span>Junk Removal Lead Machine</span></div>
+  </div>
+
+  <section>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num blue">$10K/mo</div><div class="stat-label">Ad budget managed</div></div>
+      <div class="stat-box"><div class="stat-num up">High-Intent</div><div class="stat-label">Keyword targeting</div></div>
+      <div class="stat-box"><div class="stat-num blue">Calls + Forms</div><div class="stat-label">Lead sources driven</div></div>
+      <div class="stat-box"><div class="stat-num up">Profitable CPA</div><div class="stat-label">Sustainable acquisition cost</div></div>
+    </div>
+
+    <div class="section-tag">01 · The Challenge</div>
+    <h2 class="section-title">High volume, zero structure</h2>
+    <p class="section-sub">Junk removal is a fast-moving, local service business. Customers need same-week pickups, compare quickly, and pick the first company that answers.</p>
+
+    <div class="insight-box">
+      <h3>Competitive local market</h3>
+      <p>Major national brands and local operators were bidding on the same service terms. Without <strong>precision targeting and tight ad groups</strong>, budget disappeared into low-intent searches.</p>
+    </div>
+    <div class="insight-box">
+      <h3>Speed wins the job</h3>
+      <p>Whoever calls back first gets the haul. The account needed to generate <strong>real phone calls and form fills</strong> — not clicks from people comparing prices for weeks.</p>
+    </div>
+    <div class="insight-box">
+      <h3>Tracking had to be bulletproof</h3>
+      <p>No conversion tracking, no optimization. <strong>Call tracking and form submission tracking</strong> were set up before a single dollar was optimized.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">02 · The Strategy</div>
+    <h2 class="section-title">Built to capture high-intent demand</h2>
+    <p class="section-sub">A lead machine is only as good as its targeting. Every campaign was engineered around who is ready to book — right now.</p>
+
+    <div class="insight-box">
+      <h3>High-intent keyword architecture</h3>
+      <p>Focused on <strong>transactional and service-specific searches</strong> — "junk removal near me", "same day junk pickup", "get rid of junk" — grouped into tightly themed ad groups that match the customer's exact intent.</p>
+    </div>
+    <div class="insight-box">
+      <h3>Local &amp; service-based targeting</h3>
+      <p>Geo-targeted to the service area, with <strong>negative keywords filtering out DIY searches</strong> and people outside the operating zone. Every impression was spent on someone who could actually book.</p>
+    </div>
+    <div class="insight-box">
+      <h3>Conversion-first measurement</h3>
+      <p><strong>Call tracking, form fills, and GHL automation</strong> captured every lead source. Once we knew what converted, budget followed the winners and losers got paused.</p>
+    </div>
+    <div class="insight-box">
+      <h3>Scale what the data says</h3>
+      <p>Weekly optimization cycles: <strong>scale profitable keywords, add negatives, refine bids</strong> — keeping cost per acquisition profitable as volume grew toward the full $10K/mo budget.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">03 · The Result</div>
+    <h2 class="section-title">Consistent, profitable leads</h2>
+    <p class="section-sub">The account settled into a repeatable flow — high-intent searches turning into inbound calls and form fills at a CPA the client could scale on.</p>
+
+    <div class="insight-box">
+      <h3>A machine that repeats</h3>
+      <p>With conversion data driving every decision, the campaign delivered <strong>steady inbound lead flow month over month</strong> at a sustainable cost per acquisition — built to scale with additional budget.</p>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <div>
+      <h3>Want a lead machine like this?</h3>
+      <p>Let's audit your campaigns and find where your wasted spend is hiding.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary">📅 Book a Free Call</a>
+      <a href="index.html" class="btn-ghost">← Back to Home</a>
+    </div>
+  </div>
+
+  <footer><div class="last-updated">Last updated: August 13, 2026</div>
+    <div>© 2026 Marlon Palomares Digital Solutions · Manila, Philippines</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="ghl-work-samples.html">GHL Samples</a>
+      <a href="resilience-therapy-case-study.html">Resilience Case Study</a>
+      <a href="Google Ads Non Profit Case Study.html">Nonprofit Case Study</a>
+      <a href="https://linktr.ee/MPDIGITALSOLUTIONS" target="_blank">Linktree</a>
+      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank">Book a Call</a>
+      <a href="login.html" target="_blank">Client Portal</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  /* CURSOR */
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+    ring.style.transform   = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+  });
+  document.querySelectorAll('a, button, .case-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '50px'; ring.style.height = '50px';
+      ring.style.borderColor = 'rgba(0,255,136,0.6)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '32px'; ring.style.height = '32px';
+      ring.style.borderColor = 'rgba(0,212,255,0.5)';
+    });
+  });
+
+  /* ══════════════════════════════════════════
+     CIRCUIT BOARD BACKGROUND CANVAS
+     (same as index.html)
+  ══════════════════════════════════════════ */
+  (function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, nodes = [], edges = [], pulses = [];
+    const mouse = { x: -1000, y: -1000 };
+
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      buildCircuit();
+    }
+
+    function buildCircuit() {
+      nodes = [];
+      edges = [];
+      pulses= [];
+      const COLS  = Math.ceil(W / 90) + 1;
+      const ROWS  = Math.ceil(H / 90) + 1;
+      const jitter = 22;
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          nodes.push({
+            x: c * 90 + (Math.random() - 0.5) * jitter,
+            y: r * 90 + (Math.random() - 0.5) * jitter,
+            r: Math.random() * 2 + 1,
+            alpha: Math.random() * 0.5 + 0.2,
+            pulsePhase: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.02 + Math.random() * 0.02
+          });
+        }
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        const candidates = [];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[j].x - nodes[i].x;
+          const dy = nodes[j].y - nodes[i].y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
+          if (d < 140 && Math.random() < 0.25) {
+            candidates.push({ j, d });
+          }
+        }
+        candidates.sort((a, b) => a.d - b.d);
+        candidates.slice(0, 2).forEach(({ j }) => {
+          edges.push({ a: i, b: j, alpha: Math.random() * 0.08 + 0.03 });
+        });
+      }
+
+      for (let i = 0; i < 18; i++) spawnPulse();
+    }
+
+    function spawnPulse() {
+      if (!edges.length) return;
+      const edge = edges[Math.floor(Math.random() * edges.length)];
+      pulses.push({
+        edge,
+        t:     Math.random(),
+        speed: 0.002 + Math.random() * 0.004,
+        size:  Math.random() * 2.5 + 1,
+        color: Math.random() < 0.7
+          ? `rgba(0,212,255,`
+          : Math.random() < 0.5
+            ? `rgba(123,47,255,`
+            : `rgba(0,255,136,`
+      });
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+
+      edges.forEach(e => {
+        const a = nodes[e.a], b = nodes[e.b];
+        ctx.beginPath();
+        const mx = b.x;
+        const my = a.y;
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(mx, my);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(0,212,255,${e.alpha})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      });
+
+      nodes.forEach(n => {
+        const pulse = 0.5 + 0.5 * Math.sin(t * n.pulseSpeed + n.pulsePhase);
+        const alpha = n.alpha * (0.6 + 0.4 * pulse);
+        const dx = n.x - mouse.x, dy = n.y - mouse.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const boost = dist < 120 ? (1 - dist / 120) * 0.8 : 0;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,212,255,${Math.min(1, alpha + boost)})`;
+        ctx.fill();
+        if (boost > 0.1) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0,212,255,${boost * 0.3})`;
+          ctx.fill();
+        }
+      });
+
+      pulses.forEach((p, i) => {
+        p.t += p.speed;
+        if (p.t >= 1) {
+          p.t = 0;
+          p.edge = edges[Math.floor(Math.random() * edges.length)];
+        }
+        const a = nodes[p.edge.a], b = nodes[p.edge.b];
+        let px, py;
+        if (p.t < 0.5) {
+          const tt = p.t * 2;
+          px = a.x + (b.x - a.x) * tt;
+          py = a.y;
+        } else {
+          const tt = (p.t - 0.5) * 2;
+          px = b.x;
+          py = a.y + (b.y - a.y) * tt;
+        }
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, p.size * 5);
+        grad.addColorStop(0, p.color + '0.9)');
+        grad.addColorStop(0.4, p.color + '0.3)');
+        grad.addColorStop(1, p.color + '0)');
+        ctx.beginPath();
+        ctx.arc(px, py, p.size * 5, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + '1)';
+        ctx.fill();
+      });
+
+      while (pulses.length < 20) spawnPulse();
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(draw);
+  })();
+
+  /* REVEAL ON SCROLL */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('in-view'), 80 * i);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.stat-box, .case-card, .insight-box').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
