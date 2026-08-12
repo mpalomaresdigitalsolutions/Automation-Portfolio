@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marlon Palomares - Zapier Automation Workflow</title>
-  <meta name="description" content="Zapier automation workflow examples by Marlon Palomares — lead capture to SMS/email follow-ups and booking confirmations. See automated pipeline architecture.">
+  <meta name="description" content="Zapier automation workflow examples by Marlon Palomares  lead capture to SMS/email follow-ups and booking confirmations. See automated pipeline architecture.">
   <link rel="canonical" href="https://mpalomaresdigitalsolutions.online/zapier-automation-workflow.html">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mpalomaresdigitalsolutions.online/zapier-automation-workflow.html">
   <meta property="og:title" content="Zapier Automation Workflows | Marlon Palomares">
-  <meta property="og:description" content="Zapier automation flows — lead capture, SMS/email automations, booking confirmations for service businesses.">
+  <meta property="og:description" content="Zapier automation flows  lead capture, SMS/email automations, booking confirmations for service businesses.">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -33,7 +33,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Outfit', sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 15px;
@@ -42,11 +42,11 @@
       cursor: none;
     }
 
-    /* ─── CURSOR ─── */
+    /*  CURSOR  */
     .cursor { width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .1s;box-shadow:0 0 12px var(--accent); }
-    .cursor-ring { width:32px;height:32px;border:1px solid rgba(88,166,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .3s cubic-bezier(.23,1,.32,1),width .2s,height .2s,border-color .2s; }
+    .cursor-ring { width:32px;height:32px;border:1px solid rgba(88,166,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .3s cubic-bezier(.23,1,.32,1),border-color .2s; }
 
-    /* ─── CANVAS + ORBS ─── */
+    /*  CANVAS + ORBS  */
     #bg-canvas { position:fixed;inset:0;z-index:0;pointer-events:none; }
     .grid-overlay { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(88,166,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.02) 1px,transparent 1px);background-size:60px 60px; }
     .orb { position:fixed;border-radius:50%;filter:blur(120px);opacity:.08;pointer-events:none;z-index:0;animation:orb-drift 20s ease-in-out infinite alternate; }
@@ -55,11 +55,11 @@
     .orb-3 { width:280px;height:280px;background:#3fb950;top:50%;left:55%;animation-delay:-14s; }
     @keyframes orb-drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(25px,-40px) scale(1.08)} 100%{transform:translate(-30px,25px) scale(.92)} }
 
-    /* ─── REVEAL ─── */
+    /*  REVEAL  */
     .reveal { opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease; }
     .reveal.in-view { opacity:1;transform:none; }
 
-    /* ─── NAV ─── */
+    /*  NAV  */
     .nav {
       background: var(--bg-nav);
       border-bottom: 1px solid var(--border);
@@ -111,14 +111,14 @@
       background: rgba(88,166,255,.07);
     }
 
-    /* ─── PAGE ─── */
+    /*  PAGE  */
     .page {
       max-width: 1100px;
       margin: 0 auto;
       padding: 48px 32px 80px;
     }
 
-    /* ─── HERO ─── */
+    /*  HERO  */
     .hero {
       text-align: center;
       padding-bottom: 40px;
@@ -181,7 +181,7 @@
     .hero-link:hover { opacity: .75; }
     .hero-link-sep { color: var(--border); font-size: 13px; }
 
-    /* ─── SECTION ─── */
+    /*  SECTION  */
     .section { margin-bottom: 56px; }
 
     .section-title {
@@ -215,7 +215,7 @@
       max-width: 800px;
     }
 
-    /* ─── SINGLE IMAGE CARD ─── */
+    /*  SINGLE IMAGE CARD  */
     .img-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -251,7 +251,7 @@
     }
     .img-card:hover .view-hint { opacity: 1; }
 
-    /* ─── GRID 2-COL ─── */
+    /*  GRID 2-COL  */
     .grid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -259,7 +259,7 @@
     }
     @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
 
-    /* ─── BENEFITS LIST ─── */
+    /*  BENEFITS LIST  */
     .benefits {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -302,7 +302,7 @@
       margin-top: 1px;
     }
 
-    /* ─── PIPELINE STEPS ─── */
+    /*  PIPELINE STEPS  */
     .pipeline {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -374,7 +374,7 @@
       margin-top: 2px;
     }
 
-    /* ─── LIGHTBOX ─── */
+    /*  LIGHTBOX  */
     #lb {
       display: none;
       position: fixed; inset: 0;
@@ -450,9 +450,31 @@
       .lb-next { right: 4px; }
       .nav-links .nav-back:not(:last-child) { display: none; }
     }
-  </style>
+
+    /* Homepage-matched portfolio experience */
+    :root{--bg:#060810;--bg-card:rgba(11,14,26,.82);--bg-nav:rgba(6,8,16,.78);--border:rgba(255,255,255,.08);--border-h:rgba(0,212,255,.55);--text:#e8eeff;--muted:#929abd;--accent:#00d4ff;--green:#00ff88;--orange:#ff6b35;--heading:#fff;--tag-bg:rgba(255,255,255,.04)}
+    body{font-family:'Outfit',sans-serif;font-size:15px;line-height:1.6;background:var(--bg);color:var(--text)}
+    a:focus-visible,button:focus-visible,.img-card:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+    .cursor-ring{transition:transform .3s cubic-bezier(.23,1,.32,1),border-color .2s}
+    .nav{height:72px;padding:0 5vw;background:var(--bg-nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}.nav-brand{font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:.04em}.nav-dot{background:var(--green);box-shadow:0 0 14px rgba(0,255,136,.7);animation:pulse-dot 2s ease-in-out infinite}@keyframes pulse-dot{50%{opacity:.45;transform:scale(.75)}}.nav-back{min-height:44px;color:var(--muted);border-color:var(--border);border-radius:4px;font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.04em}.nav-back:hover{color:var(--text);border-color:rgba(0,212,255,.45);background:rgba(0,212,255,.07)}
+    .page{max-width:none;padding:0 5vw 7rem}.hero{min-height:86vh;padding:9rem 0 5rem;border-bottom:1px solid var(--border);margin-bottom:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.9fr);gap:clamp(3rem,8vw,9rem);align-items:center;text-align:left}.hero-copy{max-width:720px}.hero-badge{color:var(--green);background:rgba(0,255,136,.06);border-color:rgba(0,255,136,.28);border-radius:2px;font-family:'Space Mono',monospace}.hero h1{font-size:clamp(3rem,6.5vw,6.2rem);line-height:.94;letter-spacing:-.035em;margin-bottom:1rem}.hero h1 .hero-accent{display:block;color:var(--accent)}.hero-sub{font-size:clamp(1.15rem,2vw,1.5rem);color:var(--text);font-weight:500;line-height:1.25;margin-bottom:1rem}.hero p{font-size:1rem;color:#aab2d0;max-width:650px;margin:0 0 2rem;line-height:1.8}.hero-links{justify-content:flex-start;gap:.8rem}.hero-link{min-height:44px;padding:.7rem 1rem;border:1px solid var(--border);border-radius:4px;color:var(--accent);font-family:'Space Mono',monospace;font-size:.68rem}.hero-link:hover{background:rgba(0,212,255,.08);opacity:1}.hero-link-sep{display:none}.hero-visual{position:relative;min-height:450px;perspective:1200px}.hero-visual-frame{position:absolute;inset:4% 0 8% 4%;border-radius:16px;overflow:hidden;background:var(--bg-card);box-shadow:0 35px 90px rgba(0,0,0,.55);transform:rotateY(-7deg) rotateX(3deg);transition:transform .6s cubic-bezier(.16,1,.3,1)}.hero-visual:hover .hero-visual-frame{transform:rotateY(-1deg) rotateX(1deg) translateY(-8px)}.hero-visual-frame img{width:100%;height:100%;object-fit:cover;object-position:left top;display:block;filter:saturate(.9) contrast(1.05) brightness(.82)}.hero-visual-frame:after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 45%,rgba(0,212,255,.12));pointer-events:none}.hero-signal{position:absolute;z-index:2;padding:.8rem 1rem;border-radius:12px;background:rgba(6,8,16,.9);box-shadow:0 18px 50px rgba(0,0,0,.4);backdrop-filter:blur(14px);font-family:'Space Mono',monospace}.hero-signal strong{display:block;font-size:.7rem;color:var(--text)}.hero-signal span{display:block;margin-top:.25rem;color:var(--green);font-size:.6rem}.signal-a{top:2%;right:-2%;animation:signal-float 5s ease-in-out infinite}.signal-b{bottom:0;left:0;animation:signal-float 5s ease-in-out -2.5s infinite}@keyframes signal-float{50%{transform:translateY(-10px)}}
+    .section{margin:0;padding:clamp(5rem,9vw,8rem) 0;border-bottom:1px solid rgba(255,255,255,.05)}.section-title{font-size:clamp(2rem,4.3vw,4rem);font-weight:800;line-height:1;letter-spacing:-.03em;padding:0;margin:0 0 1rem;border:0;display:block}.section-title .s-icon{display:none}.section-desc{font-size:1rem;color:#99a2c3;max-width:68ch;margin-bottom:2.5rem}.img-card{border:0;border-radius:14px;background:var(--bg-card);box-shadow:0 18px 55px rgba(0,0,0,.28);transition:transform .3s,box-shadow .3s}.img-card:hover{border-color:transparent;transform:translateY(-5px);box-shadow:0 28px 75px rgba(0,0,0,.44),0 0 35px rgba(0,212,255,.1)}.img-card img{max-height:600px;object-fit:contain;background:#0b0e1a}.view-hint{background:rgba(6,8,16,.86);border:1px solid var(--border);font-family:'Space Mono',monospace;color:var(--text)}.benefits,.pipeline{border:0;border-radius:14px;background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(123,47,255,.06));box-shadow:0 18px 55px rgba(0,0,0,.2);padding:1.6rem 1.8rem}.benefits-title,.pipeline-title{font-family:'Space Mono',monospace;color:var(--text);letter-spacing:.04em}.step{border-color:rgba(255,255,255,.07)}.step-num{color:var(--accent);border-color:rgba(0,212,255,.35);background:rgba(0,212,255,.1)}.step-name{color:var(--heading)}.step-desc{color:var(--muted)}.badge-active,.all-ok{color:var(--green);background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.28)}.check{color:var(--green);background:rgba(0,255,136,.09);border-color:rgba(0,255,136,.28)}
+    .grid2{gap:1.6rem}.section:last-of-type{border-bottom:0}.page:after{content:'Ready to connect the moving parts?';display:block;margin:5rem 0 0;padding:clamp(2rem,5vw,4rem);border-radius:14px;background:linear-gradient(120deg,rgba(0,212,255,.1),rgba(123,47,255,.1));font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-.03em;line-height:1}
+    #lb{background:rgba(6,8,16,.96);backdrop-filter:blur(18px)}.lb-x,.lb-nav{background:rgba(11,14,26,.9);border-color:var(--border);color:var(--text);min-width:44px;min-height:44px}.lb-x:hover,.lb-nav:hover{background:rgba(0,212,255,.1);border-color:var(--accent)}
+    @media(max-width:950px){.hero{grid-template-columns:1fr;min-height:auto}.hero-visual{min-height:430px;width:min(760px,100%)}.page{padding-inline:1rem}.nav{padding-inline:1rem}}
+    @media(max-width:700px){body{cursor:auto}.cursor,.cursor-ring{display:none}.nav-links .nav-back:first-child{display:none}.hero{padding:7.5rem 0 4rem}.hero h1{font-size:clamp(2.8rem,13vw,4.5rem)}.hero-visual{min-height:280px}.hero-visual-frame{inset:3% 0 8% 3%;transform:none}.hero-signal{padding:.65rem .75rem;font-size:.6rem}.hero-links{flex-direction:column;align-items:stretch}.hero-link{justify-content:center}.section{padding-block:5rem}.grid2{grid-template-columns:1fr}.benefits,.pipeline{padding:1.25rem}.step{gap:.7rem}.badge-active{font-size:.55rem;padding:2px 5px}.page:after{margin-top:3rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+</style>
 </head>
 <body>
+<!--
+THESIS: Make automation orchestration feel tangible by showing the flow in motion and the operational proof beside it.
+OWN-WORLD: Deep navy canvas, cyan/green signals, crisp Space Mono labels, cinematic workflow screens.
+STORY: Understand the booking workflow, inspect the lead-sync and content engines, then start a conversation.
+FIRST VIEWPORT: Promise and context at left, real Zapier workflow proof at right, direct exploration links below.
+FORM: Portfolio experience in the established MP.dev system; source key: homepage-index-system.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursor-ring"></div>
@@ -483,22 +505,27 @@
 <div class="page">
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-badge">⚡ Workflow Automation</div>
-    <h1>Zapier Automation Workflow</h1>
-    <div class="hero-sub">Streamlining Interview Bookings &amp; Notifications</div>
-    <p>This automation capability reads Google Calendar for booking interviews, records them on a spreadsheet, converts the participant's timezone to Philippine time, and notifies the organizer via email that they had a booking.</p>
-    <div class="hero-links">
-      <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" class="hero-link">← Back to Case Study</a>
-      <span class="hero-link-sep">|</span>
-      <a href="index.html" class="hero-link">← Back to Portfolio</a>
+  <header class="hero">
+    <div class="hero-copy">
+      <div class="hero-badge">Workflow automation  Zapier systems</div>
+      <h1>Turn moving parts into <span class="hero-accent">momentum.</span></h1>
+      <div class="hero-sub">Interview bookings, lead routing, notifications, and content distributionconnected end to end.</div>
+      <p>These workflow builds show how I connect the tools behind a service business so information moves cleanly, teams stay informed, and no handoff depends on manual copying.</p>
+      <div class="hero-links">
+        <a href="#booking-workflow" class="hero-link">Explore the workflows </a>
+        <a href="https://calendar.app.google/M886aAfawtYHzNoz9" target="_blank" rel="noopener noreferrer" class="hero-link">Discuss an automation</a>
+      </div>
     </div>
-  </div>
-
+    <div class="hero-visual" aria-label="Zapier workflow preview">
+      <div class="hero-visual-frame"><img src="ZAP/Zap.png" alt="Zapier interview booking and notification workflow diagram"></div>
+      <div class="hero-signal signal-a"><strong>Booking captured</strong><span>Timezone normalized automatically</span></div>
+      <div class="hero-signal signal-b"><strong>Organizer notified</strong><span>Calendar  sheet  inbox</span></div>
+    </div>
+  </header>
   <!-- SECTION 1: Automation Workflow -->
-  <div class="section">
+  <div class="section" id="booking-workflow">
     <h2 class="section-title">
-      <span class="s-icon s-orange">⚙️</span>
+      <span class="s-icon s-orange"></span>
       Automation Workflow
     </h2>
     <div class="img-card" onclick="openLb(0)">
@@ -510,7 +537,7 @@
   <!-- SECTION 2: Results & Output -->
   <div class="section">
     <h2 class="section-title">
-      <span class="s-icon s-blue">📊</span>
+      <span class="s-icon s-blue"></span>
       Results &amp; Output
     </h2>
     <div class="img-card" onclick="openLb(1)">
@@ -522,7 +549,7 @@
   <!-- SECTION 3: Google Forms & Airtable Lead Sync -->
   <div class="section">
     <h2 class="section-title">
-      <span class="s-icon s-green">🔗</span>
+      <span class="s-icon s-green"></span>
       Google Forms &amp; Airtable Lead Sync
     </h2>
     <p class="section-desc">This automation saves Google Form and Airtable leads to Google Sheets and vice versa, ensuring seamless data synchronization across platforms.</p>
@@ -539,27 +566,27 @@
       </div>
       <ul>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Automatically captures leads from Google Forms and saves to Google Sheets
         </li>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Syncs Airtable records to Google Sheets for backup and analysis
         </li>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Two-way synchronization between Airtable and Google Sheets
         </li>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Real-time data updates across all connected platforms
         </li>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Eliminates manual data entry and reduces errors
         </li>
         <li>
-          <span class="check">✓</span>
+          <span class="check"></span>
           Centralized lead management for better tracking
         </li>
       </ul>
@@ -569,7 +596,7 @@
   <!-- SECTION 4: Video-to-Blog Content Transformation Engine -->
   <div class="section">
     <h2 class="section-title">
-      <span class="s-icon s-purple">🎬</span>
+      <span class="s-icon s-purple"></span>
       Video-to-Blog Content Transformation Engine
     </h2>
     <p class="section-desc">This automation workflow transforms video content into written articles through AI-powered transcription and content generation. The system converts speech to text, analyzes the content for key insights, and automatically generates two distinct blog posts optimized for different audiences. Finally, it publishes the articles across LinkedIn and Facebook simultaneously, maximizing content reach and engagement.</p>
@@ -586,7 +613,7 @@
     <!-- Pipeline Steps -->
     <div class="pipeline">
       <div class="pipeline-title">
-        🎉 Automated Content Pipeline
+         Automated Content Pipeline
         <span class="all-ok">All Systems Operational</span>
       </div>
 
@@ -596,7 +623,7 @@
           <div class="step-name">Video Input Processing</div>
           <div class="step-desc">Receives video content from content creators</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -605,7 +632,7 @@
           <div class="step-name">Speech to Text Transcription</div>
           <div class="step-desc">Converts audio content to searchable text format</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -614,7 +641,7 @@
           <div class="step-name">AI Content Analysis</div>
           <div class="step-desc">Extracts key insights and talking points</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -623,7 +650,7 @@
           <div class="step-name">Blog Post Generation (1)</div>
           <div class="step-desc">Creates professional LinkedIn-optimized article</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -632,7 +659,7 @@
           <div class="step-name">Blog Post Generation (2)</div>
           <div class="step-desc">Creates engaging Facebook-optimized content</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -641,7 +668,7 @@
           <div class="step-name">LinkedIn Publishing</div>
           <div class="step-desc">Automatically publishes to LinkedIn profile</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
       <div class="step">
@@ -650,7 +677,7 @@
           <div class="step-name">Facebook Publishing</div>
           <div class="step-desc">Automatically publishes to Facebook page</div>
         </div>
-        <span class="badge-active">✅ Active</span>
+        <span class="badge-active"> Active</span>
       </div>
 
     </div>
@@ -659,7 +686,7 @@
   <!-- SECTION 5 & 6 side-by-side -->
   <div class="section">
     <h2 class="section-title">
-      <span class="s-icon s-orange">🔔</span>
+      <span class="s-icon s-orange"></span>
       Automated Lead Capture &amp; Notification System
     </h2>
     <p class="section-desc">This workflow demonstrates the initial trigger setup where leads are captured from various sources and instantly processed. It ensures zero latency between lead submission and system acknowledgement.</p>
@@ -675,7 +702,7 @@
       <div>
         <div style="margin-bottom:14px;">
           <div class="section-title" style="font-size:15px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border);">
-            <span class="s-icon s-green">✅</span>
+            <span class="s-icon s-green"></span>
             Successful Execution &amp; Data Routing
           </div>
           <p class="section-desc" style="margin-bottom:14px;">The successful execution log showing accurate data routing. This confirms that the lead information was correctly parsed, formatted, and sent to the destination CRM and notification channels without errors.</p>
@@ -697,7 +724,7 @@
     <button class="lb-x"        onclick="closeLb()">&#x2715;</button>
     <button class="lb-nav lb-prev" onclick="go(-1)">&#8592;</button>
     <button class="lb-nav lb-next" onclick="go(1)">&#8594;</button>
-    <img id="lb-img" src="" alt="">
+    <img id="lb-img" src="ZAP/Zap.png" alt="Selected Zapier workflow image">
     <div id="lb-cap"></div>
   </div>
 </div>
@@ -749,7 +776,7 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-<!-- ═══════ PARTICLES + CURSOR ═══════ -->
+<!--  PARTICLES + CURSOR  -->
 <script>
 const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 document.addEventListener('mousemove',e=>{cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;});
@@ -770,7 +797,8 @@ class Particle{
   update(){const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){this.x+=dx/d*.7;this.y+=dy/d*.7;}this.x+=this.speedX;this.y+=this.speedY;if(this.y<-10)this.reset(false);}
   draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},80%,60%,${this.opacity})`;ctx.fill();}
 }
-for(let i=0;i<65;i++)particles.push(new Particle());
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+for(let i=0;i<(reduceMotion?0:65);i++)particles.push(new Particle());
 function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});
   for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
     const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
@@ -778,10 +806,12 @@ function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.dra
   }
   requestAnimationFrame(animate);
 }
-animate();
+if(!reduceMotion) animate();
 
 const io=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('in-view'),80*i);io.unobserve(entry.target);}});},{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+document.querySelectorAll('.img-card').forEach(card=>{card.tabIndex=0;card.setAttribute('role','button');card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const fn=card.getAttribute('onclick');if(fn) Function(fn)();}});});
 </script>
 
 </body>
