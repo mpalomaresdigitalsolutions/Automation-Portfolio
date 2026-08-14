@@ -87,7 +87,7 @@
   @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,212,255,0); } }
   .page-title { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 1rem; }
   .page-title .grad { background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 55%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .page-sub { font-size: 1rem; color: var(--muted); max-width: 620px; line-height: 1.85; margin-bottom: 2rem; }
+  .page-sub { font-size: 1rem; color: var(--muted); max-width: 640px; line-height: 1.85; margin-bottom: 2rem; }
   .page-sub strong { color: var(--text); }
   .breadcrumb { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
   .breadcrumb a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
@@ -98,7 +98,7 @@
   .section-tag { font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
   .section-tag::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
   .section-title { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 0.6rem; }
-  .section-sub { color: var(--muted); max-width: 560px; line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.92rem; }
+  .section-sub { color: var(--muted); max-width: 600px; line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.92rem; }
 
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 3.5rem; }
   .stat-box { background: var(--bg); padding: 2rem 1.5rem; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease, background 0.25s; }
@@ -110,29 +110,74 @@
   .stat-num.blue { color: var(--accent); }
   .stat-label { font-size: 0.8rem; color: var(--muted); }
 
-  .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-  .case-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--card); opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s; }
-  .case-card.in-view { opacity: 1; transform: none; }
-  .case-card:hover { border-color: rgba(0,212,255,0.35); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow); transform: translateY(-4px) !important; }
-  .card-img-wrap { overflow: hidden; position: relative; aspect-ratio: 16/9; background: var(--bg2); }
-  .card-img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform 0.4s ease; }
-  .case-card:hover .card-img { transform: scale(1.03); }
-  .card-body { padding: 1.3rem 1.4rem; }
-  .card-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; padding: 0.2rem 0.65rem; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-block; margin-bottom: 0.75rem; }
-  .ct-blue   { background: rgba(0,212,255,0.1);  color: var(--accent);  border: 1px solid rgba(0,212,255,0.2); }
-  .ct-purple { background: rgba(123,47,255,0.1); color: #a78bfa;        border: 1px solid rgba(123,47,255,0.2); }
-  .ct-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
-  .ct-green  { background: rgba(0,255,136,0.1);  color: var(--green);   border: 1px solid rgba(0,255,136,0.2); }
-  .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-  .card-desc  { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
-  .card-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; font-size: 0.8rem; font-weight: 600; color: var(--accent); text-decoration: none; transition: color 0.2s; }
-  .card-link:hover { color: var(--text); }
-
   .insight-box { border: 1px solid rgba(0,212,255,0.18); border-radius: var(--r); padding: 2rem 2.2rem; background: rgba(0,212,255,0.04); margin-bottom: 2rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
   .insight-box.in-view { opacity: 1; transform: none; }
   .insight-box h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.7rem; color: var(--accent); }
   .insight-box p { font-size: 0.88rem; color: var(--muted); line-height: 1.8; }
   .insight-box p strong { color: var(--text); }
+
+  /* ── CHALLENGE CARDS ── */
+  .challenge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+  .challenge-card { border: 1px solid var(--border); border-radius: var(--r); padding: 1.8rem; background: var(--card); position: relative; overflow: hidden; transition: border-color 0.3s, background 0.3s; opacity: 0; transform: translateY(24px); }
+  .challenge-card.in-view { opacity: 1; transform: none; }
+  .challenge-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; transition: transform 0.4s cubic-bezier(.23,1,.32,1); transform: scaleX(0); transform-origin: left; }
+  .challenge-card:nth-child(1)::before { background: var(--accent3); }
+  .challenge-card:nth-child(2)::before { background: var(--accent2); }
+  .challenge-card:nth-child(3)::before { background: var(--accent); }
+  .challenge-card:nth-child(4)::before { background: var(--green); }
+  .challenge-card:hover::before { transform: scaleX(1); }
+  .challenge-card:hover { border-color: rgba(0,212,255,0.25); background: rgba(0,212,255,0.03); }
+  .challenge-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .challenge-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .challenge-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+  .challenge-desc strong { color: var(--text); }
+
+  /* ── BEFORE / AFTER IMAGE COMPARISON ── */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+  .ba-col { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); background: var(--bg2); opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .ba-col.in-view { opacity: 1; transform: none; }
+  .ba-col.before { border-color: rgba(255,107,53,0.35); }
+  .ba-col.after  { border-color: rgba(0,255,136,0.35); }
+  .ba-img-wrap { height: clamp(320px, 60vh, 560px); display: flex; align-items: center; justify-content: center; background: var(--bg2); overflow: hidden; }
+  .ba-img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform 0.4s ease; cursor: zoom-in; }
+  .ba-col:hover .ba-img { transform: scale(1.02); }
+  .ba-ribbon { position: absolute; top: 1rem; left: 1rem; font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 3px; font-weight: 700; backdrop-filter: blur(8px); z-index: 2; }
+  .ba-col.before .ba-ribbon { color: var(--accent3); background: rgba(255,107,53,0.15); border: 1px solid rgba(255,107,53,0.4); }
+  .ba-col.after  .ba-ribbon { color: var(--green); background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.4); }
+  .ba-caption { padding: 1.1rem 1.3rem; font-size: 0.84rem; color: var(--muted); line-height: 1.65; border-top: 1px solid var(--border); }
+  .ba-caption strong { color: var(--text); }
+
+  /* ── BEFORE / AFTER METRICS ── */
+  .ba-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 2rem; }
+  .ba-metric { background: var(--bg); padding: 1.4rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .ba-metric-label { font-size: 0.82rem; color: var(--muted); }
+  .ba-metric-before { font-family: 'Space Mono', monospace; font-size: 1.05rem; font-weight: 700; color: var(--accent3); text-decoration: line-through; text-decoration-color: rgba(255,107,53,0.5); }
+  .ba-metric-after { font-family: 'Space Mono', monospace; font-size: 1.05rem; font-weight: 700; color: var(--green); }
+  .ba-arrow { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); }
+  .ba-result-bar { border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 2rem 2.5rem; background: rgba(0,212,255,0.04); text-align: center; margin-bottom: 2.5rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .ba-result-bar.in-view { opacity: 1; transform: none; }
+  .ba-result-headline { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; color: var(--green); margin-bottom: 0.5rem; line-height: 1.4; }
+  .ba-result-sub { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── FRAMEWORK ── */
+  .framework-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 2rem; }
+  .fw-card { background: var(--bg); padding: 2rem; position: relative; overflow: hidden; transition: background 0.3s; opacity: 0; transform: translateY(16px); }
+  .fw-card.in-view { opacity: 1; transform: none; }
+  .fw-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+  .fw-card:nth-child(1)::before { background: linear-gradient(135deg, rgba(255,107,53,0.07), transparent); }
+  .fw-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .fw-card:nth-child(3)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .fw-card:nth-child(4)::before { background: linear-gradient(135deg, rgba(0,255,136,0.07), transparent); }
+  .fw-card:nth-child(5)::before { background: linear-gradient(135deg, rgba(0,212,255,0.07), transparent); }
+  .fw-card:nth-child(6)::before { background: linear-gradient(135deg, rgba(255,107,53,0.07), transparent); }
+  .fw-card:nth-child(7)::before { background: linear-gradient(135deg, rgba(123,47,255,0.07), transparent); }
+  .fw-card:hover::before { opacity: 1; }
+  .fw-card:hover { background: var(--bg2); }
+  .fw-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+  .fw-icon { font-size: 2rem; margin-bottom: 0.9rem; }
+  .fw-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .fw-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+  .fw-desc strong { color: var(--text); }
 
   .cta-band { margin: 0 5vw 4rem; border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 3rem 2.5rem; background: rgba(0,212,255,0.04); display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
   .cta-band h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
@@ -144,6 +189,20 @@
   .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: 1px solid var(--border); color: var(--text); font-weight: 500; font-size: 0.9rem; text-decoration: none; border-radius: 4px; background: var(--card); transition: border-color 0.2s, background 0.2s, transform 0.2s; }
   .btn-ghost:hover { border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.06); transform: translateY(-2px); }
 
+  /* ── LIGHTBOX ── */
+  .lb-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(6,8,16,0.95); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; }
+  .lb-overlay.active { display: flex; }
+  .lb-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2rem; color: var(--muted); cursor: pointer; transition: color 0.2s, transform 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; z-index: 10; }
+  .lb-close:hover { color: var(--text); transform: rotate(90deg); }
+  .lb-img-wrap { max-width: 90vw; max-height: 80vh; display: flex; align-items: center; justify-content: center; }
+  .lb-img-wrap img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 0 60px rgba(0,212,255,0.1); }
+  .lb-caption { margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); text-align: center; max-width: 600px; line-height: 1.6; }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.5rem; color: var(--muted); cursor: pointer; transition: color 0.2s, transform 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; padding: 1rem; }
+  .lb-nav:hover { color: var(--accent); }
+  .lb-prev { left: 1rem; }
+  .lb-next { right: 1rem; }
+  .lb-counter { position: absolute; bottom: 1.5rem; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; }
+
   footer { padding: 2rem 5vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
   .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
   .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; transition: color 0.2s; }
@@ -154,6 +213,8 @@
     .page-hero { padding-top: 7rem; }
     section { padding: 3.5rem 5vw; }
     .cta-band { padding: 2rem 1.5rem; }
+    .ba-grid { grid-template-columns: 1fr; }
+    .ba-metrics { grid-template-columns: 1fr; }
   }
 </style>
 <script type="application/ld+json">
@@ -161,12 +222,12 @@
   "@context":"https://schema.org",
   "@type":"Article",
   "headline":"Junk Removal Google Ads Case Study",
-  "description":"How a junk removal lead-generation campaign used high-intent Google Ads, conversion tracking, and follow-up automation.",
+  "description":"How a junk removal lead-generation campaign used high-intent Google Ads, conversion tracking, and follow-up automation to drive consistent calls and form fills.",
   "url":"https://mpalomaresdigitalsolutions.online/case_study.html",
   "author":{"@type":"Person","name":"Marlon Palomares","url":"https://mpalomaresdigitalsolutions.online/"},
   "publisher":{"@type":"Person","name":"Marlon Palomares"},
   "datePublished":"2025-01-01",
-  "dateModified":"2026-08-13",
+  "dateModified":"2026-08-15",
   "inLanguage":"en-PH"
 }
 </script></head>
@@ -210,7 +271,7 @@
   <div class="page-hero" id="top">
     <div class="hero-badge"><span class="badge-dot"></span> Case Study · Google Ads · Lead Gen</div>
     <h1 class="page-title">Junk Removal<br><span class="grad">Lead Machine.</span></h1>
-    <p class="page-sub">A US junk removal company needed <strong>consistent inbound calls and form fills</strong> — not impressions. I built and managed Google Search campaigns around high-intent keywords that delivered qualified leads at a <strong>profitable cost per acquisition</strong>, sustained on a $10K/month budget.</p>
+    <p class="page-sub">A US junk removal company needed <strong>consistent inbound calls and form fills</strong> — not impressions. I rebuilt the campaigns around <strong>precise geographic and keyword targeting</strong>, bulletproof conversion tracking, and a continuous optimization protocol that turned wasted budget into qualified, bookable leads at a profitable CPA.</p>
     <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> <span>Junk Removal Lead Machine</span></div>
   </div>
 
@@ -226,57 +287,141 @@
     <h2 class="section-title">High volume, zero structure</h2>
     <p class="section-sub">Junk removal is a fast-moving, local service business. Customers need same-week pickups, compare quickly, and pick the first company that answers.</p>
 
-    <div class="insight-box">
-      <h3>Competitive local market</h3>
-      <p>Major national brands and local operators were bidding on the same service terms. Without <strong>precision targeting and tight ad groups</strong>, budget disappeared into low-intent searches.</p>
-    </div>
-    <div class="insight-box">
-      <h3>Speed wins the job</h3>
-      <p>Whoever calls back first gets the haul. The account needed to generate <strong>real phone calls and form fills</strong> — not clicks from people comparing prices for weeks.</p>
-    </div>
-    <div class="insight-box">
-      <h3>Tracking had to be bulletproof</h3>
-      <p>No conversion tracking, no optimization. <strong>Call tracking and form submission tracking</strong> were set up before a single dollar was optimized.</p>
-    </div>
-  </section>
-
-  <section>
-    <div class="section-tag">02 · The Strategy</div>
-    <h2 class="section-title">Built to capture high-intent demand</h2>
-    <p class="section-sub">A lead machine is only as good as its targeting. Every campaign was engineered around who is ready to book — right now.</p>
-
-    <div class="insight-box">
-      <h3>High-intent keyword architecture</h3>
-      <p>Focused on <strong>transactional and service-specific searches</strong> — "junk removal near me", "same day junk pickup", "get rid of junk" — grouped into tightly themed ad groups that match the customer's exact intent.</p>
-    </div>
-    <div class="insight-box">
-      <h3>Local &amp; service-based targeting</h3>
-      <p>Geo-targeted to the service area, with <strong>negative keywords filtering out DIY searches</strong> and people outside the operating zone. Every impression was spent on someone who could actually book.</p>
-    </div>
-    <div class="insight-box">
-      <h3>Conversion-first measurement</h3>
-      <p><strong>Call tracking, form fills, and GHL automation</strong> captured every lead source. Once we knew what converted, budget followed the winners and losers got paused.</p>
-    </div>
-    <div class="insight-box">
-      <h3>Scale what the data says</h3>
-      <p>Weekly optimization cycles: <strong>scale profitable keywords, add negatives, refine bids</strong> — keeping cost per acquisition profitable as volume grew toward the full $10K/mo budget.</p>
+    <div class="challenge-grid">
+      <div class="challenge-card">
+        <div class="challenge-icon">🌍</div>
+        <div class="challenge-name">Competitive Local Market</div>
+        <div class="challenge-desc">Major national brands and local operators bid on the same service terms. Without <strong>precision targeting and tight ad groups</strong>, budget disappeared into low-intent searches.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">⚡</div>
+        <div class="challenge-name">Speed Wins the Job</div>
+        <div class="challenge-desc">Whoever calls back first gets the haul. The account needed to generate <strong>real phone calls and form fills</strong> — not clicks from people comparing prices for weeks.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">📊</div>
+        <div class="challenge-name">Flawed Conversion Tracking</div>
+        <div class="challenge-desc">The most critical flaw: no reliable call and form tracking, so the campaign <strong>had no idea what actually booked jobs</strong> — every optimization decision was made on misleading data.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">💸</div>
+        <div class="challenge-name">Substantial Budget Waste</div>
+        <div class="challenge-desc">The combined effect: <strong>wasted ad spend with no mechanism to identify what was working</strong> — budget leaking into unqualified traffic every day.</div>
+      </div>
     </div>
   </section>
 
   <section>
-    <div class="section-tag">03 · The Result</div>
-    <h2 class="section-title">Consistent, profitable leads</h2>
-    <p class="section-sub">The account settled into a repeatable flow — high-intent searches turning into inbound calls and form fills at a CPA the client could scale on.</p>
+    <div class="section-tag">02 · The Transformation</div>
+    <h2 class="section-title">Before vs. After:<br>Dramatic shift in performance</h2>
+    <p class="section-sub">The same budget, completely different results. Here is the campaign before and after the restructure — with the metrics to prove it.</p>
+
+    <div class="ba-grid">
+      <div class="ba-col before">
+        <span class="ba-ribbon">❌ Before</span>
+        <div class="ba-img-wrap">
+          <img src="B4.jpg" alt="Google Ads campaign before optimization — broad targeting, wasted spend" class="ba-img" onclick="openLb(0)" loading="lazy">
+        </div>
+        <div class="ba-caption"><strong>Before:</strong> Broad keywords, out-of-zone impressions, and no reliable call/form tracking — budget leaking into low-intent traffic that never booked.</div>
+      </div>
+      <div class="ba-col after">
+        <span class="ba-ribbon">✅ After</span>
+        <div class="ba-img-wrap">
+          <img src="AFTER.jpg" alt="Google Ads campaign after optimization — precision targeting, qualified bookings" class="ba-img" onclick="openLb(1)" loading="lazy">
+        </div>
+        <div class="ba-caption"><strong>After:</strong> Precision targeting with high-intent keywords, service-area alignment, and call/form tracking — driving qualified, bookable leads.</div>
+      </div>
+    </div>
+
+    <div class="ba-metrics">
+      <div class="ba-metric">
+        <span class="ba-metric-label">Cost Per Acquisition</span>
+        <span><span class="ba-metric-before">$45.20</span> <span class="ba-arrow">→</span> <span class="ba-metric-after">$18.90</span></span>
+      </div>
+      <div class="ba-metric">
+        <span class="ba-metric-label">Conversion Rate</span>
+        <span><span class="ba-metric-before">2.8%</span> <span class="ba-arrow">→</span> <span class="ba-metric-after">8.7%</span></span>
+      </div>
+      <div class="ba-metric">
+        <span class="ba-metric-label">Click-Through Rate</span>
+        <span><span class="ba-metric-before">1.2%</span> <span class="ba-arrow">→</span> <span class="ba-metric-after">3.4%</span></span>
+      </div>
+      <div class="ba-metric">
+        <span class="ba-metric-label">Traffic Quality</span>
+        <span><span class="ba-metric-before">Low</span> <span class="ba-arrow">→</span> <span class="ba-metric-after">High Intent</span></span>
+      </div>
+    </div>
+
+    <div class="ba-result-bar">
+      <div class="ba-result-headline">🚀 67% reduction in wasted spend · 3.2× improvement in conversion quality · 340% more calls &amp; form fills</div>
+      <div class="ba-result-sub">All measured against bookable lead sources — not vanity metrics</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">03 · The Strategy</div>
+    <h2 class="section-title">Optimization framework:<br>7-step methodology</h2>
+    <p class="section-sub">Executed comprehensive campaign restructuring through targeted optimization initiatives — each addressing a specific inefficiency in the original account.</p>
+
+    <div class="framework-grid">
+      <div class="fw-card">
+        <div class="fw-num">01 / 07</div>
+        <div class="fw-icon">📉</div>
+        <div class="fw-name">Geographic Targeting Refinement</div>
+        <div class="fw-desc">Eliminated geographic inefficiencies by implementing <strong>precise location targeting</strong> to the service area, removing out-of-zone traffic waste, and optimizing for qualified regional audiences aligned with actual pickup availability.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">02 / 07</div>
+        <div class="fw-icon">💡</div>
+        <div class="fw-name">Precision Keyword Architecture</div>
+        <div class="fw-desc">Replaced broad-match inefficiencies with <strong>targeted long-tail keywords</strong> like "junk removal near me" and "same day junk pickup" — grouped into tightly themed ad groups that match high-intent booking behavior.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">03 / 07</div>
+        <div class="fw-icon">🚫</div>
+        <div class="fw-name">Traffic Quality Enhancement</div>
+        <div class="fw-desc">Implemented strategic <strong>negative keyword expansion</strong> and network exclusions to filter out DIY searches and out-of-zone browsers, improving overall campaign efficiency and spend quality.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">04 / 07</div>
+        <div class="fw-icon">📍</div>
+        <div class="fw-name">Audience Segmentation Optimization</div>
+        <div class="fw-desc">Established precise <strong>demographic and behavioral targeting parameters</strong> to ensure ad delivery only to homeowners and businesses actively seeking removal services within the operational geography.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">05 / 07</div>
+        <div class="fw-icon">🔍</div>
+        <div class="fw-name">Conversion Attribution Framework</div>
+        <div class="fw-desc">Developed comprehensive tracking infrastructure <strong>aligned to phone calls and form submissions</strong>, enabling accurate performance measurement and strategic optimization instead of optimizing on vanity clicks.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">06 / 07</div>
+        <div class="fw-icon">⚙️</div>
+        <div class="fw-name">Continuous Optimization Protocol</div>
+        <div class="fw-desc">Established systematic performance monitoring with <strong>weekly optimization cycles</strong>, keyword refinement, and bid strategy adjustments for sustained, compounding performance improvement.</div>
+      </div>
+      <div class="fw-card">
+        <div class="fw-num">07 / 07</div>
+        <div class="fw-icon">🔗</div>
+        <div class="fw-name">Automation &amp; CRM Integration</div>
+        <div class="fw-desc">Implemented <strong>GoHighLevel call tracking and follow-up automation</strong> so every inbound lead is captured, routed, and contacted immediately — because the first company to answer wins the job.</div>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h3>The click volume paradox</h3>
+      <p>More is not always better. By eliminating hundreds of low-intent clicks from DIY searchers and out-of-zone browsers, we redirected that budget to high-intent customers ready to book. <strong>Quality always beats quantity in paid search.</strong> Would you rather have 1,000 random visitors who never call, or 100 qualified leads ready to schedule a pickup?</p>
+    </div>
 
     <div class="insight-box">
       <h3>A machine that repeats</h3>
-      <p>With conversion data driving every decision, the campaign delivered <strong>steady inbound lead flow month over month</strong> at a sustainable cost per acquisition — built to scale with additional budget.</p>
+      <p>With call and form tracking driving every decision, the campaign now delivers <strong>steady, qualified inbound lead flow</strong> at a sustainable cost per acquisition — built to scale with additional budget and expand across the full service territory.</p>
     </div>
   </section>
 
   <div class="cta-band">
     <div>
-      <h3>Want a lead machine like this?</h3>
+      <h3>Want results like this?</h3>
       <p>Let's audit your campaigns and find where your wasted spend is hiding.</p>
     </div>
     <div class="cta-actions">
@@ -285,7 +430,7 @@
     </div>
   </div>
 
-  <footer><div class="last-updated">Last updated: August 13, 2026</div>
+  <footer><div class="last-updated">Last updated: August 15, 2026</div>
     <div>© 2026 Marlon Palomares Digital Solutions · Manila, Philippines</div>
     <div class="footer-links">
       <a href="index.html">Home</a>
@@ -298,9 +443,52 @@
     </div>
   </footer>
 
+  <!-- LIGHTBOX -->
+  <div class="lb-overlay" id="lbOverlay">
+    <button class="lb-close" onclick="closeLb()">✕</button>
+    <button class="lb-nav lb-prev" onclick="prevLb()">‹</button>
+    <button class="lb-nav lb-next" onclick="nextLb()">›</button>
+    <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-caption" id="lbCaption"></div>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+
 </div>
 
 <script>
+  /* ══ LIGHTBOX ══ */
+  const IMGS = [
+    ['B4.jpg',    'Before Optimization — Broad Targeting & Wasted Ad Spend'],
+    ['AFTER.jpg', 'After Optimization — Precision Targeting & Qualified Bookings'],
+  ];
+  let lbIdx = 0;
+  function openLb(i) {
+    lbIdx = i;
+    document.getElementById('lbImg').src = IMGS[i][0];
+    document.getElementById('lbCaption').textContent = IMGS[i][1];
+    document.getElementById('lbCounter').textContent = (i+1) + ' / ' + IMGS.length;
+    document.getElementById('lbOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    document.getElementById('lbOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function prevLb() {
+    lbIdx = (lbIdx - 1 + IMGS.length) % IMGS.length;
+    openLb(lbIdx);
+  }
+  function nextLb() {
+    lbIdx = (lbIdx + 1) % IMGS.length;
+    openLb(lbIdx);
+  }
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lbOverlay').classList.contains('active')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') prevLb();
+    if (e.key === 'ArrowRight') nextLb();
+  });
+
   /* CURSOR */
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursor-ring');
@@ -308,7 +496,7 @@
     cursor.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
     ring.style.transform   = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
   });
-  document.querySelectorAll('a, button, .case-card').forEach(el => {
+  document.querySelectorAll('a, button, .case-card, .ba-col, .fw-card').forEach(el => {
     el.addEventListener('mouseenter', () => {
       ring.style.width = '50px'; ring.style.height = '50px';
       ring.style.borderColor = 'rgba(0,255,136,0.6)';
@@ -321,7 +509,6 @@
 
   /* ══════════════════════════════════════════
      CIRCUIT BOARD BACKGROUND CANVAS
-     (same as index.html)
   ══════════════════════════════════════════ */
   (function() {
     const canvas = document.getElementById('bg-canvas');
@@ -477,7 +664,7 @@
       }
     });
   }, { threshold: 0.08 });
-  document.querySelectorAll('.stat-box, .case-card, .insight-box').forEach(el => io.observe(el));
+  document.querySelectorAll('.stat-box, .challenge-card, .ba-col, .ba-result-bar, .fw-card, .insight-box').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
