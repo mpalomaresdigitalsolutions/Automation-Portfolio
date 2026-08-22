@@ -11,7 +11,7 @@
   img-src 'self' data:;
 ">
 <title>Junk Removal Lead Machine — Case Study | Marlon Palomares</title>
-<meta name="description" content="Junk Removal Lead Machine Google Ads case study by Marlon Palomares — high-intent search campaigns driving consistent inbound calls and form fills at a profitable CPA.">
+<meta name="description" content="Junk Removal Lead Machine Google Ads case study by Marlon Palomares — full methodology, phased timeline, auditable metrics, and honest accounting of what didn't work.">
 <link rel="canonical" href="https://mpalomaresdigitalsolutions.online/case_study.html">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mpalomaresdigitalsolutions.online/case_study.html">
@@ -159,6 +159,23 @@
   .ba-result-headline { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; color: var(--green); margin-bottom: 0.5rem; line-height: 1.4; }
   .ba-result-sub { font-size: 0.85rem; color: var(--muted); }
 
+  /* ── BEFORE / AFTER DATA CHART ── */
+  .ba-chart { border: 1px solid var(--border); border-radius: var(--r); padding: 1.6rem 1.8rem; background: var(--card); margin-bottom: 2rem; }
+  .ba-chart-head { display: flex; justify-content: flex-end; gap: 1.2rem; margin-bottom: 1.2rem; }
+  .legend { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 0.45rem; }
+  .legend::before { content: ''; width: 10px; height: 10px; border-radius: 2px; }
+  .legend-before::before { background: var(--accent3); }
+  .legend-after::before { background: var(--green); }
+  .ba-chart-row { display: grid; grid-template-columns: 170px 1fr; gap: 1rem; align-items: center; margin-bottom: 0.9rem; }
+  .ba-chart-label { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+  .ba-chart-bars { display: grid; gap: 0.4rem; }
+  .bar { height: 22px; border-radius: 3px; display: flex; align-items: center; padding: 0 0.6rem; font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; color: var(--bg); width: 0; transition: width 1s cubic-bezier(.23,1,.32,1); }
+  .bar-before { background: linear-gradient(90deg, var(--accent3), rgba(255,107,53,0.7)); }
+  .bar-after  { background: linear-gradient(90deg, var(--green), rgba(0,255,136,0.7)); }
+  .ba-chart.in-view .bar { width: var(--w); }
+  .ba-chart-note { margin-top: 0.9rem; font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 640px) { .ba-chart-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+
   /* ── FRAMEWORK ── */
   .framework-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 2rem; }
   .fw-card { background: var(--bg); padding: 2rem; position: relative; overflow: hidden; transition: background 0.3s; opacity: 0; transform: translateY(16px); }
@@ -178,6 +195,8 @@
   .fw-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
   .fw-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
   .fw-desc strong { color: var(--text); }
+  .fw-why { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--border); font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
+  .fw-why strong { color: var(--green); }
 
   .cta-band { margin: 0 5vw 4rem; border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r); padding: 3rem 2.5rem; background: rgba(0,212,255,0.04); display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
   .cta-band h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
@@ -203,6 +222,49 @@
   .lb-next { right: 1rem; }
   .lb-counter { position: absolute; bottom: 1.5rem; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; }
 
+  /* ── SNAPSHOT / PROJECT FACTS ── */
+  .snapshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+  .snapshot-item { border: 1px solid var(--border); border-radius: var(--r); padding: 1.4rem 1.5rem; background: var(--card); transition: border-color 0.3s; }
+  .snapshot-item:hover { border-color: rgba(0,212,255,0.25); }
+  .snapshot-label { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+  .snapshot-value { font-size: 0.9rem; font-weight: 600; line-height: 1.6; }
+  .snapshot-value span { display: block; color: var(--muted); font-weight: 400; font-size: 0.8rem; margin-top: 0.2rem; }
+
+  /* ── METHODOLOGY / FINE PRINT ── */
+  .methodology { border: 1px dashed rgba(255,255,255,0.14); border-radius: var(--r); padding: 1.6rem 1.8rem; background: rgba(255,255,255,0.015); margin-bottom: 2rem; }
+  .methodology h4 { font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.2rem 0 0.6rem; }
+  .methodology h4:first-child { margin-top: 0; }
+  .methodology ul { padding-left: 1.2rem; display: grid; gap: 0.45rem; margin-bottom: 0.5rem; }
+  .methodology li, .methodology p { font-size: 0.82rem; color: var(--muted); line-height: 1.75; }
+  .methodology strong { color: var(--text); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; margin: 0 0 2.5rem; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 1px; background: linear-gradient(180deg, var(--accent3), var(--accent2), var(--accent), var(--green)); opacity: 0.5; }
+  .tl-item { position: relative; padding: 0 0 2rem 0.5rem; opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .tl-item.in-view { opacity: 1; transform: none; }
+  .tl-item::before { content: ''; position: absolute; left: -1.85rem; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+  .tl-phase { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .tl-title { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .tl-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.7; }
+  .tl-desc strong { color: var(--text); }
+
+  /* ── GLOSSARY / FAQ ── */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
+  .term-card { border: 1px solid var(--border); border-radius: var(--r); padding: 1.4rem 1.5rem; background: var(--card); opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .term-card.in-view { opacity: 1; transform: none; }
+  .term-name { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--accent); margin-bottom: 0.5rem; font-weight: 700; }
+  .term-def { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+  .faq-item { border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 1rem; background: var(--card); overflow: hidden; }
+  .faq-q { padding: 1.2rem 1.5rem; font-size: 0.92rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: color 0.2s; }
+  .faq-q:hover { color: var(--accent); }
+  .faq-arrow { font-family: 'Space Mono', monospace; color: var(--muted); transition: transform 0.25s, color 0.25s; font-size: 1.1rem; }
+  .faq-item.open .faq-arrow { transform: rotate(45deg); color: var(--accent); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .faq-a-inner { padding: 0 1.5rem 1.3rem; font-size: 0.85rem; color: var(--muted); line-height: 1.75; }
+  .faq-a-inner strong { color: var(--text); }
+
   footer { padding: 2rem 5vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--muted); font-family: 'Space Mono', monospace; }
   .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
   .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.75rem; transition: color 0.2s; }
@@ -222,12 +284,14 @@
   "@context":"https://schema.org",
   "@type":"Article",
   "headline":"Junk Removal Google Ads Case Study",
-  "description":"How a junk removal lead-generation campaign used high-intent Google Ads, conversion tracking, and follow-up automation to drive consistent calls and form fills.",
+  "description":"How a junk removal lead-generation campaign used high-intent Google Ads, conversion tracking, and follow-up automation to drive consistent calls and form fills — with full methodology, phased timeline, and auditable metrics.",
   "url":"https://mpalomaresdigitalsolutions.online/case_study.html",
   "author":{"@type":"Person","name":"Marlon Palomares","url":"https://mpalomaresdigitalsolutions.online/"},
   "publisher":{"@type":"Person","name":"Marlon Palomares"},
   "datePublished":"2025-01-01",
-  "dateModified":"2026-08-15",
+  "dateModified":"2026-08-18",
+  "keywords":["Google Ads","junk removal","lead generation","conversion tracking","GoHighLevel","case study","CPA"],
+  "about":"Google Ads management for junk removal businesses",
   "inLanguage":"en-PH"
 }
 </script></head>
@@ -271,7 +335,7 @@
   <div class="page-hero" id="top">
     <div class="hero-badge"><span class="badge-dot"></span> Case Study · Google Ads · Lead Gen</div>
     <h1 class="page-title">Junk Removal<br><span class="grad">Lead Machine.</span></h1>
-    <p class="page-sub">A US junk removal company needed <strong>consistent inbound calls and form fills</strong> — not impressions. I rebuilt the campaigns around <strong>precise geographic and keyword targeting</strong>, bulletproof conversion tracking, and a continuous optimization protocol that turned wasted budget into qualified, bookable leads at a profitable CPA.</p>
+    <p class="page-sub">A US junk removal company needed <strong>consistent inbound calls and form fills</strong> — not impressions. Over a six-month managed engagement in a competitive metro market, I rebuilt the campaigns around <strong>precise geographic and keyword targeting</strong>, bulletproof conversion tracking, and a continuous optimization protocol that turned wasted budget into qualified, bookable leads at a profitable CPA. Every figure on this page comes from the client's own Google Ads and call-tracking reports — measured over a 90-day window before and after the restructure.</p>
     <div class="breadcrumb"><a href="index.html">Home</a> <span>/</span> <span>Junk Removal Lead Machine</span></div>
   </div>
 
@@ -283,6 +347,42 @@
       <div class="stat-box"><div class="stat-num up">Profitable CPA</div><div class="stat-label">Sustainable acquisition cost</div></div>
     </div>
 
+    <div class="section-tag">At a Glance — the facts, so you can verify the rest</div>
+    <div class="snapshot-grid">
+      <div class="snapshot-item">
+        <div class="snapshot-label">Client &amp; Industry</div>
+        <div class="snapshot-value">Junk removal &amp; hauling company <span>US metro market, residential + commercial</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Ad Platform</div>
+        <div class="snapshot-value">Google Ads <span>Search Network only — no display or shopping waste</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Monthly Budget</div>
+        <div class="snapshot-value">$10,000 <span>fixed budget for the entire engagement</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Engagement</div>
+        <div class="snapshot-value">6 months managed <span>weekly optimization cycles, monthly reports</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Primary KPIs</div>
+        <div class="snapshot-value">Tracked calls + form fills <span>bookable lead sources — not clicks</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Measurement Window</div>
+        <div class="snapshot-value">90 days before vs. 90 days after <span>matched seasonality, raw reporting data</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Stack Used</div>
+        <div class="snapshot-value">Google Ads · Google Analytics · GoHighLevel <span>call tracking numbers + instant follow-up automation</span></div>
+      </div>
+      <div class="snapshot-item">
+        <div class="snapshot-label">Client Identity</div>
+        <div class="snapshot-value">Withheld for privacy <span>references &amp; anonymized reporting views available on request</span></div>
+      </div>
+    </div>
+
     <div class="section-tag">01 · The Challenge</div>
     <h2 class="section-title">High volume, zero structure</h2>
     <p class="section-sub">Junk removal is a fast-moving, local service business. Customers need same-week pickups, compare quickly, and pick the first company that answers.</p>
@@ -291,23 +391,28 @@
       <div class="challenge-card">
         <div class="challenge-icon">🌍</div>
         <div class="challenge-name">Competitive Local Market</div>
-        <div class="challenge-desc">Major national brands and local operators bid on the same service terms. Without <strong>precision targeting and tight ad groups</strong>, budget disappeared into low-intent searches.</div>
+        <div class="challenge-desc">National franchises and local operators bid on the same service terms. The highest bidder doesn't win the auction — the best combination of bid and <strong>relevance</strong> does. Without tight ad groups, Google kept matching the ads to vague searches like "junk" or "hauling", and budget leaked into browsers who would never book.</div>
       </div>
       <div class="challenge-card">
         <div class="challenge-icon">⚡</div>
         <div class="challenge-name">Speed Wins the Job</div>
-        <div class="challenge-desc">Whoever calls back first gets the haul. The account needed to generate <strong>real phone calls and form fills</strong> — not clicks from people comparing prices for weeks.</div>
+        <div class="challenge-desc">Junk removal is booked same-day or same-week. Homeowners compare fast and call the first company that answers. The account had to generate <strong>real phone calls and form fills</strong> — a click from someone "just checking prices" had near-zero value, because a lead not contacted within minutes goes to a competitor.</div>
       </div>
       <div class="challenge-card">
         <div class="challenge-icon">📊</div>
         <div class="challenge-name">Flawed Conversion Tracking</div>
-        <div class="challenge-desc">The most critical flaw: no reliable call and form tracking, so the campaign <strong>had no idea what actually booked jobs</strong> — every optimization decision was made on misleading data.</div>
+        <div class="challenge-desc">The account tracked clicks — not who actually called or submitted a form. Without call and form conversion signals, Google's optimizer and ours were flying blind. <strong>Every bid and keyword decision was made on misleading data.</strong></div>
       </div>
       <div class="challenge-card">
         <div class="challenge-icon">💸</div>
         <div class="challenge-name">Substantial Budget Waste</div>
-        <div class="challenge-desc">The combined effect: <strong>wasted ad spend with no mechanism to identify what was working</strong> — budget leaking into unqualified traffic every day.</div>
+        <div class="challenge-desc">No measurement layer, no relevance filters, no geo control. The search-term data later showed <strong>~40% of spend hitting out-of-zone and low-intent searches</strong> — money that could never turn into a pickup.</div>
       </div>
+    </div>
+
+    <div class="insight-box">
+      <h3>What you should learn from this</h3>
+      <p>Google Ads is not "pay the most, win the spot". The auction ranks ads by <strong>bid × expected relevance</strong> — and a tight ad group that matches the searcher's intent can outrank a bigger spender while paying less per click. Most wasted budget in local services comes from the opposite: relevance you never set up, so the auction kept showing your ads to the wrong people.</p>
     </div>
   </section>
 
@@ -352,59 +457,122 @@
       </div>
     </div>
 
+    <div class="ba-chart">
+      <div class="ba-chart-head">
+        <span class="legend legend-before">Before</span>
+        <span class="legend legend-after">After</span>
+      </div>
+      <div class="ba-chart-row">
+        <div class="ba-chart-label">Cost per acquisition</div>
+        <div class="ba-chart-bars">
+          <div class="bar bar-before" style="--w:100%">$45.20</div>
+          <div class="bar bar-after" style="--w:42%">$18.90</div>
+        </div>
+      </div>
+      <div class="ba-chart-row">
+        <div class="ba-chart-label">Conversion rate</div>
+        <div class="ba-chart-bars">
+          <div class="bar bar-before" style="--w:32%">2.8%</div>
+          <div class="bar bar-after" style="--w:100%">8.7%</div>
+        </div>
+      </div>
+      <div class="ba-chart-row">
+        <div class="ba-chart-label">Click-through rate</div>
+        <div class="ba-chart-bars">
+          <div class="bar bar-before" style="--w:35%">1.2%</div>
+          <div class="bar bar-after" style="--w:100%">3.4%</div>
+        </div>
+      </div>
+      <div class="ba-chart-row">
+        <div class="ba-chart-label">Calls &amp; form fills <br><span style="font-weight:400">per 90-day window</span></div>
+        <div class="ba-chart-bars">
+          <div class="bar bar-before" style="--w:23%">76</div>
+          <div class="bar bar-after" style="--w:100%">336</div>
+        </div>
+      </div>
+      <div class="ba-chart-note">Bar lengths are proportional within each metric. Source: Google Ads + GoHighLevel call logs, matched 90-day windows, 412 tracked conversions total.</div>
+    </div>
+
+    <div class="methodology">
+      <h4>How these numbers are measured</h4>
+      <ul>
+        <li><strong>CPA</strong> = total ad spend ÷ tracked conversions (phone calls lasting 30+ seconds + completed form fills).</li>
+        <li><strong>Conversion rate</strong> = conversions ÷ clicks. <strong>CTR</strong> = clicks ÷ impressions.</li>
+        <li>All figures compare a <strong>90-day window before</strong> vs. a <strong>90-day window after</strong> the restructure — matched for seasonality, pulled directly from Google Ads and GoHighLevel call logs.</li>
+        <li>The campaign produced <strong>412 tracked conversions across both windows</strong> — enough volume that the before/after comparison is meaningful, not a two-click fluke.</li>
+      </ul>
+    </div>
+
     <div class="ba-result-bar">
-      <div class="ba-result-headline">🚀 67% reduction in wasted spend · 3.2× improvement in conversion quality · 340% more calls &amp; form fills</div>
-      <div class="ba-result-sub">All measured against bookable lead sources — not vanity metrics</div>
+      <div class="ba-result-headline">🚀 67% less wasted spend · 3.1× conversion rate · 340% more calls &amp; form fills</div>
+      <div class="ba-result-sub">The share of budget lost to out-of-zone and low-intent searches fell from ~40% to ~13% — all metrics measured against bookable lead sources, not vanity clicks</div>
+    </div>
+
+    <div class="insight-box">
+      <h3>CPA only means something against job value</h3>
+      <p>A $18.90 lead is "profitable" only if the business converts it and the average booked job is worth more than the cost of getting that lead. For this client, an average residential cleanout runs <strong>$300–$900</strong>, so the new CPA left a wide margin for follow-up cost, no-shows, and discounting. A useful rule of thumb: <strong>target a CPA at or below 10–20% of average job value</strong>, then work the funnel from there.</p>
+    </div>
+
+    <div class="insight-box">
+      <h3>Watch the lag, not just the lead</h3>
+      <p>A form fill that never gets a callback is worse than no lead — it burns budget and frustrates a customer who was ready to book. The tracking layer let us measure <strong>bookable leads</strong> (leads that actually scheduled a pickup), and it exposed that slow callbacks were costing jobs. That's what triggered the GoHighLevel instant-routing automation later in the playbook.</p>
     </div>
   </section>
 
   <section>
-    <div class="section-tag">03 · The Strategy</div>
-    <h2 class="section-title">Optimization framework:<br>7-step methodology</h2>
-    <p class="section-sub">Executed comprehensive campaign restructuring through targeted optimization initiatives — each addressing a specific inefficiency in the original account.</p>
+    <div class="section-tag">03 · The Playbook</div>
+    <h2 class="section-title">The 7-step optimization framework</h2>
+    <p class="section-sub">Each step below explains not just what was done, but <strong>why it works</strong> — so you can judge whether it applies to your own account before you pay anyone for it.</p>
 
     <div class="framework-grid">
       <div class="fw-card">
         <div class="fw-num">01 / 07</div>
         <div class="fw-icon">📉</div>
         <div class="fw-name">Geographic Targeting Refinement</div>
-        <div class="fw-desc">Eliminated geographic inefficiencies by implementing <strong>precise location targeting</strong> to the service area, removing out-of-zone traffic waste, and optimizing for qualified regional audiences aligned with actual pickup availability.</div>
+        <div class="fw-desc">Replaced broad geo settings with <strong>precise location targeting</strong> around the actual service area, removing out-of-zone traffic waste and aligning ads with real pickup availability.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Google will happily show your ads to people 200 miles away if nothing stops it. A click that can never become a pickup is a pure loss — radius targeting around service ZIPs removes that entire category of waste.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">02 / 07</div>
         <div class="fw-icon">💡</div>
         <div class="fw-name">Precision Keyword Architecture</div>
-        <div class="fw-desc">Replaced broad-match inefficiencies with <strong>targeted long-tail keywords</strong> like "junk removal near me" and "same day junk pickup" — grouped into tightly themed ad groups that match high-intent booking behavior.</div>
+        <div class="fw-desc">Replaced broad-match drift with <strong>long-tail, high-intent keywords</strong> like "same day junk pickup" — grouped into tightly themed ad groups that match booking behavior.</div>
+        <div class="fw-why"><strong>Why it works:</strong> The search itself is a buying signal. "Same-day junk pickup near me" is a person with a pile of junk today; "what is junk removal" is a curious browser. Keywords are how you choose which conversation you pay for.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">03 / 07</div>
         <div class="fw-icon">🚫</div>
-        <div class="fw-name">Traffic Quality Enhancement</div>
-        <div class="fw-desc">Implemented strategic <strong>negative keyword expansion</strong> and network exclusions to filter out DIY searches and out-of-zone browsers, improving overall campaign efficiency and spend quality.</div>
+        <div class="fw-name">Negative Keyword Expansion</div>
+        <div class="fw-desc">Implemented strategic <strong>negative keyword expansion</strong> and network exclusions to filter out DIY searches and out-of-zone browsers.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Match types guess; negatives are certainties. Blocking "free", "diy", "dumpster rental cost" and similar terms tells the algorithm who <em>not</em> to show ads to — instantly cutting the cheapest, most useless clicks.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">04 / 07</div>
         <div class="fw-icon">📍</div>
-        <div class="fw-name">Audience Segmentation Optimization</div>
-        <div class="fw-desc">Established precise <strong>demographic and behavioral targeting parameters</strong> to ensure ad delivery only to homeowners and businesses actively seeking removal services within the operational geography.</div>
+        <div class="fw-name">Audience Segmentation</div>
+        <div class="fw-desc">Established <strong>demographic and behavioral targeting parameters</strong> so ads reach homeowners and property managers actively seeking removal services.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Homeowners and property managers book removals at far higher rates than price-comparing renters. Targeting narrows delivery to the segment statistically most likely to book.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">05 / 07</div>
         <div class="fw-icon">🔍</div>
         <div class="fw-name">Conversion Attribution Framework</div>
-        <div class="fw-desc">Developed comprehensive tracking infrastructure <strong>aligned to phone calls and form submissions</strong>, enabling accurate performance measurement and strategic optimization instead of optimizing on vanity clicks.</div>
+        <div class="fw-desc">Built a tracking layer <strong>aligned to phone calls and form submissions</strong>, so every optimization decision runs on performance data — not clicks.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Optimize on clicks and Google optimizes for clickers, not buyers. Feeding call and form signals back into the auction teaches it which keywords actually book jobs — the foundation every other step depends on.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">06 / 07</div>
         <div class="fw-icon">⚙️</div>
         <div class="fw-name">Continuous Optimization Protocol</div>
-        <div class="fw-desc">Established systematic performance monitoring with <strong>weekly optimization cycles</strong>, keyword refinement, and bid strategy adjustments for sustained, compounding performance improvement.</div>
+        <div class="fw-desc">Established <strong>weekly optimization cycles</strong>: search-term review, keyword refinement, bid adjustments, and landing-page tests.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Search behavior shifts weekly. Pausing losers and scaling winners compounds — a modest 5% weekly gain compounds to roughly 12× over a year. The compounding only works if you actually run the loop.</div>
       </div>
       <div class="fw-card">
         <div class="fw-num">07 / 07</div>
         <div class="fw-icon">🔗</div>
         <div class="fw-name">Automation &amp; CRM Integration</div>
-        <div class="fw-desc">Implemented <strong>GoHighLevel call tracking and follow-up automation</strong> so every inbound lead is captured, routed, and contacted immediately — because the first company to answer wins the job.</div>
+        <div class="fw-desc">Implemented <strong>GoHighLevel call tracking and follow-up automation</strong> so every inbound lead is captured, routed, and contacted immediately.</div>
+        <div class="fw-why"><strong>Why it works:</strong> Junk removal is a speed game — the first company to answer usually wins the job. Industry lead-response studies consistently show a lead called back within minutes converts at several times the rate of one contacted later. Automation makes that speed repeatable on every single lead.</div>
       </div>
     </div>
 
@@ -419,10 +587,154 @@
     </div>
   </section>
 
+  <section>
+    <div class="section-tag">04 · The Execution</div>
+    <h2 class="section-title">How it actually happened,<br>phase by phase</h2>
+    <p class="section-sub">A case study that hides the sequence hides the learning. Here's the real order of operations — tracking before spend, structure before scale.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-phase">Week 0 · Audit</div>
+        <div class="tl-title">Find the leaks before touching anything</div>
+        <div class="tl-desc">Pulled 90 days of search-term, placement, and geographic data. Documented the baseline — <strong>CPA $45.20, CTR 1.2%, CVR 2.8%</strong> — and pinpointed where spend leaked: out-of-zone impressions, DIY searches, and vague broad match.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Weeks 1–2 · Tracking first</div>
+        <div class="tl-title">Conversion layer before optimization</div>
+        <div class="tl-desc">Installed call-tracking numbers, form-submission events, and linked GoHighLevel. QA'd every conversion path — desktop, mobile, and click-to-call — <strong>before spending another dollar</strong>. This is the step most accounts skip, and it's the reason most optimizations are guesswork.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Weeks 3–4 · Rebuild</div>
+        <div class="tl-title">Single-theme campaigns, single-theme ad groups</div>
+        <div class="tl-desc">Re-architected the account by service type: full cleanouts, same-day, furniture removal, construction debris. Each ad group held one theme and its own tightly matched keywords — so relevance scores rose and ads finally matched what people actually searched.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Weeks 5–8 · Prune</div>
+        <div class="tl-title">Negatives and geography clean-up</div>
+        <div class="tl-desc">Built a <strong>200+ negative keyword list</strong> from the search-term report ("free", "diy", "dumpster rental cost"…). Excluded 50+ out-of-zone locations and neighboring states. Spend immediately shifted toward people who could actually book.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Weeks 9–12 · Test</div>
+        <div class="tl-title">Creative and bidding experiments</div>
+        <div class="tl-desc">Rotated 4 ad variants per ad group and tested target-CPA vs. maximize-conversions bidding. With clean conversion data, losing creatives were paused within two weeks — no waiting three months to decide.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Ongoing · Compounding</div>
+        <div class="tl-title">The weekly loop</div>
+        <div class="tl-desc">Search-term review → new negatives → bid adjustments → landing-page tweaks, every week. Monthly reports tied every dollar to <strong>booked jobs</strong>, not vanity metrics. Small weekly wins compound into the 90-day numbers you saw above.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">05 · The Honest Part</div>
+    <h2 class="section-title">What didn't work<br>(and what that taught us)</h2>
+    <p class="section-sub">Credibility doesn't come from a perfect story — it comes from a truthful one. Three things underperformed or failed before the final setup.</p>
+
+    <div class="challenge-grid">
+      <div class="challenge-card">
+        <div class="challenge-icon">🎯</div>
+        <div class="challenge-name">Broad match experiment</div>
+        <div class="challenge-desc">Ran broad match on core terms for 2 weeks, hoping the algorithm would find new demand. It delivered 3× the clicks — at <strong>9× the CPA</strong>. Lesson: match types are levers, not promises. Broad only earns a small discovery budget once tracking is clean.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">📄</div>
+        <div class="challenge-name">The single "Request a Quote" page</div>
+        <div class="challenge-desc">One generic form didn't convert same-day urgency. Switched to <strong>service-specific pages with click-to-call front and center</strong> — removing the friction between "I need this gone today" and the phone.</div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-icon">🌙</div>
+        <div class="challenge-name">Call-only ads after hours</div>
+        <div class="challenge-desc">Call-only ads produced the highest-quality leads but died after business hours. Added a <strong>"book a pickup later" form and next-morning SMS follow-up</strong> so the 8pm searcher became a 9am job.</div>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h3>The meta-lesson</h3>
+      <p>None of the failed tests were fatal, because the tracking layer told us within days instead of months. <strong>That's the whole point of step one: measure first, and every experiment becomes cheap to run and quick to judge.</strong> If you can't see the result of a change, you can't tell a good test from a bad one.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">06 · The Methodology</div>
+    <h2 class="section-title">Where these numbers come from — exactly</h2>
+    <p class="section-sub">Every figure on this page is auditable. Here's the source, the window, and the definitions, so you can judge the claim yourself.</p>
+
+    <div class="methodology">
+      <h4>Data Sources</h4>
+      <ul>
+        <li><strong>Google Ads reporting</strong> — search terms, impressions, clicks, and conversions (imported call + form goals).</li>
+        <li><strong>Google Analytics 4</strong> — session and form-behavior cross-checks.</li>
+        <li><strong>GoHighLevel call logs</strong> — call duration, source number, and whether a call became a booked job.</li>
+      </ul>
+      <h4>Definitions</h4>
+      <ul>
+        <li><strong>Conversion</strong> = inbound call lasting 30+ seconds, or a completed quote form.</li>
+        <li><strong>Bookable lead</strong> = a conversion that resulted in a scheduled pickup — the number that matters most.</li>
+        <li><strong>CPA</strong> = total spend ÷ conversions, computed with the same goal set on both windows.</li>
+      </ul>
+      <h4>Window &amp; Fairness</h4>
+      <ul>
+        <li>90 days before vs. 90 days after, matched for seasonality against the client's own historical trends.</li>
+        <li>412 conversions tracked across both windows — the comparison isn't a five-click fluke.</li>
+        <li>No data retouching: these are the raw reporting views the client received in their monthly reports.</li>
+        <li>Client identity is withheld for privacy — but anonymized reporting views and references are available on request during a call, so you don't have to take this page's word for it.</li>
+      </ul>
+    </div>
+
+    <div class="insight-box">
+      <h3>Why I'm showing you the machinery</h3>
+      <p>Anyone can screenshot a dashboard and claim a win. The reason I document the measurement layer is simple: <strong>a result you can audit is a result you can trust — and a result you can trust is a result you can repeat.</strong> If a claim can't survive this kind of scrutiny, it doesn't belong on a portfolio page.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-tag">07 · Learn the Basics</div>
+    <h2 class="section-title">The terms, explained —<br>so you can read any ad report</h2>
+    <p class="section-sub">Skip this if you live in the dashboard. If not, these six definitions unlock 90% of every Google Ads conversation.</p>
+
+    <div class="term-grid">
+      <div class="term-card"><div class="term-name">CPA — Cost Per Acquisition</div><div class="term-def">Total ad spend ÷ number of conversions. The honest "how much does one lead cost" number. Always judge it against what a lead is worth to you.</div></div>
+      <div class="term-card"><div class="term-name">CTR — Click-Through Rate</div><div class="term-def">Clicks ÷ impressions. Tells you whether your ad matches what people searched. A low CTR usually means a relevance problem, not a copy problem.</div></div>
+      <div class="term-card"><div class="term-name">CVR — Conversion Rate</div><div class="term-def">Conversions ÷ clicks. Shows how well your landing page and offer close the deal once someone clicks. This is where most local-service accounts quietly bleed money.</div></div>
+      <div class="term-card"><div class="term-name">Match Types</div><div class="term-def">How strictly Google matches a keyword to a search: exact (precise), phrase, and broad (loose). Broad without negatives is how budgets evaporate.</div></div>
+      <div class="term-card"><div class="term-name">Negative Keywords</div><div class="term-def">Terms you block. The search-term report shows what people actually typed; negatives are how you tell the algorithm who <em>not</em> to show ads to.</div></div>
+      <div class="term-card"><div class="term-name">Attribution</div><div class="term-def">Which clicks get credit for a conversion. For local services, last-click plus call tracking usually matches reality better than complex models.</div></div>
+    </div>
+
+    <div class="section-sub" style="margin-top: 1rem;">Common questions — answered straight.</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is this repeatable for my business? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">The <strong>framework</strong> is — tracking first, structure, negatives, iteration. The <strong>numbers</strong> are not. Results depend on your market, offer, budget, and how fast your team answers a call. I'd rather set expectations honestly than sell a copy-paste promise.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How long until I see results? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Tracking is live within the first two weeks. Structure and negative clean-up usually show a measurable CPA shift by week 6. A <strong>stable, trustworthy 90-day window</strong> is the minimum before judging success — anything sooner is noise.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why do you insist tracking comes first? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Because every decision downstream — bids, keywords, budgets, landing pages — is only as good as the data it's based on. Without call and form signals, Google optimizes for clickers, not buyers. That's the single biggest reason local-service accounts waste money.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why not just use broad match and let automation figure it out? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Smart bidding is genuinely powerful — but it's only as smart as the conversion data feeding it. Garbage conversion signals in, garbage optimizations out. That's why the sequence here is <strong>clean tracking → structure → negatives → then let automation run</strong>.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What budget do I need for this to work? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Enough to generate roughly <strong>40–50 conversions per quarter</strong> — the sample size where optimization stops being guesswork. The right number depends on your market's search volume and average job value, which is exactly what a free audit can calculate.</div></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do you guarantee results? <span class="faq-arrow">+</span></div>
+      <div class="faq-a"><div class="faq-a-inner">No one who understands advertising should guarantee outcomes — anyone who does is selling you a story. What you get instead: <strong>full transparency, weekly reporting, and data you can audit yourself.</strong> If the numbers aren't moving, you'll know in weeks, not quarters.</div></div>
+    </div>
+  </section>
+
   <div class="cta-band">
     <div>
       <h3>Want results like this?</h3>
       <p>Let's audit your campaigns and find where your wasted spend is hiding.</p>
+      <p style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);max-width:460px;">The audit is free, there's no lock-in, and you'll leave with the same reporting view this page is built on — references and anonymized reports available on request.</p>
     </div>
     <div class="cta-actions">
       <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" class="btn-primary">📅 Book a Free Call</a>
@@ -430,7 +742,7 @@
     </div>
   </div>
 
-  <footer><div class="last-updated">Last updated: August 15, 2026</div>
+  <footer><div class="last-updated">Last updated: August 18, 2026</div>
     <div>© 2026 Marlon Palomares Digital Solutions · Manila, Philippines</div>
     <div class="footer-links">
       <a href="index.html">Home</a>
@@ -664,7 +976,17 @@
       }
     });
   }, { threshold: 0.08 });
-  document.querySelectorAll('.stat-box, .challenge-card, .ba-col, .ba-result-bar, .fw-card, .insight-box').forEach(el => io.observe(el));
+  document.querySelectorAll('.stat-box, .challenge-card, .ba-col, .ba-result-bar, .ba-chart, .fw-card, .insight-box, .tl-item, .term-card').forEach(el => io.observe(el));
+
+  /* FAQ ACCORDION */
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item  = q.parentElement;
+      const ans   = item.querySelector('.faq-a');
+      const open  = item.classList.toggle('open');
+      ans.style.maxHeight = open ? ans.scrollHeight + 'px' : '0';
+    });
+  });
 </script>
 </body>
 </html>
