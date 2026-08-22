@@ -126,9 +126,9 @@
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
   @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); } }
   .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; animation: fade-up 0.7s ease 0.3s both; }
-  .hero-title { font-size: clamp(3rem, 7.5vw, 7rem); font-weight: 900; line-height: 1.0; letter-spacing: -2px; margin-bottom: 0.5rem; animation: fade-up 0.7s ease 0.4s both; }
+  .hero-title { font-size: clamp(2.75rem, 5.5vw, 4.75rem); font-weight: 900; line-height: 1.05; letter-spacing: -1px; margin-bottom: 0.5rem; animation: fade-up 0.7s ease 0.4s both; }
   .hero-title .name { display: block; color: var(--text); }
-  .hero-title .role { display: block; background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200%; animation: grad-shift 4s ease infinite; }
+  .hero-title .role { display: block; margin-top: 0.75rem; font-size: clamp(1.15rem, 2vw, 1.5rem); font-weight: 700; letter-spacing: 0.02em; background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200%; animation: grad-shift 4s ease infinite; }
   @keyframes grad-shift { 0%,100% { background-position:0%; } 50% { background-position:100%; } }
   .hero-sub { font-size: clamp(1rem, 1.8vw, 1.15rem); font-weight: 400; color: var(--muted); max-width: 560px; line-height: 1.8; margin: 2rem 0 2.5rem; animation: fade-up 0.7s ease 0.55s both; }
   .hero-sub strong { color: var(--text); font-weight: 600; }
@@ -552,7 +552,7 @@
   .clb-prev { left: -56px; }
   .clb-next { right: -56px; }
 
-  #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 150px; height: 150px; border-radius: 0; background: transparent; border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform 0.25s; animation: none; }
+  #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 60px; height: 60px; border-radius: 0; background: transparent; border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform 0.25s; animation: none; }
   @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
   #chat-fab:hover { transform: scale(1.1); }
   #chat-fab svg { width: 26px; height: 26px; fill: #060810; }
@@ -562,8 +562,8 @@
   .chat-header { padding: 1rem 1.1rem 0.85rem; background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.7rem; }
   .assistant-icon { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 0; }
   .assistant-icon-section { width: 36px; height: 36px; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
-  .assistant-icon-fab { width: 150px; height: 150px; }
-  .chat-label { position: absolute; right: calc(100% + 12px); bottom: 24px; width: max-content; padding: 0.55rem 0.8rem; border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; background: rgba(11,14,26,0.94); color: var(--muted); font-size: 0.72rem; line-height: 1.45; text-align: left; pointer-events: none; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+  .assistant-icon-fab { width: 60px; height: 60px; }
+  .chat-label { position: absolute; right: calc(100% + 12px); bottom: 24px; width: max-content; padding: 0.55rem 0.8rem; border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; background: rgba(11,14,26,0.94); color: var(--muted); font-size: 0.72rem; line-height: 1.45; text-align: left; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.35); cursor: pointer; }
   .chat-label strong { color: var(--text); font-size: 0.78rem; }
   .chat-avatar { width: 38px; height: 38px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: none; }
   .chat-header-info { flex: 1; }
@@ -983,7 +983,7 @@
 <!-- CHATBOT FAB -->
 <button id="chat-fab" aria-expanded="false" aria-controls="chat-window" title="Chat with Marlon's AI Assistant">
   <div class="fab-badge"></div>
-  <img class="assistant-icon assistant-icon-fab" src="images/chatbot-icon-400.gif" alt="Open Marlon AI Assistant" width="150" height="150">
+  <img class="assistant-icon assistant-icon-fab" src="images/chatbot-icon-400.gif" alt="Open Marlon AI Assistant" width="60" height="60">
   <span class="chat-label"><strong>Chat with me</strong><br>I'm Marlon, AI Assistant</span>
 </button>
 
