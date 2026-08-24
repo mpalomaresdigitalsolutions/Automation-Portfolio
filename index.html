@@ -86,6 +86,10 @@
   #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
 
+  /* AI robot hero atmosphere — decorative, text-safe, and layered behind content */
+  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') 68% center / cover no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
+  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 22% 48%, rgba(6,8,16,.95) 0%, rgba(6,8,16,.7) 42%, transparent 75%), linear-gradient(to bottom, transparent 55%, var(--bg) 100%); }
+
   .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
   .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
   .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -8s; }
@@ -120,8 +124,11 @@
 
   .wrapper { position: relative; z-index: 1; }
 
-  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4rem; padding: 10rem 5vw 6rem; position: relative; }
-  .hero-content { display: flex; flex-direction: column; }
+    .hero { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4rem; padding: 10rem 5vw 6rem; position: relative; isolation: isolate; overflow: hidden; }
+  .hero-content { display: flex; flex-direction: column; position: relative; max-width: 760px; z-index: 2; }
+  .hero-content::before { content: ''; position: absolute; inset: -3rem -5rem; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 28% 48%, rgba(6,8,16,.96) 0%, rgba(6,8,16,.76) 48%, transparent 78%); }
+  .hero-badge, .hero-eyebrow, .hero-title, .hero-sub, .hero-ctas, .hero-meta { position: relative; }
+
   .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; border: 1px solid rgba(0,255,136,0.3); background: rgba(0,255,136,0.06); border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; animation: fade-up 0.7s ease 0.2s both; width: fit-content; }
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease-in-out infinite; }
   @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); } 50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); } }
@@ -168,33 +175,57 @@
   .core-copy { text-align:center; position:absolute; z-index:3; left:50%; bottom:8%; transform:translateX(-50%); width:100%; text-shadow:0 2px 10px rgba(0,0,0,.95); }
   .core-copy strong { display:block; font:700 .72rem 'Space Mono', monospace; letter-spacing:.08em; color:#fff; }
   .core-copy span { display:block; max-width:84%; margin:.18rem auto 0; font:600 .38rem/1.35 'Space Mono', monospace; letter-spacing:.035em; color:var(--green); text-transform:uppercase; }
-  .system-node { position:absolute; width:108px; padding:.72rem .8rem; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:linear-gradient(145deg,rgba(15,19,34,.95),rgba(6,8,16,.88)); box-shadow:0 14px 35px rgba(0,0,0,.38); backdrop-filter:blur(12px); transform-style:preserve-3d; }
-  .system-node::before { content:''; width:7px; height:7px; display:inline-block; margin-right:.45rem; border-radius:50%; background:var(--node-color,var(--accent)); box-shadow:0 0 12px var(--node-color,var(--accent)); }
+    .system-node { position:absolute; width:112px; padding:.72rem .8rem; border:1px solid rgba(255,255,255,.12); border-radius:10px; background:linear-gradient(145deg,rgba(15,19,34,.95),rgba(6,8,16,.88)); box-shadow:0 14px 35px rgba(0,0,0,.38); backdrop-filter:blur(12px); transform-style:preserve-3d; overflow:hidden; }
+  .system-node::before { content:''; width:7px; height:7px; display:inline-block; margin-right:.45rem; border-radius:50%; background:var(--node-color,var(--accent)); box-shadow:0 0 12px var(--node-color,var(--accent)); transition:box-shadow .3s, transform .3s; }
   .system-node strong { font:700 .65rem 'Space Mono',monospace; letter-spacing:.04em; }
-  .system-node span { display:block; margin-top:.32rem; font-size:.68rem; color:var(--muted); }
-  .node-ads { --node-color:#4285f4; top:5%; left:2%; transform:translateZ(20px) rotateY(4deg); }
-  .node-crm { --node-color:var(--accent2); top:5%; right:0; transform:translateZ(5px) rotateY(-4deg); }
-  .node-ai { --node-color:var(--accent); bottom:4%; left:0; transform:translateZ(35px) rotateY(4deg); }
-  .node-book { --node-color:var(--green); bottom:4%; right:0; transform:translateZ(18px) rotateY(-4deg); }
-  .system-line { position:absolute; height:1px; width:32%; left:34%; top:50%; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:.65; transform-origin:center; }
+  .system-node span { display:block; margin-top:.32rem; font-size:.68rem; color:var(--muted); transition:color .3s; }
+  .system-node::after { content:''; position:absolute; inset:0; background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.14) 50%,transparent 75%); transform:translateX(-120%); pointer-events:none; }
+  .system-node.node-live { border-color:var(--node-color,var(--accent)); box-shadow:0 16px 40px rgba(0,0,0,.44),0 0 22px color-mix(in srgb,var(--node-color,var(--accent)) 38%,transparent); transform:translateZ(26px) translateY(-3px) scale(1.04); }
+  .system-node.node-live::before { transform:scale(1.35); box-shadow:0 0 18px var(--node-color,var(--accent)); }
+  .system-node.node-live::after { animation:node-sheen 1.4s ease-out both; }
+  .system-node.node-live span { color:var(--text); }
+  .node-n8n { --node-color:#ff6b35; top:1%; left:36%; transform:translateZ(28px); }
+  .node-ghl { --node-color:#a78bfa; top:23%; right:0; transform:translateZ(5px) rotateY(-4deg); }
+  .node-make { --node-color:#ff2f92; bottom:3%; right:3%; transform:translateZ(18px) rotateY(-4deg); }
+  .node-ads { --node-color:#4285f4; bottom:3%; left:3%; transform:translateZ(35px) rotateY(4deg); }
+  .node-zapier { --node-color:#ff4f00; top:45%; left:-1%; transform:translateZ(20px) rotateY(4deg); }
+  .system-line { position:absolute; height:1px; width:34%; left:33%; top:50%; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:.65; transform-origin:center; }
+  .system-line.is-live { opacity:1; background:linear-gradient(90deg,transparent,var(--green),var(--accent),transparent); box-shadow:0 0 12px rgba(0,255,136,.55); }
+  @keyframes node-sheen { from { transform:translateX(-120%); } to { transform:translateX(120%); } }
+
   .system-line::after { content:''; position:absolute; width:6px; height:6px; top:-2.5px; border-radius:50%; background:var(--green); box-shadow:0 0 12px var(--green); animation:data-pulse 2.2s ease-in-out infinite; }
-  .line-1 { transform:rotate(45deg); } .line-2 { transform:rotate(-45deg); } .line-3 { transform:rotate(135deg); } .line-4 { transform:rotate(-135deg); }
+    .line-1 { transform:rotate(-90deg); } .line-2 { transform:rotate(-32deg); } .line-3 { transform:rotate(32deg); } .line-4 { transform:rotate(145deg); } .line-5 { transform:rotate(180deg); }
   .line-2::after,.line-4::after { animation-delay:-1.1s; }
-  .system-status { position:absolute; left:50%; bottom:-2%; transform:translateX(-50%); display:flex; align-items:center; gap:.45rem; white-space:nowrap; padding:.45rem .8rem; border:1px solid rgba(0,255,136,.25); border-radius:30px; background:rgba(6,8,16,.82); color:var(--green); font:400 .58rem 'Space Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
-  .system-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+  .line-5::after { animation-delay:-2.2s; }
+
+    .system-status { position:absolute; left:50%; bottom:-2%; transform:translateX(-50%); display:flex; align-items:center; gap:.45rem; white-space:nowrap; padding:.45rem .8rem; border:1px solid rgba(0,255,136,.25); border-radius:30px; background:rgba(6,8,16,.82); color:var(--green); font:400 .58rem 'Space Mono',monospace; letter-spacing:.08em; text-transform:uppercase; transition:border-color .3s,box-shadow .3s,color .3s; }
+  .system-status.status-processing { border-color:rgba(0,212,255,.45); color:var(--accent); box-shadow:0 0 18px rgba(0,212,255,.12); }
+
+    .system-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse-dot 2s infinite; }
+  .system-status.status-processing::before { background:var(--accent); }
+
   @keyframes system-orbit { to { transform:rotate(360deg); } }
   @keyframes data-pulse { from { left:0; opacity:0; } 20%,80% { opacity:1; } to { left:100%; opacity:0; } }  /* Living dashboard motion: one quiet entrance, then low-frequency system signals. */
   .automation-system.motion-enabled > * { opacity:0; }
   .automation-system.motion-enabled .automation-scene { transform:scale(.97); }
   .automation-system.motion-enabled.is-visible > .automation-scene { animation:system-enter .52s cubic-bezier(.16,1,.3,1) both; }
-  .automation-system.motion-enabled.is-visible .automation-core { animation:core-enter .5s cubic-bezier(.16,1,.3,1) .12s both; }
-  .automation-system.motion-enabled.is-visible .node-ads { animation:node-enter .46s cubic-bezier(.16,1,.3,1) .28s both; }
-  .automation-system.motion-enabled.is-visible .node-crm { animation:node-enter .46s cubic-bezier(.16,1,.3,1) .45s both; }
-  .automation-system.motion-enabled.is-visible .node-book { animation:node-enter .46s cubic-bezier(.16,1,.3,1) .62s both; }
-  .automation-system.motion-enabled.is-visible .node-ai { animation:node-enter .46s cubic-bezier(.16,1,.3,1) .79s both; }
+    .automation-system.motion-enabled.is-visible .automation-core { animation:core-enter .5s cubic-bezier(.16,1,.3,1) .12s both, core-breathe 4.8s ease-in-out .62s infinite; }
+
+    .automation-system.motion-enabled.is-visible .node-n8n { animation:node-fade-in .46s cubic-bezier(.16,1,.3,1) .28s both; }
+  .automation-system.motion-enabled.is-visible .node-ghl { animation:node-fade-in .46s cubic-bezier(.16,1,.3,1) .42s both; }
+  .automation-system.motion-enabled.is-visible .node-make { animation:node-fade-in .46s cubic-bezier(.16,1,.3,1) .56s both; }
+  .automation-system.motion-enabled.is-visible .node-ads { animation:node-fade-in .46s cubic-bezier(.16,1,.3,1) .70s both; }
+  .automation-system.motion-enabled.is-visible .node-zapier { animation:node-fade-in .46s cubic-bezier(.16,1,.3,1) .84s both; }
+
   .automation-system.motion-enabled.is-visible > .system-status { animation:status-enter .5s cubic-bezier(.16,1,.3,1) .96s both; }
   .automation-scene::before { content:''; position:absolute; inset:12%; border:1px dashed rgba(0,212,255,.22); border-radius:50%; pointer-events:none; animation:ring-flow 84s linear infinite; }
-  .automation-core::before { animation-duration:78s; }
+    .automation-core::before { animation-duration:78s; }
+  .automation-core::after { animation-duration:92s; }
+  .automation-core { animation:core-breathe 4.8s ease-in-out infinite; }
+  .core-shade { animation:core-scan 4.2s ease-in-out infinite; }
+  @keyframes core-breathe { 0%,100% { box-shadow:0 0 80px rgba(0,212,255,.28),inset 0 0 32px rgba(123,47,255,.18); } 50% { box-shadow:0 0 105px rgba(0,212,255,.42),inset 0 0 42px rgba(123,47,255,.24); } }
+  @keyframes core-scan { 0%,100% { opacity:.8; } 50% { opacity:1; } }
+
   .automation-core::after { animation-duration:92s; }
   .system-node { transition:transform .23s ease, border-color .23s ease, box-shadow .23s ease; }
   .system-node:hover { border-color:var(--node-color,var(--accent)); box-shadow:0 16px 40px rgba(0,0,0,.44), 0 0 18px rgba(0,212,255,.18); transform:translateZ(20px) translateY(-4px) scale(1.02); }
@@ -218,7 +249,9 @@
   .particle-5 { top:25%; left:80%; --particle-color:var(--accent3); --particle-duration:6.1s; --particle-delay:-.5s; }
   @keyframes system-enter { from { opacity:0; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
   @keyframes core-enter { from { opacity:0; transform:translateZ(65px) scale(.94); } to { opacity:1; transform:translateZ(65px) scale(1); } }
-  @keyframes node-enter { from { opacity:0; transform:translateZ(20px) translateY(8px) scale(.96); } to { opacity:1; transform:translateZ(20px) translateY(0) scale(1); } }
+    @keyframes node-enter { from { opacity:0; transform:translateZ(20px) translateY(8px) scale(.96); } to { opacity:1; transform:translateZ(20px) translateY(0) scale(1); } }
+  @keyframes node-fade-in { from { opacity:0; } to { opacity:1; } }
+
   @keyframes status-enter { from { opacity:0; transform:translateX(-50%) translateY(7px) scale(.96); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
   @keyframes ring-flow { to { transform:rotate(360deg); } }
   @keyframes status-pulse { 0%,100% { opacity:.72; box-shadow:0 0 7px var(--node-color,var(--accent)); } 50% { opacity:1; box-shadow:0 0 15px var(--node-color,var(--accent)); } }
@@ -292,6 +325,7 @@
   .tag-purple { background: rgba(123,47,255,0.1); color: #a78bfa; border: 1px solid rgba(123,47,255,0.2); }
   .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
   .tag-green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .tag-red { background: rgba(234,75,113,0.1); color: #ff8fab; border: 1px solid rgba(234,75,113,0.25); }
   .project-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
   .project-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
   .project-result { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--green); margin-bottom: 1.2rem; font-weight: 600; }
@@ -601,11 +635,14 @@
   #chat-send:disabled { opacity: 0.35; transform: none; }
   #chat-send svg { width: 16px; height: 16px; fill: #060810; }
 
-  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .hero::before { background-position: 72% center; opacity: .5; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
+
   @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
-  @media (max-width: 520px) { .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
-  @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after { animation:none !important; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
+    @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .hero::before { background-position: 72% center; opacity: .34; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
+
+    @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } .system-node { width:100px; } .node-n8n { left:34%; } .node-zapier { left:-3%; } }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .hero::before { animation:none; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after, .automation-core, .core-shade { animation:none !important; } .system-node.node-live { transform:none; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
 
   /* ═══════ TYPEWRITER ═══════ */
   .typewriter-text { color: var(--accent); font-weight: 700; }
@@ -667,11 +704,12 @@
     <li><a href="#experience">Experience</a></li>
     <li><a href="#certifications">Certs</a></li>
     <li class="nav-dropdown">
-      <a href="#more-work">More Work <span class="nav-dropdown-arrow">▾</span></a>
+      <a href="#projects">More Work <span class="nav-dropdown-arrow">▾</span></a>
       <div class="nav-dropdown-menu">
         <a href="meta.html" target="_blank"><span class="dm-icon">📘</span> Meta Ads Work</a>
         <a href="ghl-work-samples.html" target="_blank"><span class="dm-icon">🤖</span> GHL Work Samples</a>
         <a href="zapier-automation-workflow.html" target="_blank"><span class="dm-icon">⚡</span> Zapier Automation</a>
+        <a href="n8n-automation-sample.html" target="_blank"><span class="dm-icon">🔁</span> n8n Automation</a>
         <hr>
         <a href="resilience-therapy-case-study.html" target="_blank"><span class="dm-icon">🧠</span> Resilience Therapy</a>
         <a href="certifications.html" target="_blank"><span class="dm-icon">🏆</span> All Certifications</a>
@@ -706,16 +744,20 @@
 
       </div>
     </div>
-    <div class="automation-system" id="automation-system" aria-label="Interactive full-stack application architecture">
+        <div class="automation-system" id="automation-system" aria-label="Animated AI operator workflow connecting n8n, GoHighLevel, Make.com, Google Ads, and Zapier">
+
       <div class="automation-scene" id="automation-scene">
-        <div class="system-line line-1"></div><div class="system-line line-2"></div><div class="system-line line-3"></div><div class="system-line line-4"></div><div class="system-particles" aria-hidden="true"><span class="system-particle particle-1"></span><span class="system-particle particle-2"></span><span class="system-particle particle-3"></span><span class="system-particle particle-4"></span><span class="system-particle particle-5"></span></div>
-        <div class="system-node node-ads"><strong>Claude Code</strong><span>Responsive UI</span></div>
-        <div class="system-node node-crm"><strong>API Layer</strong><span>Secure services</span></div>
-        <div class="system-node node-ai"><strong>Google Ads</strong><span>Data architecture</span></div>
-        <div class="system-node node-book"><strong>GoHighLevel</strong><span>Deploy + scale</span></div>
-        <div class="automation-core"><img class="core-portrait" src="Profile.png" alt="Marlon Palomares, Google Ads and GoHighLevel Automation Specialist"><div class="core-shade"></div><div class="core-copy"><strong>MARLON</strong><span>Google Ads &amp; GoHighLevel Automation Specialist</span></div></div>
+                <div class="system-line line-1"></div><div class="system-line line-2"></div><div class="system-line line-3"></div><div class="system-line line-4"></div><div class="system-line line-5"></div><div class="system-particles" aria-hidden="true"><span class="system-particle particle-1"></span><span class="system-particle particle-2"></span><span class="system-particle particle-3"></span><span class="system-particle particle-4"></span><span class="system-particle particle-5"></span></div>
+        <div class="system-node node-n8n" data-workflow="n8n"><strong>n8n</strong><span>Trigger intake</span></div>
+        <div class="system-node node-ghl" data-workflow="ghl"><strong>GoHighLevel</strong><span>Qualify lead</span></div>
+        <div class="system-node node-make" data-workflow="make"><strong>Make.com</strong><span>Route signal</span></div>
+        <div class="system-node node-ads" data-workflow="ads"><strong>Google Ads</strong><span>Optimize spend</span></div>
+        <div class="system-node node-zapier" data-workflow="zapier"><strong>Zapier</strong><span>Book follow-up</span></div>
+        <div class="automation-core"><img class="core-portrait" src="Profile.png" alt="Marlon Palomares, Google Ads and GoHighLevel Automation Specialist"><div class="core-shade"></div><div class="core-copy"><strong>AI OPERATOR</strong><span>n8n · GHL · Make · Ads · Zapier</span></div></div>
+
       </div>
-      <div class="system-status">Automation system online</div>
+            <div class="system-status" id="workflow-status" aria-live="polite">AI automation system online</div>
+
     </div>
     <div class="hero-profile tilt-container" id="hero-profile-tilt">
       <div class="profile-glow"></div>
@@ -803,25 +845,11 @@
     <p class="section-sub reveal">Real campaigns, real results. Built for service businesses that need leads — not just impressions.</p>
     <div class="projects-grid">
       <div class="project-card"><div class="project-thumb p-t-1"><img src="Case%20images/junk%20removal.png" alt="Junk Removal Lead Machine" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case%20images/Plumbimg.png" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case%20images/Plumbimg.png" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span><span class="tag tag-red">n8n</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a><a href="n8n-automation-sample.html" target="_blank" class="proj-link">View n8n Sample →</a></div></div></div>
       <div class="project-card"><div class="project-thumb p-t-3"><img src="Case%20images/non%20Profit.png" alt="Humanity Impact Institute Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Humanity Impact Institute Case Study</div><div class="project-desc">Full Google Ads transformation for a nonprofit — cut wasted ad spend by 67%, improved conversion rate by 211%, and realigned campaign architecture to drive real internship applications.</div><div class="project-result">67% less waste · 211% better conversions · $847 reallocated</div><div class="project-links"><a href="Google Ads Non Profit Case Study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
       <div class="project-card"><div class="project-thumb p-t-4"><img src="Case%20images/Ai%20automation.png" alt="AI Marketing Automation" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-purple">AI</span></div><div class="project-name">Mgemz Prompt Optimizer — AI-Assisted Full-Stack Product Build</div><div class="project-desc">Used Claude Code as an AI pair-programming and agentic development environment to plan the product architecture, scaffold the application, build responsive UI components, connect the AI workflow, debug edge cases, and refine the production experience. Mgemz Prompt Optimizer demonstrates how Claude Code can turn a concept into a complete, usable web application.</div><div class="project-result">From product idea to working web app: architecture, interface, AI integration, testing, and deployment-ready refinement</div><div class="project-links"><a href="https://github.com/mpalomaresdigitalsolutions/IconCrafts" target="_blank" rel="noopener noreferrer" class="proj-link">View IconCrafts Case Study →</a><a href="https://github.com/mpdigitalsolution/Mgem-s-Studio" target="_blank" rel="noopener noreferrer" class="proj-link">View Mgem&#39;s Studio Case Study →</a><a href="https://github.com/mpdigitalsolution/Mgemz-Optimizer.git" target="_blank" rel="noopener noreferrer" class="proj-link">View Mgemz Optimizer Case Study →</a><a href="https://github.com/margemzp-ui/msrgems.git" target="_blank" rel="noopener noreferrer" class="proj-link">View FaceScreen Recorder Case Study →</a><a href="https://msrgems.vercel.app/" target="_blank" rel="noopener noreferrer" class="proj-link">View FaceScreen Recorder Live Site →</a><a href="https://mpdigitalsolution.github.io/Mgemz-Optimizer/" target="_blank" rel="noopener noreferrer" class="proj-link">View Live Landing Page</a><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
       <div class="project-card"><div class="project-thumb p-t-5"><img src="Case%20images/therapy.png" alt="Resilience Therapy Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
       <div class="project-card"><div class="project-thumb" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);"><img src="Case%20images/Facebook.png" alt="Meta Ads Portfolio" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
-    </div>
-  </section>
-
-  <section id="more-work" style="padding-top:0;">
-    <div class="section-tag">Portfolio Pages</div>
-    <h2 class="section-title reveal">More Work<br>& Samples</h2>
-    <p class="section-sub reveal">Explore individual portfolio pages for each specialty area.</p>
-    <div class="portfolio-links-grid">
-      <a href="meta.html" target="_blank" class="pl-card"><div class="pl-icon">📘</div><div class="pl-name">Meta Ads Work</div><div class="pl-desc">Facebook & Instagram ad campaigns — creative strategy, audience targeting, and campaign results across multiple verticals.</div><div class="pl-arrow">Open Page →</div></a>
-      <a href="resilience-therapy-case-study.html" target="_blank" class="pl-card"><div class="pl-icon">🧠</div><div class="pl-name">Resilience Therapy Case Study</div><div class="pl-desc">In-depth Google Ads case study for a therapy clinic — strategy, execution, and measurable outcomes for healthcare lead generation.</div><div class="pl-arrow">Open Case Study →</div></a>
-      <a href="Google Ads Non Profit Case Study.html" target="_blank" class="pl-card"><div class="pl-icon">🌱</div><div class="pl-name">Nonprofit Google Ads Case Study</div><div class="pl-desc">Full Google Ads transformation for Humanity Impact Institute — 67% less wasted spend, 211% better conversions, and $847 reallocated to quality traffic.</div><div class="pl-arrow">Open Case Study →</div></a>
-      <a href="zapier-automation-workflow.html" target="_blank" class="pl-card"><div class="pl-icon">⚡</div><div class="pl-name">Zapier Automation Workflow</div><div class="pl-desc">Multi-step Zapier automation samples — from lead capture to CRM entry, SMS follow-up, and booking confirmation workflows.</div><div class="pl-arrow">Open Workflow →</div></a>
-      <a href="certifications.html" target="_blank" class="pl-card"><div class="pl-icon">🏆</div><div class="pl-name">All Certifications</div><div class="pl-desc">Full credentials page — Google Ads, Analytics, Display, Video, Shopping, Apps, SEMrush, and GHL/Zapier automation certifications.</div><div class="pl-arrow">View Credentials →</div></a>
-      <a href="ghl-work-samples.html" target="_blank" class="pl-card"><div class="pl-icon">🤖</div><div class="pl-name">GHL Work Samples</div><div class="pl-desc">GoHighLevel CRM samples — funnel builds, pipeline setups, automation sequences, and lead nurturing workflows for service businesses.</div><div class="pl-arrow">Open Samples →</div></a>
     </div>
   </section>
 
@@ -1724,12 +1752,45 @@ if (automationSystem && automationScene && !reduceMotion.matches && window.match
     const y = (e.clientY - rect.top) / rect.height - .5;
     automationScene.style.transform = `rotateX(${-y * 9}deg) rotateY(${x * 11}deg)`;
   });
-  automationSystem.addEventListener('pointerleave', function() {
+    automationSystem.addEventListener('pointerleave', function() {
     automationScene.style.transform = '';
   });
 }
 
+/* ═══════ 3B. LIVE AI AUTOMATION WORKFLOW ═══════ */
+const workflowStatus = document.getElementById('workflow-status');
+const workflowNodes = Array.from(document.querySelectorAll('.system-node[data-workflow]'));
+const workflowLines = Array.from(document.querySelectorAll('.system-line'));
+const workflowSteps = [
+  { id: 'n8n', label: 'n8n', action: 'Trigger intake' },
+  { id: 'ghl', label: 'GoHighLevel', action: 'Qualify lead' },
+  { id: 'make', label: 'Make.com', action: 'Route signal' },
+  { id: 'ads', label: 'Google Ads', action: 'Optimize spend' },
+  { id: 'zapier', label: 'Zapier', action: 'Book follow-up' }
+];
+let workflowStepIndex = 0;
+function setWorkflowStep(index) {
+  const step = workflowSteps[index];
+  if (!step) return;
+  workflowNodes.forEach(node => node.classList.toggle('node-live', node.dataset.workflow === step.id));
+  workflowLines.forEach((line, lineIndex) => line.classList.toggle('is-live', lineIndex === index));
+  if (workflowStatus) {
+    workflowStatus.textContent = `AI operator · ${step.label} → ${step.action}`;
+    workflowStatus.classList.add('status-processing');
+  }
+}
+if (workflowNodes.length) {
+  setWorkflowStep(0);
+  if (!reduceMotion.matches) {
+    window.setInterval(() => {
+      workflowStepIndex = (workflowStepIndex + 1) % workflowSteps.length;
+      setWorkflowStep(workflowStepIndex);
+    }, 1900);
+  }
+}
+
 const countUpObserver = new IntersectionObserver((entries) => {
+
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     const el = entry.target;
