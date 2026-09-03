@@ -590,20 +590,20 @@
   .clb-prev { left: -56px; }
   .clb-next { right: -56px; }
 
-  #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 60px; height: 60px; border-radius: 50%; background: transparent; border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform 0.25s; animation: none; }
+  #chat-fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; width: 100px; height: 100px; border-radius: 50%; background: transparent; border: none; cursor: none; display: flex; align-items: center; justify-content: center; box-shadow: none; transition: transform 0.25s; animation: none; }
   @keyframes fab-pulse { 0%,100% { box-shadow: 0 8px 32px rgba(0,212,255,0.4), 0 0 0 0 rgba(0,212,255,0.25); } 50% { box-shadow: 0 8px 32px rgba(0,212,255,0.5), 0 0 0 12px rgba(0,212,255,0); } }
   #chat-fab:hover { transform: scale(1.1); }
   #chat-fab svg { width: 26px; height: 26px; fill: #060810; }
   #chat-fab .fab-badge { display: none; }
-  #chat-window { position: fixed; bottom: 6.5rem; right: 2rem; z-index: 499; width: 370px; max-width: calc(100vw - 2rem); background: rgba(11,14,26,0.97); border: 1px solid rgba(0,212,255,0.2); border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 40px rgba(0,212,255,0.07); backdrop-filter: blur(24px); display: flex; flex-direction: column; overflow: hidden; transform: scale(0.88) translateY(20px); opacity: 0; pointer-events: none; transition: transform 0.3s cubic-bezier(.23,1,.32,1), opacity 0.3s ease; transform-origin: bottom right; }
+  #chat-window { position: fixed; bottom: 8.5rem; right: 2rem; z-index: 499; width: 370px; max-width: calc(100vw - 2rem); background: rgba(11,14,26,0.97); border: 1px solid rgba(0,212,255,0.2); border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 40px rgba(0,212,255,0.07); backdrop-filter: blur(24px); display: flex; flex-direction: column; overflow: hidden; transform: scale(0.88) translateY(20px); opacity: 0; pointer-events: none; transition: transform 0.3s cubic-bezier(.23,1,.32,1), opacity 0.3s ease; transform-origin: bottom right; }
   #chat-window.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
   .chat-header { padding: 1rem 1.1rem 0.85rem; background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.7rem; }
   .assistant-icon { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 50%; }
-  .assistant-icon-section { width: 36px; height: 36px; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
-  .assistant-icon-fab { width: 60px; height: 60px; }
+  .assistant-icon-section { width: 48px; height: 48px; flex-shrink: 0; box-shadow: 0 0 16px rgba(0,212,255,0.3); }
+  .assistant-icon-fab { width: 100px; height: 100px; }
   .chat-label { position: absolute; right: calc(100% + 12px); bottom: 24px; width: max-content; padding: 0.55rem 0.8rem; border: 1px solid rgba(0,212,255,0.25); border-radius: 8px; background: rgba(11,14,26,0.94); color: var(--muted); font-size: 0.72rem; line-height: 1.45; text-align: left; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.35); cursor: pointer; }
   .chat-label strong { color: var(--text); font-size: 0.78rem; }
-  .chat-avatar { width: 38px; height: 38px; border-radius: 50%; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: none; }
+  .chat-avatar { width: 50px; height: 50px; border-radius: 50%; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: none; }
   .chat-header-info { flex: 1; }
   .chat-header-name { font-size: 0.88rem; font-weight: 700; color: var(--text); line-height: 1.2; }
   .chat-header-status { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--green); letter-spacing: 0.06em; display: flex; align-items: center; gap: 0.35rem; margin-top: 2px; }
@@ -941,7 +941,7 @@
 
         <div id="cf-reply-card">
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.1rem;">
-            <img class="assistant-icon assistant-icon-section" src="images/chatbot-icon-400.gif" alt="Marlon AI Assistant" width="36" height="36" loading="lazy">
+            <img class="assistant-icon assistant-icon-section" src="images/live-chatbot.svg" alt="Marlon AI Assistant" width="48" height="48" loading="lazy">
             <div>
               <div style="font-size:0.88rem;font-weight:700;color:var(--text);">Marlon's AI Assistant</div>
               <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--green);letter-spacing:0.07em;display:flex;align-items:center;gap:0.35rem;margin-top:2px;">
@@ -1017,14 +1017,14 @@
 <!-- CHATBOT FAB -->
 <button id="chat-fab" aria-expanded="false" aria-controls="chat-window" title="Chat with Marlon's AI Assistant">
   <div class="fab-badge"></div>
-  <img class="assistant-icon assistant-icon-fab" src="images/chatbot-icon-400.gif" alt="Open Marlon AI Assistant" width="60" height="60">
+  <img class="assistant-icon assistant-icon-fab" src="images/live-chatbot.svg" alt="Open Marlon AI Assistant" width="100" height="100">
   <span class="chat-label"><strong>Chat with me</strong><br>I'm Marlon, AI Assistant</span>
 </button>
 
 <!-- CHATBOT WINDOW -->
 <div id="chat-window">
   <div class="chat-header">
-    <div class="chat-avatar"><img class="assistant-icon" src="images/chatbot-icon-400.gif" alt="Marlon AI Assistant" width="38" height="38"></div>
+    <div class="chat-avatar"><img class="assistant-icon" src="images/live-chatbot.svg" alt="Marlon AI Assistant" width="50" height="50"></div>
     <div class="chat-header-info">
       <div class="chat-header-name">Marlon's AI Assistant</div>
       <div class="chat-header-status"><div class="chat-status-dot"></div> <span id="chat-status-text">Online · Powered by DeepSeek</span></div>
