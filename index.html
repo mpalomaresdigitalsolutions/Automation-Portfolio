@@ -87,7 +87,7 @@
   .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
 
   /* AI robot hero atmosphere — decorative, text-safe, and layered behind content */
-  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') 68% center / cover no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
+  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') right center / 55% no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
   .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 22% 48%, rgba(6,8,16,.95) 0%, rgba(6,8,16,.7) 42%, transparent 75%), linear-gradient(to bottom, transparent 55%, var(--bg) 100%); }
 
   .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
@@ -290,8 +290,37 @@
   .service-card:hover::before { opacity: 1; }
   .service-card:hover { background: var(--bg2); }
   .service-num { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-  .service-icon { width: 52px; height: 52px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.2rem; }
-  .si-1 { background: rgba(0,212,255,0.1); } .si-2 { background: rgba(123,47,255,0.1); } .si-3 { background: rgba(255,107,53,0.1); } .si-4 { background: rgba(0,255,136,0.1); } .si-5 { background: rgba(0,212,255,0.1); } .si-6 { background: rgba(123,47,255,0.1); }
+  .service-icon { 
+    width: 52px; 
+    height: 52px; 
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 1.25rem; 
+    border: 1px solid rgba(255,255,255,0.08); 
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); 
+  }
+  .service-icon svg { 
+    width: 25px; 
+    height: 25px; 
+    display: block; 
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); 
+  }
+  .service-card:hover .service-icon { transform: translateY(-3px) scale(1.06); }
+  .service-card:hover .service-icon svg { transform: scale(1.1); }
+  .si-1 { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.22); color: var(--accent); }
+  .service-card:nth-child(1):hover .si-1 { box-shadow: 0 0 25px rgba(0,212,255,0.35); border-color: var(--accent); }
+  .si-2 { background: rgba(123,47,255,0.08); border-color: rgba(123,47,255,0.25); color: #c084fc; }
+  .service-card:nth-child(2):hover .si-2 { box-shadow: 0 0 25px rgba(123,47,255,0.4); border-color: #c084fc; }
+  .si-3 { background: rgba(255,107,53,0.08); border-color: rgba(255,107,53,0.25); color: var(--accent3); }
+  .service-card:nth-child(3):hover .si-3 { box-shadow: 0 0 25px rgba(255,107,53,0.4); border-color: var(--accent3); }
+  .si-4 { background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.22); color: var(--green); }
+  .service-card:nth-child(4):hover .si-4 { box-shadow: 0 0 25px rgba(0,255,136,0.35); border-color: var(--green); }
+  .si-5 { background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.22); color: #38bdf8; }
+  .service-card:nth-child(5):hover .si-5 { box-shadow: 0 0 25px rgba(0,212,255,0.35); border-color: #38bdf8; }
+  .si-6 { background: rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.25); color: #d8b4fe; }
+  .service-card:nth-child(6):hover .si-6 { box-shadow: 0 0 25px rgba(168,85,247,0.4); border-color: #d8b4fe; }
   .service-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
   .service-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
   .service-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -509,16 +538,125 @@
     100% { stroke-dashoffset: 0; }
   }
 
-  .tools-band { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
-  .tool-item { background: var(--bg); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; transition: background 0.2s; text-align: center; }
-  .tool-item:hover { background: var(--bg2); }
+  /* ═══════════════════════════════════
+     TOOLS — ANIMATED MARQUEE BELT
+  ═══════════════════════════════════ */
+  .tools-marquee-wrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: var(--bg);
+    padding: 0.6rem 0;
+  }
+  /* Fade edges */
+  .tools-marquee-wrapper::before,
+  .tools-marquee-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 120px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .tools-marquee-wrapper::before { left: 0; background: linear-gradient(to right, var(--bg) 0%, transparent 100%); }
+  .tools-marquee-wrapper::after  { right: 0; background: linear-gradient(to left,  var(--bg) 0%, transparent 100%); }
+
+  /* Scan-line shimmer */
+  .tools-scan-line {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(0,212,255,0.04) 50%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+    animation: tools-scan 4s ease-in-out infinite;
+  }
+  @keyframes tools-scan { 0%{left:-60%} 100%{left:140%} }
+
+  .tools-marquee-row {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    padding: 0.35rem 0;
+  }
+  .tools-marquee-row-1 { animation: marquee-left  28s linear infinite; }
+  .tools-marquee-row-2 { animation: marquee-right 32s linear infinite; }
+  .tools-marquee-wrapper:hover .tools-marquee-row { animation-play-state: paused; }
+
+  @keyframes marquee-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  @keyframes marquee-right { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+
+  .tool-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.6rem;
+    min-width: 120px;
+    position: relative;
+    cursor: default;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    border-right: 1px solid var(--border);
+  }
+  .tool-item:hover { transform: translateY(-6px) scale(1.08); z-index: 10; }
+
+  /* Glow halo on hover */
+  .tool-item::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 10px;
+    background: radial-gradient(circle at center, rgba(0,212,255,0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .tool-item:hover::before { opacity: 1; }
+
+  /* Icon wrapper with animated ring */
+  .tool-img-wrap {
+    position: relative;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tool-img-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,212,255,0);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .tool-item:hover .tool-img-wrap::after {
+    border-color: rgba(0,212,255,0.4);
+    box-shadow: 0 0 18px rgba(0,212,255,0.25), inset 0 0 10px rgba(0,212,255,0.06);
+  }
   .tool-emoji { font-size: 1.6rem; }
-  .tool-img { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; }
-  .tool-name { font-size: 0.78rem; font-weight: 600; }
-  .tool-cat { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; }
-  .tool-item { opacity:0; transform:translateX(-30px); transition:opacity 0.5s cubic-bezier(.23,1,.32,1), transform 0.5s cubic-bezier(.23,1,.32,1); }
-  .tool-item:nth-child(even) { transform:translateX(30px); }
-  .tool-item.in-view { opacity:1; transform:none; }
+  .tool-img { width: 38px; height: 38px; object-fit: contain; border-radius: 8px; }
+  .tool-name { font-size: 0.76rem; font-weight: 700; white-space: nowrap; color: var(--text); transition: color 0.2s; }
+  .tool-item:hover .tool-name { color: var(--accent); }
+  .tool-cat { font-family: 'Space Mono', monospace; font-size: 0.56rem; color: var(--muted); letter-spacing: 0.07em; white-space: nowrap; }
+
+  /* Floating dot particle inside each item */
+  .tool-dot {
+    position: absolute;
+    top: 6px; right: 8px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .tool-item:hover .tool-dot { opacity: 1; transform: scale(1); animation: dot-ping 1.2s ease-in-out infinite; }
+  @keyframes dot-ping {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.6); }
+    50%      { box-shadow: 0 0 0 6px rgba(0,212,255,0); }
+  }
+
+  /* tools-band is now just the old name kept for legacy — replaced by tools-marquee-wrapper */
+  .tools-band { display: none; }
 
   .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
   .contact-form { display: flex; flex-direction: column; gap: 1rem; }
@@ -819,29 +957,73 @@
     <h2 class="section-title reveal">Services &<br>Expertise</h2>
     <p class="section-sub reveal">Full-funnel specialist: from ad click to booked appointment, I handle the entire lead journey.</p>
     <div class="services-grid reveal">
-      <div class="service-card"><div class="service-num">01</div><div class="service-icon si-1">🎯</div><div class="service-name">Google Ads Management</div><div class="service-desc">Search, Display, Shopping & Video campaigns optimized for maximum ROI. Managing up to $10K+/month budgets for service businesses.</div><div class="service-tools"><span class="tool-tag">Google Ads</span><span class="tool-tag">Keyword Research</span><span class="tool-tag">Ad Copy</span><span class="tool-tag">Bidding Strategy</span></div></div>
-      <div class="service-card"><div class="service-num">02</div><div class="service-icon si-2">🤖</div><div class="service-name">AI Automation (GHL + Zapier)</div><div class="service-desc">Build intelligent lead nurturing funnels, automated follow-up sequences, and multi-step Zaps that turn enquiries into conversions on autopilot.</div><div class="service-tools"><span class="tool-tag">GoHighLevel</span><span class="tool-tag">Zapier</span><span class="tool-tag">Funnels</span><span class="tool-tag">Workflows</span></div></div>
-      <div class="service-card"><div class="service-num">03</div><div class="service-icon si-3">⚡</div><div class="service-name">Claude Code Automation</div><div class="service-desc">Leverage AI with Claude Code to automate repetitive marketing tasks, build custom scripts, and create AI-powered reporting dashboards.</div><div class="service-tools"><span class="tool-tag">Claude Code</span><span class="tool-tag">Anthropic API</span><span class="tool-tag">Custom Scripts</span></div></div>
-      <div class="service-card"><div class="service-num">04</div><div class="service-icon si-4">📊</div><div class="service-name">Conversion Tracking & Analytics</div><div class="service-desc">Precise GTM setup, Google Analytics 4 configuration, and conversion tracking to ensure you know exactly what's working and why.</div><div class="service-tools"><span class="tool-tag">GTM</span><span class="tool-tag">GA4</span><span class="tool-tag">Conversion Tracking</span></div></div>
-      <div class="service-card"><div class="service-num">05</div><div class="service-icon si-5">✍️</div><div class="service-name">Ad Copywriting</div><div class="service-desc">High-converting ad copy crafted for US audiences. 2+ years writing copy that resonates with American consumers for service-based businesses.</div><div class="service-tools"><span class="tool-tag">Search Ads</span><span class="tool-tag">Meta Ads</span><span class="tool-tag">Landing Pages</span></div></div>
-      <div class="service-card"><div class="service-num">06</div><div class="service-icon si-6">🔮</div><div class="service-name">Lead Generation Funnels</div><div class="service-desc">End-to-end funnel design from ad to booked appointment — optimized for junk removal, plumbing, HVAC, and other home service businesses.</div><div class="service-tools"><span class="tool-tag">GHL Funnels</span><span class="tool-tag">Lead Nurturing</span><span class="tool-tag">CRM Setup</span></div></div>
+      <div class="service-card"><div class="service-num">01</div><div class="service-icon si-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5" stroke-dasharray="2.5 2"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div class="service-name">Google Ads Management</div><div class="service-desc">Search, Display, Shopping & Video campaigns optimized for maximum ROI. Managing up to $10K+/month budgets for service businesses.</div><div class="service-tools"><span class="tool-tag">Google Ads</span><span class="tool-tag">Keyword Research</span><span class="tool-tag">Ad Copy</span><span class="tool-tag">Bidding Strategy</span></div></div>
+      <div class="service-card"><div class="service-num">02</div><div class="service-icon si-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="3"/><circle cx="8.5" cy="16" r="1.5" fill="currentColor"/><circle cx="15.5" cy="16" r="1.5" fill="currentColor"/><path d="M12 2v4M8 2h8"/><circle cx="12" cy="2" r="1" fill="currentColor"/><path d="M2 16h1M21 16h1"/><path d="M9 19.5h6"/></svg></div><div class="service-name">AI Automation (GHL + Zapier)</div><div class="service-desc">Build intelligent lead nurturing funnels, automated follow-up sequences, and multi-step Zaps that turn enquiries into conversions on autopilot.</div><div class="service-tools"><span class="tool-tag">GoHighLevel</span><span class="tool-tag">Zapier</span><span class="tool-tag">Funnels</span><span class="tool-tag">Workflows</span></div></div>
+      <div class="service-card"><div class="service-num">03</div><div class="service-icon si-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><polygon points="13 2 6 13 12 13 11 22 18 11 12 11 13 2" fill="currentColor" fill-opacity="0.22"/></svg></div><div class="service-name">Claude Code Automation</div><div class="service-desc">Leverage AI with Claude Code to automate repetitive marketing tasks, build custom scripts, and create AI-powered reporting dashboards.</div><div class="service-tools"><span class="tool-tag">Claude Code</span><span class="tool-tag">Anthropic API</span><span class="tool-tag">Custom Scripts</span></div></div>
+      <div class="service-card"><div class="service-num">04</div><div class="service-icon si-4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M18 17V10"/><path d="M12 17V6"/><path d="M6 17v-4"/><path d="M4 11l5-5 4 4 7-7"/><path d="M16 3h4v4"/></svg></div><div class="service-name">Conversion Tracking & Analytics</div><div class="service-desc">Precise GTM setup, Google Analytics 4 configuration, and conversion tracking to ensure you know exactly what's working and why.</div><div class="service-tools"><span class="tool-tag">GTM</span><span class="tool-tag">GA4</span><span class="tool-tag">Conversion Tracking</span></div></div>
+      <div class="service-card"><div class="service-num">05</div><div class="service-icon si-5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/><path d="M15 5l4 4"/><path d="M13 19h7"/></svg></div><div class="service-name">Ad Copywriting</div><div class="service-desc">High-converting ad copy crafted for US audiences. 2+ years writing copy that resonates with American consumers for service-based businesses.</div><div class="service-tools"><span class="tool-tag">Search Ads</span><span class="tool-tag">Meta Ads</span><span class="tool-tag">Landing Pages</span></div></div>
+      <div class="service-card"><div class="service-num">06</div><div class="service-icon si-6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-6.5 8.5v5.5l-5-2.5v-3z"/><circle cx="17.5" cy="17.5" r="3.5" fill="var(--bg)" stroke="currentColor"/><path d="M16 17.5l1 1 2-2"/></svg></div><div class="service-name">Lead Generation Funnels</div><div class="service-desc">End-to-end funnel design from ad to booked appointment — optimized for junk removal, plumbing, HVAC, and other home service businesses.</div><div class="service-tools"><span class="tool-tag">GHL Funnels</span><span class="tool-tag">Lead Nurturing</span><span class="tool-tag">CRM Setup</span></div></div>
     </div>
   </section>
 
   <section style="padding-top:0;">
     <div class="section-tag">Tech Stack</div>
     <h2 class="section-title reveal">Tools I Use<br>Daily</h2>
-    <div class="tools-band reveal">
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM & Funnels</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"><div class="tool-name">SEMrush</div><div class="tool-cat">SEO & PPC</div></div>
-      <div class="tool-item"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+
+    <div class="tools-marquee-wrapper reveal">
+      <div class="tools-scan-line"></div>
+
+      <!-- Row 1: scrolls LEFT -->
+      <div class="tools-marquee-row tools-marquee-row-1">
+        <!-- original set -->
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <!-- duplicate for seamless loop -->
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+      </div>
+
+      <!-- Row 2: scrolls RIGHT (reverse direction) -->
+      <div class="tools-marquee-row tools-marquee-row-2">
+        <!-- original set (reversed order) -->
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <!-- duplicate -->
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+      </div>
     </div>
   </section>
 
@@ -850,12 +1032,12 @@
     <h2 class="section-title reveal">Case Studies<br>& Projects</h2>
     <p class="section-sub reveal">Real campaigns, real results. Built for service businesses that need leads — not just impressions.</p>
     <div class="projects-grid">
-      <div class="project-card"><div class="project-thumb p-t-1"><img src="Case%20images/junk%20removal.png" alt="Junk Removal Lead Machine" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case%20images/Plumbimg.png" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span><span class="tag tag-red">n8n</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a><a href="n8n-automation-sample.html" target="_blank" class="proj-link">View n8n Sample →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-3"><img src="Case%20images/non%20Profit.png" alt="Humanity Impact Institute Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Humanity Impact Institute Case Study</div><div class="project-desc">Full Google Ads transformation for a nonprofit — cut wasted ad spend by 67%, improved conversion rate by 211%, and realigned campaign architecture to drive real internship applications.</div><div class="project-result">67% less waste · 211% better conversions · $847 reallocated</div><div class="project-links"><a href="Google Ads Non Profit Case Study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-4"><img src="Case%20images/Ai%20automation.png" alt="Custom Apps and Websites Built with AI" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-green">Codex</span></div><div class="project-name">Custom Apps &amp; Websites, Built with AI</div><div class="project-desc">Got an idea for an app or website? I build it with Claude Code and Codex — from the first sketch to a working product. Custom-made, not template-made. Just tell me what you want it to do.</div><div class="project-result">Your idea → a real, working app. Fast, friendly, fully custom.</div><div class="project-links"><a href="https://msrgems.vercel.app/" target="_blank" rel="noopener noreferrer" class="proj-link proj-primary">🚀 Try the Live Demo →</a><a href="https://github.com/mpalomaresdigitalsolutions/IconCrafts" target="_blank" rel="noopener noreferrer" class="proj-chip">IconCrafts</a><a href="https://github.com/mpdigitalsolution/Mgem-s-Studio" target="_blank" rel="noopener noreferrer" class="proj-chip">Mgem&#39;s Studio</a><a href="https://github.com/mpdigitalsolution/Mgemz-Optimizer.git" target="_blank" rel="noopener noreferrer" class="proj-chip">Mgemz Optimizer</a><a href="https://github.com/margemzp-ui/msrgems.git" target="_blank" rel="noopener noreferrer" class="proj-chip">FaceScreen Code</a><a href="https://mpdigitalsolution.github.io/Mgemz-Optimizer/" target="_blank" rel="noopener noreferrer" class="proj-chip">Live Landing</a><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb p-t-5"><img src="Case%20images/therapy.png" alt="Resilience Therapy Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
-      <div class="project-card"><div class="project-thumb" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);"><img src="Case%20images/Facebook.png" alt="Meta Ads Portfolio" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-1"><img src="Case%20images/junk-removal.jpg" alt="Junk Removal Lead Machine" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Google Ads</span><span class="tag tag-green">Lead Gen</span></div><div class="project-name">Junk Removal Lead Machine</div><div class="project-desc">Built and managed Google Search campaigns for a US junk removal company. Targeted high-intent keywords driving consistent inbound calls and form fills at profitable CPA.</div><div class="project-result">High-intent leads at sustainable CPA with $10K/mo budget</div><div class="project-links"><a href="case_study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-2"><img src="Case%20images/plumbing-automation.jpg" alt="Plumbing Automation Pipeline" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">GHL</span><span class="tag tag-orange">Zapier</span><span class="tag tag-red">n8n</span></div><div class="project-name">Plumbing Automation Pipeline</div><div class="project-desc">Built a complete GHL CRM + Zapier automation system for a plumbing business — from lead capture to automated SMS/email follow-ups and booking confirmations.</div><div class="project-result">Automated follow-up reducing lead response time to under 5 min</div><div class="project-links"><a href="ghl-work-samples.html" target="_blank" class="proj-link">View GHL Samples →</a><a href="zapier-automation-workflow.html" target="_blank" class="proj-link">View Zapier Flow →</a><a href="n8n-automation-sample.html" target="_blank" class="proj-link">View n8n Sample →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-3"><img src="Case%20images/non-profit.jpg" alt="Humanity Impact Institute Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-green">Nonprofit</span><span class="tag tag-blue">Google Ads</span></div><div class="project-name">Humanity Impact Institute Case Study</div><div class="project-desc">Full Google Ads transformation for a nonprofit — cut wasted ad spend by 67%, improved conversion rate by 211%, and realigned campaign architecture to drive real internship applications.</div><div class="project-result">67% less waste · 211% better conversions · $847 reallocated</div><div class="project-links"><a href="Google Ads Non Profit Case Study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-4"><img src="Case%20images/ai-automation.jpg" alt="Custom Apps and Websites Built with AI" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-orange">Claude Code</span><span class="tag tag-green">Codex</span></div><div class="project-name">Custom Apps &amp; Websites, Built with AI</div><div class="project-desc">Got an idea for an app or website? I build it with Claude Code and Codex — from the first sketch to a working product. Custom-made, not template-made. Just tell me what you want it to do.</div><div class="project-result">Your idea → a real, working app. Fast, friendly, fully custom.</div><div class="project-links"><a href="https://msrgems.vercel.app/" target="_blank" rel="noopener noreferrer" class="proj-link proj-primary">🚀 Try the Live Demo →</a><a href="https://github.com/mpalomaresdigitalsolutions/IconCrafts" target="_blank" rel="noopener noreferrer" class="proj-chip">IconCrafts</a><a href="https://github.com/mpdigitalsolution/Mgem-s-Studio" target="_blank" rel="noopener noreferrer" class="proj-chip">Mgem&#39;s Studio</a><a href="https://github.com/mpdigitalsolution/Mgemz-Optimizer.git" target="_blank" rel="noopener noreferrer" class="proj-chip">Mgemz Optimizer</a><a href="https://github.com/margemzp-ui/msrgems.git" target="_blank" rel="noopener noreferrer" class="proj-chip">FaceScreen Code</a><a href="https://mpdigitalsolution.github.io/Mgemz-Optimizer/" target="_blank" rel="noopener noreferrer" class="proj-chip">Live Landing</a><a href="#contact" class="proj-link">Enquire →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb p-t-5"><img src="Case%20images/therapy.jpg" alt="Resilience Therapy Case Study" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-purple">Google Ads</span><span class="tag tag-green">Healthcare</span></div><div class="project-name">Resilience Therapy Case Study</div><div class="project-desc">Full Google Ads campaign strategy and execution for a therapy & mental health services client — driving qualified appointment bookings at a low CPL.</div><div class="project-result">Qualified therapy leads at efficient cost-per-lead</div><div class="project-links"><a href="resilience-therapy-case-study.html" target="_blank" class="proj-link">View Case Study →</a></div></div></div>
+      <div class="project-card"><div class="project-thumb" style="background:linear-gradient(135deg,#0a0020,#200050,#060810);"><img src="Case%20images/meta-ads.jpg" alt="Meta Ads Portfolio" loading="lazy"></div><div class="project-inner"><div class="project-tags"><span class="tag tag-blue">Meta Ads</span><span class="tag tag-orange">Social</span></div><div class="project-name">Meta Ads Portfolio</div><div class="project-desc">Facebook and Instagram ad campaigns spanning multiple verticals — lead gen, retargeting, and awareness. Includes creative strategy, audience setup, and results.</div><div class="project-result">Multi-vertical Meta campaign portfolio</div><div class="project-links"><a href="meta.html" target="_blank" class="proj-link">View Meta Work →</a></div></div></div>
     </div>
   </section>
 
