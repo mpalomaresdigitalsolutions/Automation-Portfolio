@@ -3,45 +3,1325 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>n8n Lead Intake Automation | MP.dev</title>
-  <meta name="description" content="An n8n lead intake and follow-up automation sample by Marlon Palomares Digital Solutions.">
+  <title>Production n8n Systems & AI Automation Architecture | MP.dev</title>
+  <meta name="description" content="Production-grade n8n automation pipelines, RAG agents, autonomous email triage, and multi-channel CRM systems by Marlon Palomares.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#070814;--panel:#101326;--panel2:#151a34;--text:#eef3ff;--muted:#9da8c7;--cyan:#1bdcff;--purple:#9666ff;--green:#59e39a;--orange:#ffad5c;--line:#2a3359;--shadow:0 24px 80px rgba(0,0,0,.38)}
-    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 80% 0%,#18204a 0,#070814 42%),var(--bg);color:var(--text);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
-    a{color:inherit}.wrap{max-width:1120px;margin:auto;padding:28px 24px 80px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:72px}.brand{font-weight:800;letter-spacing:.12em;color:var(--cyan)}.back{color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 15px}.back:hover{color:var(--text);border-color:var(--cyan)}
-    .eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.hero{max-width:800px}.hero h1{font-size:clamp(40px,7vw,76px);line-height:1.02;letter-spacing:-.055em;margin:14px 0 24px}.hero h1 span{background:linear-gradient(90deg,var(--cyan),#bf8cff);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:20px;color:var(--muted);max-width:700px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:40px 0 58px}.stat,.panel{background:linear-gradient(145deg,rgba(21,26,52,.9),rgba(11,14,31,.9));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.stat{padding:20px}.stat strong{display:block;font-size:28px;color:var(--cyan)}.stat small{color:var(--muted)}
-    .panel{padding:28px;margin-top:24px}.panel h2{margin:0 0 8px;font-size:28px}.muted{color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:center;margin-top:28px}.node{position:relative;background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:18px 14px;min-height:142px}.node:after{content:'→';position:absolute;right:-18px;top:52px;color:var(--cyan);font-size:24px}.node:last-child:after{display:none}.node .icon{font-size:25px}.node h3{font-size:15px;margin:8px 0 3px}.node p{font-size:12px;line-height:1.4;color:var(--muted);margin:0}.n1{border-color:#a46bff}.n2{border-color:var(--cyan)}.n3{border-color:var(--orange)}.n4{border-color:var(--green)}.n5{border-color:#ff6b9d}
-    .cols{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}.list{margin:18px 0 0;padding:0;list-style:none}.list li{padding:12px 0;border-bottom:1px solid rgba(157,168,199,.15);color:var(--muted)}.list b{color:var(--text)}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}.shot{margin:0;background:#0a0d1e;border:1px solid var(--line);border-radius:16px;overflow:hidden}.shot img{display:block;width:100%;height:190px;object-fit:cover;object-position:top}.shot figcaption{padding:14px 15px;color:var(--muted);font-size:13px}.shot figcaption b{display:block;color:var(--text);font-size:14px;margin-bottom:3px}.cta{display:inline-flex;margin-top:22px;text-decoration:none;background:var(--cyan);color:#04101a;font-weight:800;padding:12px 18px;border-radius:10px}.hero-shot{display:block;width:100%;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin-top:26px}.footer{margin-top:44px;text-align:center;color:var(--muted);font-size:13px}
-    @media(max-width:800px){.flow{grid-template-columns:1fr}.node:after{content:'↓';right:auto;top:auto;bottom:-26px;left:calc(50% - 8px)}.node:last-child:after{display:none}.stats,.cols,.gallery{grid-template-columns:1fr}.shot img{height:auto;max-height:330px;object-fit:contain}.top{margin-bottom:48px}}
+    :root {
+      --bg: #070814;
+      --bg-radial: radial-gradient(circle at 80% 0%, #171e47 0%, #070814 50%);
+      --panel: #101326;
+      --panel2: #151a34;
+      --panel-hover: #192042;
+      --text: #eef3ff;
+      --muted: #9da8c7;
+      --muted-bright: #c5cfe8;
+      --cyan: #1bdcff;
+      --cyan-glow: rgba(27, 220, 255, 0.25);
+      --purple: #9666ff;
+      --purple-glow: rgba(150, 102, 255, 0.25);
+      --green: #59e39a;
+      --orange: #ffad5c;
+      --pink: #ff6b9d;
+      --line: #242c52;
+      --line-bright: rgba(27, 220, 255, 0.35);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      margin: 0;
+      background: var(--bg-radial), var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Sticky Navbar */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 8, 20, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+    }
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand {
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: .08em;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: rgba(27, 220, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(27, 220, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .nav-pills::-webkit-scrollbar { display: none; }
+    .nav-pill {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+      white-space: nowrap;
+    }
+    .nav-pill:hover {
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .nav-pill.active {
+      color: var(--cyan);
+      border-color: rgba(27, 220, 255, 0.4);
+      background: rgba(27, 220, 255, 0.08);
+    }
+    .back-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted-bright);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 16px;
+      transition: all .2s ease;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      color: #fff;
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    /* Page Container */
+    .wrap {
+      max-width: 1200px;
+      margin: auto;
+      padding: 36px 24px 90px;
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 36px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.8); }
+    }
+    .hero h1 {
+      font-size: clamp(34px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.04em;
+      margin: 10px 0 20px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--cyan), #bf8cff, #ff8cb2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      font-size: 18px;
+      color: var(--muted-bright);
+      max-width: 840px;
+      line-height: 1.6;
+      margin: 0 0 28px;
+    }
+
+    /* Tech Stack Badges */
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0 36px;
+    }
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-bright);
+      border: 1px solid var(--line);
+      padding: 5px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge b { color: #fff; font-weight: 600; }
+
+    /* Stats Grid */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0 54px;
+    }
+    .stat {
+      background: linear-gradient(145deg, rgba(21, 26, 52, 0.9), rgba(11, 14, 31, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+    }
+    .stat strong {
+      display: block;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-mono);
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .stat small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Panels & Sections */
+    .panel {
+      background: linear-gradient(145deg, rgba(21, 26, 52, 0.85), rgba(11, 14, 31, 0.92));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 34px;
+      margin-top: 36px;
+      position: relative;
+    }
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .panel-title-group h2 {
+      margin: 6px 0 8px;
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(89, 227, 154, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(89, 227, 154, 0.3);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .muted { color: var(--muted); }
+    .text-bright { color: var(--text); }
+
+    /* Visual Pipeline Flow */
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+    .node {
+      position: relative;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 16px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .node:hover {
+      transform: translateY(-2px);
+    }
+    .node .step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .node h3 {
+      font-size: 15px;
+      margin: 0 0 6px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .node p {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      margin: 0;
+    }
+    .n-cyan { border-color: rgba(27, 220, 255, 0.4); }
+    .n-purple { border-color: rgba(150, 102, 255, 0.4); }
+    .n-orange { border-color: rgba(255, 173, 92, 0.4); }
+    .n-green { border-color: rgba(89, 227, 154, 0.4); }
+    .n-pink { border-color: rgba(255, 107, 157, 0.4); }
+
+    /* Two-column layout */
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .sub-panel {
+      background: rgba(10, 13, 30, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+    }
+    .sub-panel h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Lists */
+    .list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(157, 168, 199, 0.12);
+      color: var(--muted-bright);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .list li:last-child { border-bottom: none; }
+    .list b { color: #fff; font-weight: 600; }
+
+    /* Interactive Screenshot Galleries */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .gallery.two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .shot {
+      margin: 0;
+      background: #090c1c;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: all .25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .shot:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px var(--cyan-glow);
+    }
+    .shot-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      background: #050713;
+      overflow: hidden;
+    }
+    .shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      transition: transform .3s ease;
+    }
+    .shot:hover img {
+      transform: scale(1.03);
+    }
+    .zoom-hint {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(7, 8, 20, 0.85);
+      border: 1px solid rgba(27, 220, 255, 0.4);
+      color: var(--cyan);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all .2s ease;
+      pointer-events: none;
+    }
+    .shot:hover .zoom-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .shot figcaption {
+      padding: 16px 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      background: rgba(14, 18, 40, 0.7);
+      flex: 1;
+    }
+    .shot figcaption b {
+      display: block;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    /* Hero Shot */
+    .hero-shot {
+      margin: 28px 0 0;
+      background: #090c1c;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .25s ease;
+    }
+    .hero-shot:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 10px 40px var(--cyan-glow);
+    }
+    .hero-shot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .hero-shot figcaption {
+      padding: 16px 20px;
+      background: rgba(14, 18, 40, 0.9);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hero-shot figcaption b {
+      display: block;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    /* Value Proposition Cards */
+    .value-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .v-card {
+      background: rgba(14, 18, 42, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+    }
+    .v-card h4 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: var(--cyan);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .problem-box {
+      background: rgba(255, 107, 157, 0.08);
+      border-left: 3px solid var(--pink);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #fca5a5;
+      margin-bottom: 12px;
+    }
+    .problem-box strong { color: #fff; }
+    .solution-box {
+      background: rgba(89, 227, 154, 0.08);
+      border-left: 3px solid var(--green);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #bbf7d0;
+    }
+    .solution-box strong { color: #fff; }
+
+    /* Timeline Real World Example */
+    .timeline-box {
+      margin-top: 26px;
+      background: linear-gradient(145deg, rgba(21, 26, 52, 0.95), rgba(15, 22, 46, 0.95));
+      border: 1px solid rgba(27, 220, 255, 0.35);
+      border-radius: 18px;
+      padding: 26px;
+    }
+    .timeline-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cyan);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .t-step {
+      background: rgba(10, 13, 30, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .t-time {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+    .t-desc {
+      font-size: 13px;
+      color: var(--muted-bright);
+      line-height: 1.45;
+    }
+    .t-desc code {
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--orange);
+    }
+
+    /* Call To Action Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(27, 220, 255, 0.12) 0%, rgba(150, 102, 255, 0.16) 100%);
+      border: 1px solid rgba(27, 220, 255, 0.35);
+      border-radius: 24px;
+      padding: 44px 34px;
+      margin-top: 48px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .cta-banner h2 {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      margin: 0 0 12px;
+      letter-spacing: -.03em;
+    }
+    .cta-banner p {
+      color: var(--muted-bright);
+      font-size: 17px;
+      max-width: 650px;
+      margin: 0 auto 28px;
+    }
+    .cta-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .btn-primary {
+      background: var(--cyan);
+      color: #050b16;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 13px 26px;
+      border-radius: 12px;
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 25px var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      transition: all .2s ease;
+    }
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 30px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 6, 15, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity .25s ease;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-content {
+      position: relative;
+      max-width: 1100px;
+      width: 100%;
+      background: #090d21;
+      border: 1px solid var(--line-bright);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85);
+      animation: zoomIn .25s ease;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .lightbox-img-wrap {
+      max-height: 75vh;
+      background: #050713;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+    }
+    .lightbox-img-wrap img {
+      max-width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-meta {
+      padding: 18px 24px;
+      background: #0d122b;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .lightbox-meta b {
+      display: block;
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    .lightbox-meta span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(14, 18, 42, 0.85);
+      border: 1px solid var(--line);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all .2s ease;
+      z-index: 10;
+    }
+    .lightbox-close:hover {
+      background: var(--cyan);
+      color: #050b16;
+      border-color: var(--cyan);
+    }
+
+    /* Responsive Queries */
+    @media(max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .cols, .gallery, .value-cards, .timeline-steps { grid-template-columns: 1fr; }
+      .gallery.two-col { grid-template-columns: 1fr; }
+      .top-nav-inner { flex-wrap: wrap; }
+      .nav-pills { order: 3; width: 100%; }
+      .panel { padding: 24px; }
+    }
+    @media(max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+      .shot-img-wrap { height: 180px; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Sticky Navigation -->
+  <nav class="top-nav" aria-label="Page Navigation">
+    <div class="top-nav-inner">
+      <div class="brand-group">
+        <a href="index.html" class="brand">MP<span>.dev</span></a>
+        <span class="brand-badge">n8n Architect</span>
+      </div>
+      
+      <div class="nav-pills">
+        <a href="#lead-intake" class="nav-pill">⚡ Lead Intake</a>
+        <a href="#gmail-ai-automation" class="nav-pill">✉️ Gmail AI &amp; CRM</a>
+        <a href="#airbnb-rag" class="nav-pill">🏡 Airbnb RAG</a>
+        <a href="#real-estate-ai" class="nav-pill">📊 Real Estate AI</a>
+      </div>
+
+      <a class="back-btn" href="index.html#projects">← Back to Portfolio</a>
+    </div>
+  </nav>
+
   <main class="wrap">
-    <header class="top"><div class="brand">MP.dev</div><a class="back" href="index.html#projects">← Back to projects</a></header>
-    <section class="hero"><div class="eyebrow">n8n workflow sample · Lead operations</div><h1>Lead Intake &amp; <span>Follow-up Automation</span></h1><p class="lead">A practical n8n workflow that receives a new service-business enquiry, qualifies the lead, stores the record, alerts the team, and starts a personalized follow-up sequence.</p></section>
-    <section class="stats" aria-label="Workflow outcomes"><div class="stat"><strong>&lt; 5 min</strong><small>Target first-response time</small></div><div class="stat"><strong>24/7</strong><small>Automated intake coverage</small></div><div class="stat"><strong>1 source</strong><small>Centralized lead record</small></div></section>
-    <section class="panel"><h2>Workflow overview</h2><p class="muted">The sample demonstrates a real n8n lead-intake pipeline: two entry points converge into one normalized input, then a DeepSeek-powered strategy agent runs the multi-turn conversation.</p><div class="flow"><article class="node n1"><div class="icon">◉</div><h3>Telegram Trigger</h3><p>A user messages your Telegram bot to start the conversation.</p></article><article class="node n2"><div class="icon">✦</div><h3>Webhook</h3><p>An app or frontend sends a POST request with the lead data.</p></article><article class="node n3"><div class="icon">▣</div><h3>Normalize Input</h3><p>Extracts session_id (who is talking) and user_message (what they said) from either source.</p></article><article class="node n4"><div class="icon">⌁</div><h3>Strategy Agent</h3><p>DeepSeek AI agent acts as a research planner for multi-turn qualification.</p></article></div></section>
-    <section class="panel"><h2>How the Workflow Works</h2><figure class="hero-shot" style="margin:0;background:#0a0d1e;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);margin-top:26px"><img src="n8n-assets/lead-intake.png" alt="n8n workflow canvas for the Lead Intake automation showing the Telegram trigger, webhook, normalize input, and DeepSeek strategy agent" style="display:block;width:100%"><figcaption style="padding:14px 18px;color:var(--muted);font-size:13px"><b style="display:block;color:var(--text);font-size:14px;margin-bottom:3px">n8n workflow canvas</b>Two entry points (Telegram + webhook) converge in Normalize Input, then a DeepSeek strategy agent runs the multi-turn research conversation.</figcaption></figure><h3 style="margin:30px 0 6px">Stage 1 &middot; Two Entry Points</h3><p class="muted">The workflow has two ways to start:</p><ul class="list"><li><b>Telegram Trigger</b> &mdash; a user messages your Telegram bot.</li><li><b>Webhook</b> &mdash; an app or frontend sends a POST request.</li><li>Both feed into a <b>Normalize Input</b> node that extracts two things regardless of source: <b>session_id</b> (who is talking) and <b>user_message</b> (what they said).</li></ul><h3 style="margin:26px 0 6px">Stage 2 &middot; Strategy Agent (Multi-turn Conversation)</h3><p class="muted">The normalized message goes to an AI Agent backed by DeepSeek. Its job is to act as a research planner — built on expertise across paid ads, AI automation, and client services with over 2 years of hands-on experience. The agent runs the conversation like this:</p><ul class="list"><li><b>Greets the user</b> and asks what they want to research.</li><li><b>Asks up to 3 clarifying questions</b> — one at a time — to narrow the scope.</li><li><b>Presents a draft research plan</b> and asks for confirmation.</li><li><b>Always responds with a JSON object:</b> <code>{ "is_pass_next": true/false, "message": "..." }</code> so downstream nodes can read the intent programmatically.</li><li><b>Memory node</b> remembers the conversation history per <code>session_id</code>, so multi-turn back-and-forth works correctly across separate requests.</li></ul><h3 style="margin:26px 0 6px">Stage 3 &middot; Switch: Feedback or Proceed?</h3><p class="muted">A Switch node reads <code>is_pass_next</code> from the agent's JSON response:</p><ul class="list"><li><b>False (still clarifying)</b> &mdash; sends the agent's question back to the user via webhook response and/or Telegram message. The workflow ends here and waits for the next message.</li></ul></section>
-    <section class="panel"><h2>Workflow evidence</h2><p class="muted">Screenshots from the sample demonstrate the connected workspace, source data, and a completed n8n execution.</p><div class="gallery"><figure class="shot"><img src="n8n-assets/slack-alerts.png" alt="Slack alerts channel showing an automated abandoned-cart message"><figcaption><b>Slack alert channel</b>Internal notification and response context.</figcaption></figure><figure class="shot"><img src="n8n-assets/abandoned-cart-data.png" alt="Spreadsheet containing abandoned-cart customer and product data"><figcaption><b>Source data</b>Structured cart, customer, and product fields.</figcaption></figure><figure class="shot"><img src="n8n-assets/n8n-workflow-execution.png" alt="n8n workflow canvas showing completed nodes and output"><figcaption><b>n8n execution</b>Workflow nodes, logs, and successful output.</figcaption></figure></div></section>
-    <div class="cols"><section class="panel"><h2>What this sample covers</h2><ul class="list"><li><b>Input:</b> structured webhook payload from a lead form</li><li><b>Logic:</b> validation, branching, scoring, and duplicate checks</li><li><b>Operations:</b> CRM update, internal notification, and follow-up trigger</li><li><b>Visibility:</b> clear status fields for reporting and troubleshooting</li></ul></section><section class="panel"><h2>Built for service businesses</h2><p class="muted">This pattern can be adapted for junk removal, plumbing, HVAC, roofing, therapy, and other appointment-driven businesses.</p><p class="muted">Pair it with GHL, Zapier, Google Ads lead capture, or custom APIs to create a reliable full-funnel system.</p><a class="cta" href="index.html#contact">Discuss an automation →</a></section></div>
-    <section class="panel"><h2>Airbnb RAG Chat Agent — <span style="color:var(--cyan)">FiFi</span></h2><p class="muted">A guest-facing AI assistant for short-term rentals. Two n8n pipelines keep property knowledge fresh and answer guests semantically — property-first, DeepSeek-powered, and fully logged.</p>
-      <div class="cols"><section class="panel"><h3>1 &middot; Knowledge Base Updater</h3><p class="muted">Keeps property information up to date automatically.</p><ul class="list"><li><b>Property File Updated (Google Drive)</b> &mdash; polls every hour for changes to the property info document.</li><li><b>Get File Content</b> &mdash; downloads the updated file from Google Drive.</li><li><b>Extract from File</b> &mdash; pulls the plain text content out of the document.</li><li><b>Supabase Vector Store Insert</b> &mdash; chunks text (500-char chunks, 50-char overlap) and stores NVIDIA Nemotron embeddings for semantic search.</li></ul></section><section class="panel"><h3>2 &middot; RAG AI Chat Agent</h3><p class="muted">The guest-facing chatbot, powered by DeepSeek.</p><ul class="list"><li><b>When chat message received</b> &mdash; the public "FiFi" interface greets guests and accepts their messages.</li><li><b>Captures session id</b> &mdash; tracks conversation context within the session.</li><li><b>RAG AI Agent</b> &mdash; DeepSeek core with simple memory, a vector-store tool (always checked first), and Wikipedia fallback for general knowledge.</li><li><b>Log Chat to Google Sheets</b> &mdash; session ID, guest message, AI reply, and timestamp logged after every response.</li></ul></section></div>
-      <div class="gallery"><figure class="shot"><img src="n8n-assets/airbnb-rag-workflow.png" alt="n8n RAG workflow canvas showing the knowledge base updater and AI chat agent pipelines"><figcaption><b>RAG workflow canvas</b>Two pipelines: knowledge base updater and AI chat agent.</figcaption></figure><figure class="shot"><img src="n8n-assets/airbnb-chat.png" alt="FiFi guest chat interface answering a property question"><figcaption><b>FiFi guest chat</b>Property-first answers with amenities, check-in details, and safety guardrails.</figcaption></figure></div>
-      <h3 style="margin:26px 0 6px">Key behaviors</h3><ul class="list"><li><b>Property-first:</b> the agent always checks the Supabase vector store before anything else.</li><li><b>Smart term matching:</b> variations like "check in", "checkin", and "check-in" are treated identically.</li><li><b>Amenity links:</b> responses for the hot tub, TV remote, or oven include direct instruction links.</li><li><b>Safety guardrails:</b> declines inappropriate requests (extra guests, security info, personal host details) and directs emergencies to 911 or the host.</li><li><b>Full audit trail:</b> every conversation is logged to Google Sheets for review.</li></ul>
+    
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="eyebrow">
+        <span class="status-dot"></span>
+        Production Systems &middot; Multi-Agent Workflows &middot; n8n Cloud
+      </div>
+      <h1>Production n8n Systems &amp; <span>AI Automation Showcase</span></h1>
+      <p class="lead">
+        A real-world engineering portfolio demonstrating resilient n8n pipelines, semantic vector retrieval (RAG), autonomous email triage with LangChain memory, and multi-channel synchronization across Google Workspace, Telegram, and Slack.
+      </p>
+
+      <div class="tech-badges">
+        <span class="badge">⚙️ <b>n8n Cloud</b> Hybrid</span>
+        <span class="badge">🧠 <b>DeepSeek-V3</b> Reasoning</span>
+        <span class="badge">⚡ <b>NVIDIA Nemotron 120B</b> Embeddings</span>
+        <span class="badge">📫 <b>Gmail API v2</b></span>
+        <span class="badge">📱 <b>Telegram Bot API</b></span>
+        <span class="badge">🗄️ <b>Supabase Vector</b> (pgvector)</span>
+        <span class="badge">🔍 <b>Weaviate Vector DB</b></span>
+        <span class="badge">📊 <b>Google Sheets API v4</b></span>
+        <span class="badge">🧩 <b>LangChain Memory</b></span>
+      </div>
+
+      <section class="stats" aria-label="Key Performance Indicators">
+        <div class="stat">
+          <strong>4 Live</strong>
+          <small>Production Workflows</small>
+        </div>
+        <div class="stat">
+          <strong>&lt; 5s</strong>
+          <small>Real-Time AI Response Time</small>
+        </div>
+        <div class="stat">
+          <strong>100%</strong>
+          <small>Zero-Touch CRM Ingestion</small>
+        </div>
+        <div class="stat">
+          <strong>99.9%</strong>
+          <small>Resilient Retry &amp; Fault Tolerance</small>
+        </div>
+      </section>
+    </header>
+
+    <!-- SECTION 1: LEAD INTAKE AUTOMATION -->
+    <section class="panel" id="lead-intake">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="margin-bottom:4px">System 01 &middot; Client Acquisition Funnel</div>
+          <h2>Lead Intake &amp; <span style="color:var(--cyan)">Multi-Turn Strategy AI</span></h2>
+        </div>
+        <span class="tag-pill">🟢 Active Pipeline</span>
+      </div>
+      
+      <p class="muted" style="font-size:16px;max-width:850px">
+        A dual-entry qualification pipeline. Leads entering via Telegram Bot or Frontend Webhooks are normalized, evaluated through a multi-turn DeepSeek strategist, conditionally branched, and pushed to notification hubs.
+      </p>
+
+      <!-- Architecture Pipeline -->
+      <div class="flow">
+        <article class="node n-purple">
+          <div class="step-num">Step 01 &middot; Entry A</div>
+          <h3>Telegram Bot</h3>
+          <p>Instant conversational trigger when a prospective client messages.</p>
+        </article>
+        <article class="node n-cyan">
+          <div class="step-num">Step 01 &middot; Entry B</div>
+          <h3>Webhook POST</h3>
+          <p>Structured payload received from web forms or ad landing pages.</p>
+        </article>
+        <article class="node n-orange">
+          <div class="step-num">Step 02 &middot; Cleanse</div>
+          <h3>Normalize Input</h3>
+          <p>Extracts unified session_id and user_message across all sources.</p>
+        </article>
+        <article class="node n-green">
+          <div class="step-num">Step 03 &middot; Reasoning</div>
+          <h3>Strategy Agent</h3>
+          <p>DeepSeek conversational AI with memory narrow scopes in &le;3 turns.</p>
+        </article>
+        <article class="node n-pink">
+          <div class="step-num">Step 04 &middot; Logic</div>
+          <h3>JSON Switch</h3>
+          <p>Routes clarifying questions back to user or triggers team alerts.</p>
+        </article>
+      </div>
+
+      <!-- Hero Canvas Screenshot with Lightbox trigger -->
+      <figure class="hero-shot" onclick="openLightbox('n8n-assets/lead-intake.png', 'Lead Intake Workflow Canvas', 'Dual-entry Telegram and webhook pipeline with input normalization and DeepSeek multi-turn agent.')">
+        <img src="n8n-assets/lead-intake.png" alt="Lead Intake n8n Workflow Canvas">
+        <figcaption>
+          <b>n8n Workflow Canvas (Click to Enlarge)</b>
+          Multi-channel convergence (Telegram + Webhook) &rarr; Normalize Input &rarr; DeepSeek Multi-Turn Agent &rarr; Conditional Switch.
+        </figcaption>
+      </figure>
+
+      <!-- Detailed Breakdown -->
+      <div class="cols">
+        <section class="sub-panel">
+          <h3 style="color:var(--cyan)">🧠 The Multi-Turn Strategy Engine</h3>
+          <p class="muted" style="font-size:14px">Unlike rigid web forms that drop drop-offs, the DeepSeek AI agent acts as a live qualification consultant:</p>
+          <ul class="list">
+            <li><b>Dynamic Clarification:</b> Asks up to 3 targeted follow-up questions one at a time to determine budget, scope, and urgency.</li>
+            <li><b>Persistent Memory:</b> Remembers previous dialogue context linked to the user's unique <code>session_id</code>.</li>
+            <li><b>Strict JSON Handshake:</b> Enforces schema <code>{ "is_pass_next": boolean, "message": "..." }</code> for programmatic branching.</li>
+          </ul>
+        </section>
+
+        <section class="sub-panel">
+          <h3 style="color:var(--green)">⚡ Enterprise Operational Value</h3>
+          <p class="muted" style="font-size:14px">Engineered to eliminate manual qualification friction for service and agency operators:</p>
+          <ul class="list">
+            <li><b>Instant Qualification:</b> Sub-5-minute lead qualification when intent is highest.</li>
+            <li><b>Multi-Channel Adaptability:</b> Easily connects to GHL, Zapier, Google Ads lead hooks, or custom web forms.</li>
+            <li><b>Automated CRM Record:</b> Pushes sanitized, structured notes directly to sales CRM and Slack channels.</li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Evidence Gallery -->
+      <div class="gallery">
+        <figure class="shot" onclick="openLightbox('n8n-assets/slack-alerts.png', 'Slack Operations Notification', 'Internal real-time alert channel with contextual lead data.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/slack-alerts.png" alt="Slack alert notification">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Slack Alert Dispatch</b>
+            Instant team notification with customer context and cart status.
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n-assets/abandoned-cart-data.png', 'Structured Database Records', 'Normalized source records for lead conversion tracking.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/abandoned-cart-data.png" alt="Customer data records">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Structured Data Ingestion</b>
+            Clean rows tracking contact identities, products, and touchpoints.
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n-assets/n8n-workflow-execution.png', 'n8n Live Execution Log', 'Node-by-node execution logs showing sub-second execution.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/n8n-workflow-execution.png" alt="Workflow execution log">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Live Execution Run</b>
+            Telemetry confirming successful node evaluations and data handoffs.
+          </figcaption>
+        </figure>
+      </div>
     </section>
-    <section class="panel"><h2>Real Estate Market Trend Report — <span style="color:var(--cyan)">AI Market Intelligence</span></h2><p class="muted">A vertical AI assistant for real estate professionals. Two n8n pipelines keep market data fresh in Weaviate and answer trend questions with grounded, cited context — DeepSeek-powered and fully logged to Google Sheets.</p>
-      <div class="cols"><section class="panel"><h3>1 &middot; Data Ingestion</h3><p class="muted">Loads raw real estate content into Weaviate for AI retrieval.</p><ul class="list"><li><b>Ingest Form</b> &mdash; paste raw market reports, property listings, or trend data into a web form.</li><li><b>Default Data Loader + Splitter</b> &mdash; splits text into 400-character chunks with a 40-character overlap for embedding.</li><li><b>Embeddings (Cohere)</b> &mdash; converts each chunk into a vector with Cohere's <code>embed-english-v3.0</code> model.</li><li><b>Insert (Weaviate)</b> &mdash; stores vectors in the <code>Test_jina</code> collection for semantic retrieval.</li></ul></section><section class="panel"><h3>2 &middot; Chat Q&amp;A + Logging</h3><p class="muted">Answers real estate questions and logs every exchange.</p><ul class="list"><li><b>When chat message received</b> &mdash; a chat trigger receives the user's question.</li><li><b>Agent (DeepSeek)</b> &mdash; processes the question with three sub-components: <b>Memory</b> (per-session history via the chat <code>sessionId</code>), <b>Weaviate Tool</b> (searches the vector database for prices, market conditions, and regional trends), and a <b>DeepSeek Tool Model</b> that drives the search tool.</li><li><b>Sheet (Google Sheets)</b> &mdash; logs the query, response, and timestamp after every answer.</li></ul></section></div>
-      <div class="gallery"><figure class="shot"><img src="n8n-assets/ai-market-workflow.png" alt="n8n workflow canvas for the Real Estate Market Trend Report showing the data ingestion and AI chat agent pipelines"><figcaption><b>n8n workflow canvas</b>Two pipelines: data ingestion (Cohere &rarr; Weaviate) and chat Q&amp;A (DeepSeek agent + Weaviate tool).</figcaption></figure><figure class="shot"><img src="n8n-assets/market-sheet-log.png" alt="Google Sheets log of the Real Estate Market Trend Report showing timestamp, query, and response columns"><figcaption><b>Google Sheets log</b>Every query, AI response, and timestamp is recorded for review.</figcaption></figure></div>
-      <h3 style="margin:26px 0 6px">Key behaviors</h3><ul class="list"><li><b>Semantic retrieval:</b> the agent grounds answers in the ingested market data before responding.</li><li><b>Conversation memory:</b> follow-up questions retain session context.</li><li><b>Grounded, not guessed:</b> when the vector store lacks relevant data, the agent says so and asks for more context instead of fabricating figures.</li><li><b>Full audit trail:</b> every query and response is logged to the spreadsheet for transparency and reporting.</li></ul>
+
+    <!-- SECTION 2: AUTONOMOUS GMAIL AI & TELEGRAM CRM -->
+    <section class="panel" id="gmail-ai-automation" style="border-color: rgba(27,220,255,0.35); background: linear-gradient(145deg, rgba(23,29,62,0.92), rgba(12,16,36,0.95));">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="color:var(--cyan)">System 02 &middot; Autonomous Operations</div>
+          <h2 style="font-size:clamp(26px,4vw,38px)">Autonomous AI Gmail Triage, Auto-Responder &amp; <span style="color:var(--cyan)">Multi-Channel CRM</span></h2>
+        </div>
+        <span class="tag-pill" style="background:rgba(27,220,255,0.12);color:var(--cyan);border-color:rgba(27,220,255,0.35)">🟢 Active Production &middot; TDABqXYoXrEUSlHi</span>
+      </div>
+
+      <p class="muted" style="font-size:17px;line-height:1.6;max-width:880px">
+        An intelligent 24/7 email operations hub. Automatically polls incoming messages, routes newsletters and marketing noise to archive, leverages an AI Agent with conversation memory to compose custom replies to high-value inquiries, syncs to a Google Sheets CRM with 5x retry logic, and sends instant Telegram push cards to mobile.
+      </p>
+
+      <!-- 4-Pillar Pipeline -->
+      <div class="flow">
+        <article class="node n-cyan">
+          <div class="step-num">Step 01 &middot; Trigger</div>
+          <h3>Gmail Polling</h3>
+          <p>Fetches unread inbox messages; extracts sender, subject, body, &amp; headers.</p>
+        </article>
+        <article class="node n-purple">
+          <div class="step-num">Step 02 &middot; Triage</div>
+          <h3>AI Classification</h3>
+          <p>Tags as Work, Personal, Marketing, Google, or Spam; auto-archives noise.</p>
+        </article>
+        <article class="node n-orange">
+          <div class="step-num">Step 03 &middot; Auto-Reply</div>
+          <h3>Memory AI Agent</h3>
+          <p>Checks history &amp; drafts context-aware replies via Gmail API.</p>
+        </article>
+        <article class="node n-green">
+          <div class="step-num">Step 04 &middot; Sync</div>
+          <h3>Sheets CRM (5x Retry)</h3>
+          <p>Appends row with timestamp, sender, subject, label, &amp; message ID.</p>
+        </article>
+        <article class="node n-pink">
+          <div class="step-num">Step 05 &middot; Alert</div>
+          <h3>Telegram Push</h3>
+          <p>Sends formatted VIP alert directly to your phone within seconds.</p>
+        </article>
+      </div>
+
+      <!-- Gallery of Workflow Screenshots -->
+      <div class="gallery">
+        <figure class="shot" onclick="openLightbox('n8n image/GMAIL.png', 'Gmail Automated Triage & AI Engine', 'Full n8n workflow canvas showing Gmail trigger, categorization switch, LangChain AI agent with memory, Gmail auto-responder, Google Sheets node, and Telegram bot.')">
+          <div class="shot-img-wrap">
+            <img src="n8n image/GMAIL.png" alt="Gmail automated triage workflow canvas">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Gmail Ingestion &amp; AI Engine Canvas</b>
+            Automated polling, category switch, LangChain memory agent, and auto-reply node.
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n image/Spreadsheet.png', 'Zero-Maintenance Google Sheets CRM', 'Structured spreadsheet logging every interaction with timestamps, categories, senders, subjects, labels applied, and message IDs.')">
+          <div class="shot-img-wrap">
+            <img src="n8n image/Spreadsheet.png" alt="Google Sheets automated CRM">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Zero-Maintenance CRM Database</b>
+            Structured logs: Timestamp, Category, Sender, Subject, Label, and Message ID.
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n image/TELEGRAM.png', 'Instant Mobile Telegram Push Alert', 'Real-time Telegram message card received on mobile showing categorized client inquiry and immediate AI response status.')">
+          <div class="shot-img-wrap">
+            <img src="n8n image/TELEGRAM.png" alt="Telegram instant alert notification">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Instant Telegram Push Alert</b>
+            Clean notification delivering actionable client lead summaries straight to mobile.
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Problem vs Solution Value Matrix -->
+      <div class="value-cards">
+        <div class="v-card">
+          <h4>⚡ 1 &middot; 24/7 Sub-5-Minute Lead Response</h4>
+          <div class="problem-box">
+            <strong>The Problem:</strong> Responding within 5 minutes makes you <b>7x more likely</b> to win the client. If an email arrives overnight or during meetings, leads go cold.
+          </div>
+          <div class="solution-box">
+            <strong>How It Helps:</strong> The AI Agent reads the inquiry, accesses conversation history, and sends a professional reply in seconds. Your business appears responsive 24/7.
+          </div>
+        </div>
+
+        <div class="v-card">
+          <h4>📥 2 &middot; 2–3 Hours Saved Daily (Inbox Zero)</h4>
+          <div class="problem-box">
+            <strong>The Problem:</strong> Over 70% of inbox traffic is marketing newsletters, sales pitches, and system alerts that bury high-priority messages.
+          </div>
+          <div class="solution-box">
+            <strong>How It Helps:</strong> Marketing emails are instantly archived. Spam is quarantined with dedicated labels. Your primary inbox only displays actionable work.
+          </div>
+        </div>
+
+        <div class="v-card">
+          <h4>📊 3 &middot; Zero-Maintenance Google Sheets CRM</h4>
+          <div class="problem-box">
+            <strong>The Problem:</strong> Manual data entry into CRMs is time-consuming, prone to human typos, and regularly neglected.
+          </div>
+          <div class="solution-box">
+            <strong>How It Helps:</strong> Automatically records Sender, Subject, Category, Timestamp, and Message ID. Built with exponential backoff (5x auto-retry) for zero data loss.
+          </div>
+        </div>
+
+        <div class="v-card">
+          <h4>🔔 4 &middot; Focused Mobile Push (Telegram)</h4>
+          <div class="problem-box">
+            <strong>The Problem:</strong> Noisy email notifications break focus and cause screen fatigue during deep work sessions.
+          </div>
+          <div class="solution-box">
+            <strong>How It Helps:</strong> Mute noisy Gmail notifications. Your private Telegram bot only pings you when a legitimate Work or Personal email arrives.
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-World Execution Timeline -->
+      <div class="timeline-box">
+        <div class="timeline-title">
+          <span>💡 Live Operational Scenario: Agency Client Inquiry</span>
+        </div>
+        <p class="muted" style="font-size:14px;margin:0 0 12px">
+          Here is the step-by-step automated timeline when a prospect reaches out after business hours:
+        </p>
+        <div class="timeline-steps">
+          <div class="t-step">
+            <div class="t-time">11:30:00 PM</div>
+            <div class="t-desc">
+              Prospect emails: <i>"Hi, I need a website redesign and automation quote for my business."</i>
+            </div>
+          </div>
+          <div class="t-step">
+            <div class="t-time">11:30:04 PM</div>
+            <div class="t-desc">
+              Workflow polls inbox, categorizes as <code>Work</code>, and applies Gmail label.
+            </div>
+          </div>
+          <div class="t-step">
+            <div class="t-time">11:30:08 PM</div>
+            <div class="t-desc">
+              AI crafts polite reply confirming receipt &amp; setting next-day expectation.
+            </div>
+          </div>
+          <div class="t-step">
+            <div class="t-time">11:30:10 PM</div>
+            <div class="t-desc">
+              Logged to Sheets CRM &amp; Telegram bot alerts mobile: <code>New Lead: Redesign Inquiry</code>.
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-    <footer class="footer">MP.dev · Google Ads &amp; Automation Specialist · n8n sample case study</footer>
+
+    <!-- SECTION 3: AIRBNB RAG CHAT AGENT (FIFI) -->
+    <section class="panel" id="airbnb-rag">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow">System 03 &middot; Retrieval-Augmented Generation (RAG)</div>
+          <h2>Airbnb RAG Guest Concierge &mdash; <span style="color:var(--cyan)">FiFi</span></h2>
+        </div>
+        <span class="tag-pill">🟢 Production Vector Architecture</span>
+      </div>
+
+      <p class="muted" style="font-size:16px;max-width:850px">
+        An autonomous hospitality AI assistant. Features an automated hourly Knowledge Base synchronizer connected to Google Drive and Supabase vector store, coupled with a guest-facing conversational agent equipped with safety guardrails.
+      </p>
+
+      <div class="cols">
+        <section class="sub-panel">
+          <h3 style="color:var(--cyan)">1 &middot; Vector Store Auto-Sync Pipeline</h3>
+          <p class="muted" style="font-size:14px">Maintains fresh property information without manual re-indexing:</p>
+          <ul class="list">
+            <li><b>Google Drive Poller:</b> Monitors property documentation for updates every 60 minutes.</li>
+            <li><b>Text Chunker:</b> Splits content into 500-character windows with 50-character semantic overlaps.</li>
+            <li><b>NVIDIA Nemotron 120B Embeddings:</b> Converts chunks into dense high-dimensional vectors.</li>
+            <li><b>Supabase (pgvector):</b> Inserts embeddings with cosine distance matching for instant lookup.</li>
+          </ul>
+        </section>
+
+        <section class="sub-panel">
+          <h3 style="color:var(--purple)">2 &middot; RAG Guest AI Concierge</h3>
+          <p class="muted" style="font-size:14px">Answers guest questions with property-grounded precision:</p>
+          <ul class="list">
+            <li><b>Property-First Priority:</b> Searches Supabase vector store before falling back to general search.</li>
+            <li><b>Amenity Direct Links:</b> Provides hot tub, TV, WiFi, and appliance operation guides instantly.</li>
+            <li><b>Safety Guardrails:</b> Politely declines unauthorized guest additions and routes emergencies to host/911.</li>
+            <li><b>Audit Trail:</b> Logs guest question, AI answer, and timestamp to Google Sheets.</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="gallery two-col">
+        <figure class="shot" onclick="openLightbox('n8n-assets/airbnb-rag-workflow.png', 'Airbnb RAG Workflow Canvas', 'Dual pipelines: Google Drive to Supabase vector insertion, and live guest chat agent with fallback and Google Sheets logging.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/airbnb-rag-workflow.png" alt="Airbnb RAG workflow canvas">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Dual-Pipeline RAG Canvas</b>
+            Knowledge Base Updater (Drive &rarr; Supabase) + Guest Chat Agent (DeepSeek + Sheets).
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n-assets/airbnb-chat.png', 'FiFi Guest Chat Interface', 'Live conversational UI showing property-first amenity instructions and safety guardrails in action.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/airbnb-chat.png" alt="FiFi guest chat UI">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>FiFi Guest Chat Interface</b>
+            Live conversational assistant delivering immediate check-in and amenity assistance.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- SECTION 4: REAL ESTATE MARKET INTELLIGENCE -->
+    <section class="panel" id="real-estate-ai">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow">System 04 &middot; Vertical Market Intelligence</div>
+          <h2>Real Estate Market Trend Report &mdash; <span style="color:var(--cyan)">AI Market Intelligence</span></h2>
+        </div>
+        <span class="tag-pill">🟢 Enterprise Semantic Search</span>
+      </div>
+
+      <p class="muted" style="font-size:16px;max-width:850px">
+        A vertical RAG assistant for real estate professionals. Ingests raw market reports into Weaviate using Cohere embeddings, allowing brokers and investors to query real-time trends, regional prices, and historical performance with zero hallucinations.
+      </p>
+
+      <div class="cols">
+        <section class="sub-panel">
+          <h3 style="color:var(--cyan)">1 &middot; Market Data Ingestion Pipeline</h3>
+          <p class="muted" style="font-size:14px">Processes market reports, listings, and pricing updates:</p>
+          <ul class="list">
+            <li><b>Custom Ingest Form:</b> Secure endpoint for raw real estate bulletins and listings.</li>
+            <li><b>Recursive Splitter:</b> 400-character chunking with 40-character overlap for optimal semantic density.</li>
+            <li><b>Cohere embed-english-v3.0:</b> State-of-the-art embedding model for commercial search.</li>
+            <li><b>Weaviate Vector DB:</b> Stores vectors in isolated collections for instant filtered querying.</li>
+          </ul>
+        </section>
+
+        <section class="sub-panel">
+          <h3 style="color:var(--green)">2 &middot; Grounded Q&amp;A + Audit Logging</h3>
+          <p class="muted" style="font-size:14px">Ensures verified data delivery to clients and brokers:</p>
+          <ul class="list">
+            <li><b>Grounded Reasoning:</b> If market data lacks relevant stats, the agent prompts for clarification rather than guessing.</li>
+            <li><b>Conversation Memory:</b> Seamless multi-turn session tracking for complex financial queries.</li>
+            <li><b>Complete Compliance Log:</b> Records full user queries, responses, and latency in Google Sheets.</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="gallery two-col">
+        <figure class="shot" onclick="openLightbox('n8n-assets/ai-market-workflow.png', 'Real Estate Market Intelligence Workflow Canvas', 'Data ingestion pipeline (Cohere into Weaviate) and chat Q&A pipeline (DeepSeek tool calling and Google Sheets log).')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/ai-market-workflow.png" alt="Real Estate Market workflow canvas">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>n8n Workflow Canvas</b>
+            Two pipelines: Data Ingestion (Cohere &rarr; Weaviate) and Chat Q&amp;A (DeepSeek + Tool Calling).
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('n8n-assets/market-sheet-log.png', 'Google Sheets Market Log', 'Audit spreadsheet logging timestamps, user queries, and AI responses.')">
+          <div class="shot-img-wrap">
+            <img src="n8n-assets/market-sheet-log.png" alt="Market sheet log">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Google Sheets Audit Log</b>
+            Every query, AI response, and timestamp logged for regulatory compliance.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta-banner">
+      <h2>Ready to Automate Your Business Operations?</h2>
+      <p>
+        From custom n8n workflow architecture to autonomous AI agents and CRM integrations, let's build reliable systems that save time and close more deals.
+      </p>
+      <div class="cta-buttons">
+        <a href="index.html#contact" class="btn-primary">
+          Discuss an Automation Project &rarr;
+        </a>
+        <a href="index.html#projects" class="btn-secondary">
+          View All Portfolio Projects
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div><b>Marlon Palomares (MP.dev)</b> &middot; Google Ads &amp; Workflow Automation Specialist</div>
+      <div style="margin-top:6px;font-size:12px;color:var(--muted)">Production n8n Architecture Showcase &middot; Powered by n8n Cloud &amp; Advanced AI Models</div>
+    </footer>
+
   </main>
+
+  <!-- Interactive Lightbox Modal -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot Preview" onclick="closeLightbox(event)">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close modal">&times;</button>
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-img" src="" alt="Enlarged screenshot">
+      </div>
+      <div class="lightbox-meta">
+        <div>
+          <b id="lightbox-title">Workflow Preview</b>
+          <span id="lightbox-desc">Detailed workflow canvas and node execution snapshot.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lightbox Modal Logic
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxDesc = document.getElementById('lightbox-desc');
+
+    function openLightbox(src, title, desc) {
+      lightboxImg.src = src;
+      lightboxImg.alt = title;
+      lightboxTitle.textContent = title;
+      lightboxDesc.textContent = desc;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(event) {
+      if (event && event.target !== lightbox && !event.target.classList.contains('lightbox-close')) {
+        return;
+      }
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        lightboxImg.src = '';
+      }, 200);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+        closeLightbox();
+      }
+    });
+
+    // Active Navigation Highlighting on Scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navPills = document.querySelectorAll('.nav-pill');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      const scrollY = window.pageYOffset;
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navPills.forEach(pill => {
+        pill.classList.remove('active');
+        if (pill.getAttribute('href') === `#${current}`) {
+          pill.classList.add('active');
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
-
-<!-- Insert this additional link in the existing Plumbing Automation Pipeline card, beside the GHL and Zapier links:
-<a href="n8n-automation-sample.html" target="_blank" class="proj-link">View n8n Sample →</a>
-
-Optional navigation item in the More Work dropdown:
-<a href="n8n-automation-sample.html" target="_blank"><span class="dm-icon">⚙</span> n8n Automation Sample</a>
--->

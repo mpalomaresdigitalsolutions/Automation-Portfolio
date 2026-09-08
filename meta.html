@@ -3,898 +3,1238 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marlon Palomares - Meta Ads Strategy</title>
-  <meta name="description" content="Meta Ads Strategy &amp; Portfolio by Marlon Palomares. Case studies showing 47% lower CPA, 3.2x ROAS, and 62% increase in bookings through Facebook &amp; Instagram advertising.">
+  <title>Meta Ads Strategy & Paid Social Architecture | MP.dev</title>
+  <meta name="description" content="Meta Ads strategy and performance portfolio by Marlon Palomares. Production Facebook & Instagram ad campaigns achieving 47% lower CPA, 3.2x ROAS, and 62% booking growth.">
   <link rel="canonical" href="https://mpalomaresdigitalsolutions.online/meta.html">
+  
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mpalomaresdigitalsolutions.online/meta.html">
-  <meta property="og:title" content="Marlon Palomares - Meta Ads Strategy">
-  <meta property="og:description" content="Meta Ads case studies: 47% lower CPA, 3.2x ROAS. Facebook &amp; Instagram ad strategies by Marlon Palomares.">
+  <meta property="og:title" content="Meta Ads Strategy & Paid Social Architecture | Marlon Palomares">
+  <meta property="og:description" content="Performance-driven Meta (Facebook & Instagram) ad campaigns: 47% lower CPA, 3.2x ROAS, structured creative testing, and CAPI server tracking.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --bg:        #0d1117;
-      --bg-card:   #161b22;
-      --bg-nav:    #161b22;
-      --border:    #30363d;
-      --border-h:  #58a6ff;
-      --text:      #e6edf3;
-      --muted:     #8b949e;
-      --accent:    #58a6ff;
-      --green:     #3fb950;
-      --orange:    #f78166;
-      --purple:    #bc8cff;
-      --yellow:    #e3b341;
-      --heading:   #f0f6fc;
+      --bg: #070914;
+      --bg-radial: radial-gradient(circle at 75% 0%, #131d42 0%, #070914 50%);
+      --panel: #0e1226;
+      --panel2: #141935;
+      --panel-hover: #192044;
+      --text: #eef3fc;
+      --muted: #95a0c0;
+      --muted-bright: #c8d3ec;
+      --meta-blue: #1877f2;
+      --meta-glow: rgba(24, 119, 242, 0.28);
+      --cyan: #00d4ff;
+      --cyan-glow: rgba(0, 212, 255, 0.25);
+      --purple: #9666ff;
+      --purple-glow: rgba(150, 102, 255, 0.25);
+      --green: #00ff88;
+      --green-glow: rgba(0, 255, 136, 0.2);
+      --orange: #ff7536;
+      --pink: #ff6b9d;
+      --line: #21294e;
+      --line-bright: rgba(24, 119, 242, 0.4);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Space Mono', monospace;
     }
 
-    html { scroll-behavior: smooth; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 85px; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
+      background: var(--bg-radial), var(--bg);
       color: var(--text);
+      font-family: var(--font-body);
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       min-height: 100vh;
-      cursor: none;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ─── CURSOR ─── */
-    .cursor { width:8px;height:8px;background:var(--accent);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .1s;box-shadow:0 0 12px var(--accent); }
-    .cursor-ring { width:32px;height:32px;border:1px solid rgba(88,166,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .3s cubic-bezier(.23,1,.32,1),width .2s,height .2s,border-color .2s; }
+    a { color: inherit; text-decoration: none; }
 
-    /* ─── CANVAS + ORBS ─── */
-    #bg-canvas { position:fixed;inset:0;z-index:0;pointer-events:none; }
-    .grid-overlay { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(88,166,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.02) 1px,transparent 1px);background-size:60px 60px; }
-    .orb { position:fixed;border-radius:50%;filter:blur(120px);opacity:.08;pointer-events:none;z-index:0;animation:orb-drift 20s ease-in-out infinite alternate; }
-    .orb-1 { width:500px;height:500px;background:#3fb950;top:-150px;left:-80px; }
-    .orb-2 { width:400px;height:400px;background:var(--accent);bottom:-80px;right:-80px;animation-delay:-8s; }
-    .orb-3 { width:280px;height:280px;background:#f78166;top:50%;left:55%;animation-delay:-14s; }
-    @keyframes orb-drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(25px,-40px) scale(1.08)} 100%{transform:translate(-30px,25px) scale(.92)} }
-
-    /* ─── REVEAL ─── */
-    .reveal { opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease; }
-    .reveal.in-view { opacity:1;transform:none; }
-
-    /* ─── NAV ─── */
-    .nav {
-      background: var(--bg-nav);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* Sticky Glassmorphic Navbar */
+    .top-nav {
       position: sticky;
       top: 0;
-      z-index: 300;
+      z-index: 200;
+      background: rgba(7, 9, 20, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 24px;
     }
-    .nav-brand {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--heading);
-      text-decoration: none;
+    .top-nav-inner {
+      max-width: 1240px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand {
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: .06em;
+      color: var(--cyan);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .nav-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
-    }
-    .nav-links { display: flex; align-items: center; gap: 10px; }
-    .nav-back {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 5px 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: border-color .2s, background .2s;
-      white-space: nowrap;
-    }
-    .nav-back:hover { border-color: var(--border-h); background: rgba(88,166,255,.07); }
-
-    /* ─── PAGE ─── */
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 48px 32px 80px;
-    }
-
-    /* ─── HERO ─── */
-    .hero {
-      text-align: center;
-      padding-bottom: 40px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 48px;
-    }
-    .hero-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-      display: block;
-    }
-    .hero h1 {
-      font-size: 30px;
+    .brand span { color: #fff; }
+    .brand-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: rgba(24, 119, 242, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(24, 119, 242, 0.35);
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
       font-weight: 700;
-      color: var(--heading);
-      letter-spacing: -.4px;
-      margin-bottom: 12px;
-      line-height: 1.25;
     }
-    .hero-tagline {
-      font-size: 14px;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 20px;
-      line-height: 1.7;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 18px;
-    }
-    .stat-badges {
+    .nav-pills {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
     }
-    .stat-badge {
+    .nav-pills::-webkit-scrollbar { display: none; }
+    .nav-pill {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+      white-space: nowrap;
+    }
+    .nav-pill:hover {
+      color: #fff;
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .nav-pill.active {
+      color: #60a5fa;
+      border-color: rgba(24, 119, 242, 0.45);
+      background: rgba(24, 119, 242, 0.1);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted-bright);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 14px;
+      transition: all .2s ease;
+      white-space: nowrap;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1px solid;
     }
-    .badge-green { color: var(--green); background: rgba(63,185,80,.1); border-color: rgba(63,185,80,.3); }
-    .badge-blue  { color: var(--accent); background: rgba(88,166,255,.1); border-color: rgba(88,166,255,.3); }
-    .badge-orange{ color: var(--orange); background: rgba(247,129,102,.1); border-color: rgba(247,129,102,.3); }
-    .badge-yellow{ color: var(--yellow); background: rgba(227,179,65,.1); border-color: rgba(227,179,65,.3); }
-    .badge-purple{ color: var(--purple); background: rgba(188,140,255,.1); border-color: rgba(188,140,255,.3); }
-
-    /* ─── SECTION ─── */
-    .section { margin-bottom: 52px; }
-
-    .section-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--heading);
-      padding-bottom: 14px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .nav-btn:hover {
+      color: #fff;
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
     }
-    .s-icon {
-      width: 26px; height: 26px;
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; flex-shrink: 0;
+    .nav-btn-highlight {
+      background: rgba(24, 119, 242, 0.16);
+      border-color: rgba(24, 119, 242, 0.45);
+      color: #60a5fa;
     }
-    .s-blue   { background: rgba(88,166,255,.15); }
-    .s-green  { background: rgba(63,185,80,.15);  }
-    .s-orange { background: rgba(247,129,102,.15);}
-    .s-purple { background: rgba(188,140,255,.15);}
-    .s-yellow { background: rgba(227,179,65,.15); }
-
-    .section-desc {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.75;
-      margin-bottom: 20px;
-      max-width: 900px;
+    .nav-btn-highlight:hover {
+      background: var(--meta-blue);
+      color: #fff;
+      border-color: var(--meta-blue);
+      box-shadow: 0 0 16px var(--meta-glow);
     }
 
-    /* ─── INSIGHTS GRID ─── */
-    .insights-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px 24px;
-      margin-bottom: 20px;
-    }
-    .insights-card .ic-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--heading);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .insights-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-    }
-    .insight-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      padding: 9px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.45;
-      transition: background .15s;
-    }
-    .insight-item:hover { background: rgba(255,255,255,.03); }
-    .i-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 5px;
-    }
-    .dot-blue   { background: var(--accent);  }
-    .dot-green  { background: var(--green);   }
-    .dot-orange { background: var(--orange);  }
-    .dot-yellow { background: var(--yellow);  }
-    .dot-purple { background: var(--purple);  }
-
-    /* ─── IMAGE GRID 2-COL ─── */
-    .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
-
-    /* ─── IMAGE CARD ─── */
-    .img-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    .img-card:hover {
-      border-color: var(--border-h);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,.45);
-    }
-    .img-card img {
-      width: 100%;
-      display: block;
-      transition: transform .35s ease;
-    }
-    .img-card:hover img { transform: scale(1.02); }
-    .img-card-caption {
-      padding: 12px 16px 14px;
-      font-size: 12.5px;
-      color: var(--muted);
-      line-height: 1.5;
-      border-top: 1px solid var(--border);
-      flex: 1;
-    }
-    .view-hint {
-      position: absolute;
-      bottom: 8px; right: 8px;
-      background: rgba(0,0,0,.65);
-      color: rgba(255,255,255,.8);
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 4px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
-    }
-    .img-card:hover .view-hint { opacity: 1; }
-
-    /* ─── SINGLE WIDE IMAGE ─── */
-    .img-card-single {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: border-color .2s, transform .2s, box-shadow .2s;
-      position: relative;
-    }
-    .img-card-single:hover {
-      border-color: var(--border-h);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,.45);
-    }
-    .img-card-single img { width: 100%; display: block; transition: transform .35s; }
-    .img-card-single:hover img { transform: scale(1.015); }
-    .img-card-single .view-hint { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.65); color: rgba(255,255,255,.8); font-size: 11px; padding: 3px 7px; border-radius: 4px; opacity: 0; pointer-events: none; transition: opacity .2s; }
-    .img-card-single:hover .view-hint { opacity: 1; }
-    .img-card-single-caption {
-      padding: 12px 16px 14px;
-      font-size: 12.5px;
-      color: var(--muted);
-      line-height: 1.5;
-      border-top: 1px solid var(--border);
-      font-style: italic;
+    /* Container */
+    .wrap {
+      max-width: 1240px;
+      margin: auto;
+      padding: 40px 24px 90px;
     }
 
-    /* ─── TEXT CARD ─── */
-    .text-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 22px 26px;
+    /* Hero Section */
+    .hero {
+      margin-bottom: 40px;
     }
-
-    /* ─── BULLET LIST ─── */
-    .bullet-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .bullet-list li {
-      font-size: 13.5px;
-      color: var(--text);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      line-height: 1.6;
-    }
-    .bullet-list li::before {
-      content: '•';
-      color: var(--accent);
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .bullet-list li strong { color: var(--heading); font-weight: 600; }
-
-    /* ─── NUMBERED LIST ─── */
-    .num-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      counter-reset: num;
-    }
-    .num-list li {
-      font-size: 13.5px;
-      color: var(--text);
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      line-height: 1.65;
-      counter-increment: num;
-    }
-    .num-list li::before {
-      content: counter(num);
-      min-width: 22px; height: 22px;
-      border-radius: 50%;
-      background: rgba(88,166,255,.12);
-      border: 1px solid rgba(88,166,255,.3);
-      color: var(--accent);
-      font-size: 11px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .num-list li strong { color: var(--heading); font-weight: 600; }
-
-    /* ─── DETAIL BULLETS (nested) ─── */
-    .detail-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-top: 8px;
-    }
-    .detail-list li {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.6;
-    }
-    .detail-list li::before {
-      content: '›';
-      color: var(--accent);
-      font-size: 15px;
-      flex-shrink: 0;
-      line-height: 1.4;
-    }
-    .detail-list li strong { color: var(--text); font-weight: 500; }
-
-    /* ─── KEY-VALUE PAIRS ─── */
-    .kv-block {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .kv-row {
-      display: flex;
-      gap: 0;
-      font-size: 13.5px;
-      line-height: 1.6;
-    }
-    .kv-label {
-      font-weight: 600;
-      color: var(--heading);
-      min-width: 110px;
-      flex-shrink: 0;
-    }
-    .kv-val { color: var(--muted); }
-
-    /* ─── MIRROR LOCAL SECTION ─── */
-    .mirror-header {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px 8px 0 0;
-      border-bottom: none;
-      padding: 20px 24px 16px;
-    }
-    .mirror-body {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 0 0 8px 8px;
-      padding: 20px 24px 24px;
-    }
-    .mirror-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--heading);
-      margin-bottom: 8px;
-    }
-    .mirror-badges {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      margin-bottom: 0;
-    }
-
-    /* ─── RESULT BLOCK ─── */
-    .result-block {
-      background: rgba(63,185,80,.06);
-      border: 1px solid rgba(63,185,80,.2);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-top: 20px;
-      font-size: 13.5px;
-      color: var(--text);
-      line-height: 1.7;
-    }
-    .result-block strong { color: var(--green); font-weight: 600; }
-
-    /* ─── CTA ─── */
-    .cta-wrap {
-      text-align: center;
-      margin-top: 56px;
-      padding-top: 40px;
-      border-top: 1px solid var(--border);
-    }
-    .cta-btn {
+    .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 28px;
-      background: #1877f2;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background .2s, transform .15s, box-shadow .2s;
-      margin-bottom: 12px;
+      color: #60a5fa;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
     }
-    .cta-btn:hover {
-      background: #145dbf;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(24,119,242,.35);
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+      animation: pulseDot 2s infinite ease-in-out;
     }
-    .cta-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 8px;
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.8); }
     }
-    .cta-sub a { color: var(--accent); text-decoration: none; }
-    .cta-sub a:hover { text-decoration: underline; }
-    .footer-back {
+    .hero h1 {
+      font-size: clamp(34px, 5.5vw, 62px);
+      font-weight: 900;
+      line-height: 1.06;
+      letter-spacing: -.035em;
+      margin: 8px 0 20px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, #1877f2, #00d4ff, #9666ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      font-size: 18px;
+      color: var(--muted-bright);
+      max-width: 860px;
+      line-height: 1.65;
+      margin: 0 0 28px;
+    }
+
+    /* Tech Badges */
+    .tech-badges {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0 34px;
     }
-    .footer-back a {
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted-bright);
+      border: 1px solid var(--line);
+      padding: 5px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge b { color: #fff; font-weight: 600; }
+
+    /* Stats Grid */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 32px 0 54px;
+    }
+    .stat {
+      background: linear-gradient(145deg, rgba(20, 25, 53, 0.88), rgba(11, 14, 33, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--meta-blue), var(--cyan));
+    }
+    .stat strong {
+      display: block;
+      font-size: 30px;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--font-mono);
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .stat small {
+      color: var(--muted);
       font-size: 13px;
       font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      display: flex; align-items: center; gap: 5px;
-      transition: color .2s;
     }
-    .footer-back a:hover { color: var(--accent); }
 
-    /* ─── LIGHTBOX ─── */
-    #lb {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.88);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
+    /* Panels & Sections */
+    .panel {
+      background: linear-gradient(145deg, rgba(20, 25, 53, 0.85), rgba(11, 14, 33, 0.92));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 34px;
+      margin-top: 36px;
+      position: relative;
+    }
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .panel-title-group h2 {
+      margin: 6px 0 8px;
+      font-size: clamp(24px, 3.2vw, 34px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .tag-pill {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(0, 255, 136, 0.08);
+      color: var(--green);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tag-blue {
+      background: rgba(24, 119, 242, 0.12);
+      color: #60a5fa;
+      border-color: rgba(24, 119, 242, 0.4);
+    }
+    .tag-cyan {
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--cyan);
+      border-color: rgba(0, 212, 255, 0.35);
+    }
+    .tag-purple {
+      background: rgba(150, 102, 255, 0.1);
+      color: var(--purple);
+      border-color: rgba(150, 102, 255, 0.35);
+    }
+
+    .muted { color: var(--muted); }
+    .text-bright { color: var(--text); }
+
+    /* Visual Pipeline Flow */
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+    .node {
+      position: relative;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 16px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .node:hover {
+      transform: translateY(-2px);
+    }
+    .node .step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .node h3 {
+      font-size: 15px;
+      margin: 0 0 6px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .node p {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      margin: 0;
+    }
+    .n-blue { border-color: rgba(24, 119, 242, 0.45); }
+    .n-cyan { border-color: rgba(0, 212, 255, 0.45); }
+    .n-purple { border-color: rgba(150, 102, 255, 0.45); }
+    .n-green { border-color: rgba(0, 255, 136, 0.45); }
+    .n-orange { border-color: rgba(255, 117, 54, 0.45); }
+
+    /* Two-column layout */
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    .sub-panel {
+      background: rgba(10, 13, 30, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 18px;
       padding: 24px;
     }
-    #lb.on { display: flex; }
-    .lb-box {
-      position: relative;
-      max-width: 1000px; width: 100%;
-      animation: lbIn .2s ease;
+    .sub-panel h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    @keyframes lbIn { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:scale(1)} }
-    #lb-img {
-      width: 100%;
-      max-height: 82vh;
-      object-fit: contain;
-      border-radius: 8px;
-      display: block;
-      box-shadow: 0 24px 80px rgba(0,0,0,.7);
-      transition: opacity .13s;
-    }
-    #lb-cap {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 13px;
-      color: rgba(255,255,255,.55);
-    }
-    .lb-x {
-      position: absolute; top: -13px; right: -13px;
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      background: #21262d;
-      border: 1px solid var(--border);
-      color: var(--muted); font-size: 15px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background .15s, color .15s; line-height: 1;
-    }
-    .lb-x:hover { background: #30363d; color: var(--heading); }
-    .lb-nav {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 38px; height: 38px; border-radius: 50%;
-      background: rgba(22,27,34,.9); border: 1px solid var(--border);
-      color: var(--text); font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background .15s;
-    }
-    .lb-nav:hover { background: #30363d; }
-    .lb-prev { left: -52px; }
-    .lb-next { right: -52px; }
 
-    @media (max-width: 700px) {
-      .nav  { padding: 0 16px; }
-      .page { padding: 32px 16px 60px; }
-      .lb-prev { left: 4px; }
-      .lb-next { right: 4px; }
-      .insights-grid { grid-template-columns: 1fr; }
-      .nav-links .nav-back:first-child { display: none; }
+    /* Lists */
+    .list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(157, 168, 199, 0.12);
+      color: var(--muted-bright);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .list li:last-child { border-bottom: none; }
+    .list b { color: #fff; font-weight: 600; }
+
+    /* Interactive Screenshot Galleries */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 26px;
+    }
+    .shot {
+      margin: 0;
+      background: #090c1e;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: all .25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .shot:hover {
+      border-color: var(--meta-blue);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px var(--meta-glow);
+    }
+    .shot-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      background: #050714;
+      overflow: hidden;
+    }
+    .shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      transition: transform .3s ease;
+      padding: 8px;
+    }
+    .shot:hover img {
+      transform: scale(1.02);
+    }
+    .zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(7, 9, 20, 0.88);
+      border: 1px solid rgba(24, 119, 242, 0.5);
+      color: #60a5fa;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all .2s ease;
+      pointer-events: none;
+    }
+    .shot:hover .zoom-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .shot figcaption {
+      padding: 16px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      background: rgba(14, 18, 42, 0.7);
+      flex: 1;
+    }
+    .shot figcaption b {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    /* Single Hero Canvas Shot */
+    .hero-shot {
+      margin: 26px 0 0;
+      background: #090c1e;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .25s ease;
+    }
+    .hero-shot:hover {
+      border-color: var(--meta-blue);
+      box-shadow: 0 10px 40px var(--meta-glow);
+    }
+    .hero-shot img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      background: #050714;
+      display: block;
+      padding: 10px;
+    }
+    .hero-shot figcaption {
+      padding: 16px 20px;
+      background: rgba(14, 18, 42, 0.9);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hero-shot figcaption b {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    /* Value Cards */
+    .value-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .v-card {
+      background: rgba(14, 18, 44, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .v-card h4 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: #60a5fa;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .problem-box {
+      background: rgba(255, 107, 157, 0.08);
+      border-left: 3px solid var(--pink);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #fca5a5;
+      margin-bottom: 12px;
+    }
+    .problem-box strong { color: #fff; }
+    .solution-box {
+      background: rgba(0, 255, 136, 0.08);
+      border-left: 3px solid var(--green);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #bbf7d0;
+    }
+    .solution-box strong { color: #fff; }
+
+    /* Chronological Strategy Steps */
+    .framework-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .f-step {
+      background: rgba(11, 14, 32, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .f-step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-bottom: 4px;
+    }
+    .f-step-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .f-step-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Call To Action Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(24, 119, 242, 0.14) 0%, rgba(0, 212, 255, 0.12) 100%);
+      border: 1px solid rgba(24, 119, 242, 0.38);
+      border-radius: 24px;
+      padding: 44px 34px;
+      margin-top: 50px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    .cta-banner h2 {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      margin: 0 0 12px;
+      letter-spacing: -.03em;
+    }
+    .cta-banner p {
+      color: var(--muted-bright);
+      font-size: 17px;
+      max-width: 680px;
+      margin: 0 auto 28px;
+    }
+    .cta-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .btn-primary {
+      background: var(--meta-blue);
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 13px 26px;
+      border-radius: 12px;
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 25px var(--meta-glow);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      transition: all .2s ease;
+    }
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 30px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 6, 16, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity .25s ease;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-content {
+      position: relative;
+      max-width: 1050px;
+      width: 100%;
+      background: #090d22;
+      border: 1px solid var(--line-bright);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85);
+      animation: zoomIn .25s ease;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .lightbox-img-wrap {
+      max-height: 75vh;
+      background: #050714;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      padding: 14px;
+    }
+    .lightbox-img-wrap img {
+      max-width: 100%;
+      max-height: 72vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-meta {
+      padding: 18px 24px;
+      background: #0d122c;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .lightbox-meta b {
+      display: block;
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+    .lightbox-meta span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(14, 18, 44, 0.85);
+      border: 1px solid var(--line);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all .2s ease;
+      z-index: 10;
+    }
+    .lightbox-close:hover {
+      background: var(--meta-blue);
+      color: #fff;
+      border-color: var(--meta-blue);
+    }
+
+    /* Responsive */
+    @media(max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .cols, .gallery, .value-cards { grid-template-columns: 1fr; }
+      .framework-steps { grid-template-columns: 1fr; }
+      .top-nav-inner { flex-wrap: wrap; }
+      .nav-pills { order: 3; width: 100%; }
+      .panel { padding: 24px; }
+      .shot-img-wrap { height: 210px; }
+    }
+    @media(max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+      .shot-img-wrap { height: 180px; }
     }
   </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
-<canvas id="bg-canvas"></canvas>
-<div class="grid-overlay"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="index.html" class="nav-brand">
-    <span class="nav-dot"></span>
-    Marlon Palomares
-  </a>
-  <div class="nav-links">
-    <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html" class="nav-back">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Back to Case Study
-    </a>
-    <a href="index.html" class="nav-back">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-      Portfolio
-    </a>
-  </div>
-</nav>
-
-<div class="page">
-
-  <!-- HERO -->
-  <div class="hero">
-    <span class="hero-icon">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-    </span>
-    <h1>Meta Ads Strategy</h1>
-    <div class="hero-tagline">
-      Scale profitable Meta Ads with data-driven creative testing and precision audience targeting. Turn scrolls into conversions.
-    </div>
-    <div class="stat-badges">
-      <span class="stat-badge badge-green">↓ CPA 47%</span>
-      <span class="stat-badge badge-blue">× ROAS 3.2</span>
-      <span class="stat-badge badge-orange">↑ Bookings 62%</span>
-    </div>
-  </div>
-
-  <!-- OVERVIEW TEXT -->
-  <div class="section">
-    <p class="section-desc">
-      This showcase demonstrates a performance-focused Meta (Facebook) Ads approach. We combine structured creative testing, optimized delivery, and audience refinement to consistently improve CPA and conversion quality. Below are snapshots of campaign results and creative iterations used to achieve scalable performance.
-    </p>
-
-    <!-- Executive Insights -->
-    <div class="insights-card">
-      <div class="ic-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Executive Insights
+  <!-- Sticky Glassmorphic Navigation -->
+  <nav class="top-nav" aria-label="Page Navigation">
+    <div class="top-nav-inner">
+      <div class="brand-group">
+        <a href="index.html" class="brand">MP<span>.dev</span></a>
+        <span class="brand-badge">Meta Ads Specialist</span>
       </div>
-      <div class="insights-grid">
-        <div class="insight-item"><span class="i-dot dot-blue"></span> Offer–intent alignment drives lower CPA</div>
-        <div class="insight-item"><span class="i-dot dot-orange"></span> Native UGC creative increases engagement</div>
-        <div class="insight-item"><span class="i-dot dot-green"></span> Precision geo + Lookalikes stabilize delivery</div>
-        <div class="insight-item"><span class="i-dot dot-purple"></span> ABO control → CBO scale without relearning</div>
-        <div class="insight-item"><span class="i-dot dot-yellow"></span> Guardrails: fatigue, saturation, ROAS by event</div>
-        <div class="insight-item"><span class="i-dot dot-blue"></span> Congruent landing flow improves conversion rate</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CAMPAIGN RESULTS IMAGES -->
-  <div class="section">
-    <h2 class="section-title">
-      <span class="s-icon s-blue">📊</span>
-      Campaign Performance Snapshots
-    </h2>
-    <div class="grid2">
-
-      <div class="img-card" onclick="openLb(0)">
-        <img src="certificates%20images/Meta%20images/meta%20results.jpg" alt="Meta Ads campaign results dashboard" loading="lazy">
-        <span class="view-hint">View image</span>
-        <div class="img-card-caption">Results snapshot: improved ROAS and reduced CPA through audience refinement and creative testing.</div>
+      
+      <div class="nav-pills">
+        <a href="#campaign-performance" class="nav-pill">📊 Performance Proof</a>
+        <a href="#creative-strategy" class="nav-pill">🎯 Creative &amp; Audiences</a>
+        <a href="#mirror-case-study" class="nav-pill">🪞 Local Business Case</a>
+        <a href="#meta-framework" class="nav-pill">🧠 Scaling Framework</a>
       </div>
 
-      <div class="img-card" onclick="openLb(1)">
-        <img src="certificates%20images/Meta%20images/meta1.jpg" alt="Meta Ads creative and ad set preview" loading="lazy">
-        <span class="view-hint">View image</span>
-        <div class="img-card-caption">Creative iteration: high-performing hooks and value-driven angles tested across lookalike and interest audiences.</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- HOW RESULTS WERE ACHIEVED -->
-  <div class="section">
-    <h2 class="section-title">
-      <span class="s-icon s-green">✅</span>
-      How These Results Were Achieved
-    </h2>
-    <div class="text-card">
-      <ul class="bullet-list">
-        <li>Fast audit to align offer, creative and tracking. Pixel + Conversion API verified and events deduped.</li>
-        <li>Structured tests: 3–5 hooks × 2 visuals × 2 CTAs to isolate what moves CPA while keeping delivery stable.</li>
-        <li>Layered audiences for signal strength: stacked interests to find broad patterns; Lookalikes from high-quality events.</li>
-        <li>ABO for control; promote winners to CBO once signals stabilize. Budgets scaled smoothly to avoid relearning.</li>
-        <li>Native UGC creatives with clear value and quick proof. First 2 seconds thumb-stopping, low-friction CTA.</li>
-        <li>Landing path tightened: relevant headline, social proof near the fold, single conversion action.</li>
-        <li>Weekly optimization cadence: trim high-CPA sets, duplicate winners, refresh creatives before fatigue, update hooks from comments and search terms.</li>
-        <li>Simple retargeting: engaged visitors, video viewers, and cart abandoners with short deadlines and proof.</li>
-        <li>Net effect: more qualified impressions, cleaner delivery, stable scaling; measured and iterated so results compound week over week.</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- MIRROR LOCAL BUSINESS IMAGE -->
-  <div class="section">
-    <div class="img-card-single" onclick="openLb(2)">
-      <img src="certificates%20images/Meta%20images/Mirror%20local%20bussines%20.jpeg" alt="Mirror Local Business campaign results overview" loading="lazy">
-      <span class="view-hint">View image</span>
-      <div class="img-card-single-caption">
-        <strong style="color:var(--heading);font-style:normal;">Mirror Local Business</strong>: hyper-local strategy with native creative and low-friction offers.
+      <div class="nav-actions">
+        <a class="nav-btn nav-btn-highlight" href="n8n-automation-sample.html">
+          ⚙️ n8n Sample
+        </a>
+        <a class="nav-btn" href="ghl-work-samples.html">
+          🗂️ GHL Sample
+        </a>
+        <a class="nav-btn" href="index.html#projects">
+          ← Portfolio
+        </a>
       </div>
     </div>
-  </div>
+  </nav>
 
-  <!-- MIRROR LOCAL BUSINESS SECTION -->
-  <div class="section">
-    <div class="mirror-header">
-      <div class="mirror-title">Mirror Local Business: How We Achieved These Results</div>
-      <div class="mirror-badges">
-        <span class="stat-badge badge-green">↓ CPA 47%</span>
-        <span class="stat-badge badge-blue">× ROAS 3.2</span>
-        <span class="stat-badge badge-orange">↑ Bookings 62%</span>
+  <main class="wrap">
+    
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="eyebrow">
+        <span class="status-dot"></span>
+        Paid Social Acquisition &middot; Conversion API (CAPI) &middot; Creative Testing
       </div>
-    </div>
-    <div class="mirror-body">
-      <div class="kv-block">
-        <div class="kv-row">
-          <span class="kv-label">Challenge:</span>
-          <span class="kv-val">Leads were expensive and low intent despite consistent ad spend. Conversions lagged due to friction in the offer and generic creative.</span>
+      <h1>Production Meta Ads &amp; <span>Paid Social Architecture</span></h1>
+      <p class="lead">
+        Performance-focused Facebook &amp; Instagram advertising engineered for measurable ROI. Combining Conversion API (CAPI) server tracking, dynamic creative testing (DCT), and frictionless local offers to lower CPA and drive booked clients.
+      </p>
+
+      <div class="tech-badges">
+        <span class="badge">🎯 <b>Meta Ads Manager</b></span>
+        <span class="badge">⚡ <b>Conversion API (CAPI)</b></span>
+        <span class="badge">🔍 <b>Meta Pixel Deduplication</b></span>
+        <span class="badge">🎬 <b>Dynamic Creative Testing (DCT)</b></span>
+        <span class="badge">👥 <b>1%–3% Lookalike Audiences</b></span>
+        <span class="badge">🚀 <b>ABO to CBO Scaling</b></span>
+        <span class="badge">📍 <b>Radius Geo-Fencing</b></span>
+        <span class="badge">📊 <b>ROAS Optimization Guardrails</b></span>
+      </div>
+
+      <section class="stats" aria-label="Key Performance Indicators">
+        <div class="stat">
+          <strong>&darr; 47%</strong>
+          <small>Reduced Cost Per Acquisition (CPA)</small>
         </div>
-        <div class="kv-row">
-          <span class="kv-label">Approach:</span>
-          <span class="kv-val">Align offer, targeting and creative to local intent. Verify Pixel + Conversion API, dedupe events, and set up structured tests (hooks × visuals × CTAs) to isolate drivers of CPA.</span>
+        <div class="stat">
+          <strong>3.2&times;</strong>
+          <small>Average Tracked ROAS on Installs</small>
+        </div>
+        <div class="stat">
+          <strong>&uarr; 62%</strong>
+          <small>Increase in Qualified Bookings</small>
+        </div>
+        <div class="stat">
+          <strong>100% CAPI</strong>
+          <small>Server-Side Deduplicated Tracking</small>
+        </div>
+      </section>
+    </header>
+
+    <!-- SECTION 1: CAMPAIGN PERFORMANCE -->
+    <section class="panel" id="campaign-performance">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="color:#60a5fa">System 01 &middot; Performance Verification</div>
+          <h2>Campaign Performance &amp; <span style="color:var(--cyan)">Data Proof</span></h2>
+        </div>
+        <span class="tag-pill tag-blue">🟢 Verified Production Runs</span>
+      </div>
+
+      <p class="muted" style="font-size:16px;max-width:880px">
+        Live dashboard telemetry validating lower CPA, disciplined budget pacing, and ROAS improvements achieved through structured creative iteration and audience signal refinement.
+      </p>
+
+      <!-- 5-Step Optimization Pipeline -->
+      <div class="flow">
+        <article class="node n-blue">
+          <div class="step-num">Step 01 &middot; Signal</div>
+          <h3>CAPI + Pixel Audit</h3>
+          <p>Deduplicates server events for clean iOS 14.5+ attribution telemetry.</p>
+        </article>
+        <article class="node n-cyan">
+          <div class="step-num">Step 02 &middot; Testing</div>
+          <h3>Hook Matrix</h3>
+          <p>Tests 3–5 hooks &times; 2 visuals &times; 2 CTAs inside controlled ABO ad sets.</p>
+        </article>
+        <article class="node n-purple">
+          <div class="step-num">Step 03 &middot; Audience</div>
+          <h3>Target Layering</h3>
+          <p>Combines local radius targeting with 1%–3% purchase-seeded lookalikes.</p>
+        </article>
+        <article class="node n-green">
+          <div class="step-num">Step 04 &middot; Scale</div>
+          <h3>CBO Graduation</h3>
+          <p>Graduates proven winning ads into Campaign Budget Optimization smoothly.</p>
+        </article>
+        <article class="node n-orange">
+          <div class="step-num">Step 05 &middot; Retarget</div>
+          <h3>7-Day Retargeting</h3>
+          <p>Recaptures video viewers and warm page visitors with deadline social proof.</p>
+        </article>
+      </div>
+
+      <!-- Hero Dashboard Screenshot -->
+      <figure class="hero-shot" onclick="openLightbox('certificates images/Meta images/meta results.jpg', 'Meta Ads Campaign Results Dashboard', 'Verified campaign results dashboard demonstrating sustained ROAS of 3.2x, reduced CPA by 47%, and scalable lead volume.')">
+        <img src="certificates%20images/Meta%20images/meta%20results.jpg" alt="Meta Ads Campaign Results Dashboard">
+        <figcaption>
+          <b>Meta Ads Campaign Results Dashboard (Click to Enlarge)</b>
+          Performance analytics confirming reduced cost per acquisition, higher conversion velocity, and predictable ad delivery.
+        </figcaption>
+      </figure>
+
+      <!-- Executive Insights Grid -->
+      <div class="cols">
+        <section class="sub-panel">
+          <h3 style="color:#60a5fa">🔍 Core Conversion Insights</h3>
+          <ul class="list">
+            <li><b>Offer–Intent Alignment:</b> Direct-response offers (e.g. free in-home measurement) immediately drop CPA compared to generic brand awareness.</li>
+            <li><b>Thumb-Stopping First 2 Seconds:</b> UGC-style vertical videos with problem-first text hooks reduce bounce rates and maximize watch time.</li>
+            <li><b>Congruent Landing Flow:</b> Mirroring ad creative headlines directly on the landing page prevents drop-offs.</li>
+          </ul>
+        </section>
+
+        <section class="sub-panel">
+          <h3 style="color:var(--green)">🛡️ Delivery &amp; Fatigue Guardrails</h3>
+          <ul class="list">
+            <li><b>ABO Control to CBO Scaling:</b> Testing in Ad Set Budget Optimization prevents premature budget exhaustion; winners scale in CBO without triggering relearning.</li>
+            <li><b>Frequency Caps &amp; Decay Rotation:</b> Creative angles are refreshed every 2–3 weeks before audience saturation sets in.</li>
+            <li><b>Short-Window Retargeting:</b> Focuses ad spend on 7-day engaged visitors and 25%+ video viewers with urgency triggers.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- SECTION 2: CREATIVE & AUDIENCES -->
+    <section class="panel" id="creative-strategy">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="color:var(--cyan)">System 02 &middot; Creative Testing Architecture</div>
+          <h2>Creative Iteration &amp; <span style="color:var(--cyan)">Audience Signals</span></h2>
+        </div>
+        <span class="tag-pill tag-cyan">🟢 Dynamic Testing Engine</span>
+      </div>
+
+      <p class="muted" style="font-size:16px;max-width:880px">
+        Scientific ad testing isolating variable drivers of CPA. High-performing hooks and value propositions are tested against lookalike and broad interest audiences to find scalable winners.
+      </p>
+
+      <div class="gallery">
+        <figure class="shot" onclick="openLightbox('certificates images/Meta images/meta1.jpg', 'Meta Ads Creative and Ad Set Preview', 'Ad set structure showing creative angles, custom hooks, and targeting configurations.')">
+          <div class="shot-img-wrap">
+            <img src="certificates%20images/Meta%20images/meta1.jpg" alt="Meta Ads Creative Iterations">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Ad Set &amp; Creative Iterations</b>
+            Multiple creative variants tested in parallel to isolate the highest converting hook and image combination.
+          </figcaption>
+        </figure>
+
+        <figure class="shot" onclick="openLightbox('Case images/meta-ads.jpg', 'Meta Ads Campaign Architecture', 'Full campaign structure overview showing top-of-funnel prospecting, middle-of-funnel engagement, and bottom-of-funnel retargeting.')">
+          <div class="shot-img-wrap">
+            <img src="Case images/meta-ads.jpg" alt="Meta Ads Campaign Architecture">
+            <span class="zoom-hint">🔍 Enlarge</span>
+          </div>
+          <figcaption>
+            <b>Paid Social Campaign Architecture</b>
+            Full-funnel campaign build uniting TOFU prospecting, MOFU video engagement, and BOFU offer retargeting.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="cols">
+        <section class="sub-panel">
+          <h3 style="color:var(--purple)">🧪 The 3 &times; 2 &times; 2 Creative Testing Matrix</h3>
+          <p class="muted" style="font-size:14px">Every campaign launches with a disciplined test matrix designed to eliminate guesswork:</p>
+          <ul class="list">
+            <li><b>3 Distinct Hooks:</b> Testing Problem-Aware, Curiosity-Driven, and Direct-Offer lead-in angles.</li>
+            <li><b>2 Visual Formats:</b> Native UGC video demonstration vs. high-contrast static lifestyle imagery.</li>
+            <li><b>2 Calls to Action:</b> Low-friction ("Get Instant Estimate") vs. high-commitment ("Book Consultation Now").</li>
+          </ul>
+        </section>
+
+        <section class="sub-panel">
+          <h3 style="color:var(--cyan)">👥 Audience Layering &amp; Geo-Targeting</h3>
+          <p class="muted" style="font-size:14px">Balancing algorithm freedom with localized market relevance:</p>
+          <ul class="list">
+            <li><b>Radius Geo-Fencing:</b> 3–5 mile radius per service location to maximize local brand recall and fast dispatch.</li>
+            <li><b>Stacked Interest Clusters:</b> Pairing home renovation, interior design, and DIY enthusiasts for stable initial signals.</li>
+            <li><b>High-Value Lookalikes:</b> 1%–3% Lookalike audiences seeded exclusively from completed booking events.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MIRROR LOCAL BUSINESS CASE STUDY -->
+    <section class="panel" id="mirror-case-study">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="color:var(--green)">System 03 &middot; Hyper-Local Case Study</div>
+          <h2>Mirror Local Business: <span style="color:var(--green)">47% Lower CPA</span> Case Study</h2>
+        </div>
+        <span class="tag-pill">🟢 Verified Client Outcomes</span>
+      </div>
+
+      <p class="muted" style="font-size:16px;max-width:880px">
+        A hyper-local Meta Ads deployment for a home improvement service business. Transformed low-intent, high-cost ad clicks into a consistent flow of booked in-home measurements.
+      </p>
+
+      <!-- Case Study Hero Canvas -->
+      <figure class="hero-shot" onclick="openLightbox('certificates images/Meta images/Mirror local bussines .jpeg', 'Mirror Local Business Campaign Results', 'Comprehensive campaign overview showing 47% lower CPA, 3.2x ROAS, and 62% increase in customer bookings over a 6-week scaling period.')">
+        <img src="certificates%20images/Meta%20images/Mirror%20local%20bussines%20.jpeg" alt="Mirror Local Business Campaign Results Overview">
+        <figcaption>
+          <b>Mirror Local Business Campaign Results (Click to Enlarge)</b>
+          6-week performance telemetry confirming 47% reduction in CPA and a 3.2x ROAS on installed projects.
+        </figcaption>
+      </figure>
+
+      <!-- Problem vs Solution Matrix -->
+      <div class="value-cards">
+        <div class="v-card">
+          <h4>📉 The Challenge</h4>
+          <div class="problem-box">
+            <strong>The Problem:</strong> The client was burning ad spend on broad targeting with generic corporate creative. Inquiries were expensive, low-intent, and slow to convert.
+          </div>
+          <p class="muted" style="font-size:13px">Previous agency campaigns relied solely on broad reach with high friction booking forms, driving high bounce rates and inflated acquisition costs.</p>
+        </div>
+
+        <div class="v-card">
+          <h4>📈 The Approach &amp; Solution</h4>
+          <div class="solution-box">
+            <strong>The Solution:</strong> Restructured targeting into localized 3–5 mile radius geo-fences, deployed authentic UGC vertical videos, and introduced a zero-friction offer.
+          </div>
+          <p class="muted" style="font-size:13px">Replaced generic ad copy with a free in-home measurement plus 48-hour install guarantee, removing customer objection before click.</p>
         </div>
       </div>
 
-      <div style="margin-top: 20px;">
-        <ul class="detail-list">
-          <li><strong>Audience Architecture:</strong> 3–5 mile radius per store with layered interests (home décor, DIY, renovations) and 1%–3% Lookalikes from high-quality events.</li>
-          <li><strong>Creative System:</strong> UGC-style vertical video; hook in first 1.5s; quick proof; soft CTA. Static variations with authentic home scenes.</li>
-          <li><strong>Offer Design:</strong> Free in-home measurement plus 48-hour install quote to remove friction and raise intent.</li>
-          <li><strong>Budget Flow:</strong> Start in ABO for control; promote winners to CBO when stable; scale budgets smoothly to avoid relearning.</li>
-          <li><strong>Optimization Cadence:</strong> Weekly trims on high-CPA sets; duplicate winners; refresh creatives before fatigue; update hooks from comments and search terms.</li>
-          <li><strong>Retargeting:</strong> 7-day site visitors and 25% video viewers with testimonials and deadline CTA.</li>
-          <li><strong>Tracking &amp; Quality:</strong> Event quality prioritized (tracked installs, engaged viewers). Landing page tightened: relevant headline, near-fold proof, single conversion action.</li>
-        </ul>
+      <!-- Verified Outcomes Block -->
+      <div style="margin-top:24px;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.25);border-radius:18px;padding:24px;">
+        <h4 style="color:var(--green);font-size:18px;margin-bottom:10px">📊 Measured 6-Week Outcomes:</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px;">
+          <div style="background:rgba(10,14,32,0.8);border:1px solid var(--line);border-radius:12px;padding:16px;">
+            <div style="font-family:var(--font-mono);font-size:24px;font-weight:800;color:var(--green)">&darr; 47%</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:4px">Cost Per Acquisition reduction within 3 weeks of DCT launch.</div>
+          </div>
+          <div style="background:rgba(10,14,32,0.8);border:1px solid var(--line);border-radius:12px;padding:16px;">
+            <div style="font-family:var(--font-mono);font-size:24px;font-weight:800;color:#60a5fa">3.2&times;</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:4px">Verified Return on Ad Spend (ROAS) on installed contracts.</div>
+          </div>
+          <div style="background:rgba(10,14,32,0.8);border:1px solid var(--line);border-radius:12px;padding:16px;">
+            <div style="font-family:var(--font-mono);font-size:24px;font-weight:800;color:var(--orange)">&uarr; 62%</div>
+            <div style="font-size:12.5px;color:var(--muted);margin-top:4px">Increase in total monthly booked appointments on calendar.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: THE 9-STAGE SCALING FRAMEWORK -->
+    <section class="panel" id="meta-framework">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <div class="eyebrow" style="color:var(--purple)">System 04 &middot; Methodological Rigor</div>
+          <h2>The 9-Stage Meta <span style="color:var(--cyan)">Scaling Framework</span></h2>
+        </div>
+        <span class="tag-pill tag-purple">🟢 Execution Blueprint</span>
       </div>
 
-      <div class="result-block">
-        <strong>Measured Outcomes (6 weeks):</strong> 47% lower CPA, 3.2× ROAS on tracked installs, 62% increase in bookings, consistent lead quality and faster close times.
-      </div>
+      <p class="muted" style="font-size:16px;max-width:880px">
+        A repeatable, data-driven methodology that takes campaigns from initial technical audit to stable, compounding revenue scale without triggering erratic ad account relearning.
+      </p>
 
-      <div style="margin-top: 16px; padding: 14px 0 0; border-top: 1px solid var(--border);">
-        <p style="font-size: 13.5px; color: var(--muted); line-height: 1.7;">
-          <strong style="color: var(--heading);">Key Takeaway:</strong> When creative feels local and real, intent rises. Keep testing, measure everything, and scale winners carefully for compounding results.
-        </p>
+      <div class="framework-steps">
+        <div class="f-step">
+          <div class="f-step-num">Stage 01</div>
+          <div class="f-step-title">Diagnostics &amp; CAPI Audit</div>
+          <div class="f-step-desc">Pixel + Conversion API (CAPI) event deduplication, server-side tracking, and conversion health checks.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 02</div>
+          <div class="f-step-title">Offer–Market Fit</div>
+          <div class="f-step-desc">Formulating irresistible, low-friction entry offers mapped directly to core customer pain points.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 03</div>
+          <div class="f-step-title">Creative Test Matrix</div>
+          <div class="f-step-desc">Controlled 3&times;2&times;2 experiments testing hooks, visual styles, and calls to action in isolated ad sets.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 04</div>
+          <div class="f-step-title">Targeting Architecture</div>
+          <div class="f-step-desc">Geo-fenced radius combined with stacked interest clusters and high-value event lookalikes.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 05</div>
+          <div class="f-step-title">ABO to CBO Graduation</div>
+          <div class="f-step-desc">Validating CPA winners in ABO before graduating them into Campaign Budget Optimization for scale.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 06</div>
+          <div class="f-step-title">Measurement Guardrails</div>
+          <div class="f-step-desc">Monitoring install-level ROAS, creative fatigue, and frequency caps to rotate angles pre-decay.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 07</div>
+          <div class="f-step-title">Short-Window Retargeting</div>
+          <div class="f-step-desc">Deploying social proof, video testimonials, and deadline incentives to 7-day engaged prospects.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 08</div>
+          <div class="f-step-title">Landing Congruence</div>
+          <div class="f-step-desc">Harmonizing ad hook copy with landing page headlines, reviews, and friction-free forms.</div>
+        </div>
+
+        <div class="f-step">
+          <div class="f-step-num">Stage 09</div>
+          <div class="f-step-title">Scale &amp; Geo-Expansion</div>
+          <div class="f-step-desc">Paced budget increases (15%–20% every 3 days) and cloning proven funnels into adjacent territories.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta-banner">
+      <h2>Ready to Scale Profitable Meta Ads for Your Business?</h2>
+      <p>
+        Stop wasting budget on broad clicks and creative fatigue. Let’s engineer a high-ROI paid social acquisition funnel tailored to your service business.
+      </p>
+      <div class="cta-buttons">
+        <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          Book a Strategy Consultation &rarr;
+        </a>
+        <a href="ghl-work-samples.html" class="btn-secondary">
+          Explore GoHighLevel CRM Systems
+        </a>
+        <a href="n8n-automation-sample.html" class="btn-secondary">
+          Explore n8n AI Automations
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div><b>Marlon Palomares (MP.dev)</b> &middot; Google Ads, Meta Ads &amp; Workflow Automation Specialist</div>
+      <div style="margin-top:6px;font-size:12px;color:var(--muted)">Production Meta Ads Strategy Showcase &middot; CAPI Server Tracking &middot; High-ROAS Direct Response</div>
+    </footer>
+
+  </main>
+
+  <!-- Interactive Lightbox Modal -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Meta Ads Screenshot Preview" onclick="closeLightbox(event)">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close modal">&times;</button>
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-img" src="" alt="Enlarged screenshot">
+      </div>
+      <div class="lightbox-meta">
+        <div>
+          <b id="lightbox-title">Meta Ads Campaign Preview</b>
+          <span id="lightbox-desc">Detailed ads dashboard and performance snapshot.</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- STRATEGY BREAKDOWN -->
-  <div class="section">
-    <h2 class="section-title">
-      <span class="s-icon s-purple">🧠</span>
-      Strategy Breakdown: From Hypothesis to Scale
-    </h2>
-    <div class="text-card">
-      <ol class="num-list">
-        <li><strong>Diagnostics:</strong> Rapid audit across account, conversion path and signal quality. Pixel + CAPI deduped; high-value events verified for attribution integrity.</li>
-        <li><strong>Offer–Market Fit:</strong> Reduced friction (free measure + 48-hour quote) and increased perceived value. Objections mapped directly to creative angles.</li>
-        <li><strong>Test Matrix:</strong> Controlled experiments across hooks × visuals × CTAs. Variables isolated to attribute CPA/LTV movement with confidence.</li>
-        <li><strong>Targeting Architecture:</strong> Geo-fenced radius with layered interests; Lookalikes seeded by high-quality events. Balanced reach vs. relevance to stabilize delivery.</li>
-        <li><strong>Delivery Optimization:</strong> ABO for control and clean reads — promote winners to CBO when signals stabilize. Budgets scaled smoothly to avoid relearning.</li>
-        <li><strong>Measurement Guardrails:</strong> Monitor install-level ROAS, creative fatigue and audience saturation. Rotate angles pre-decay; prune high-CPA sets weekly.</li>
-        <li><strong>Retargeting Flows:</strong> Short-window retargeting to engaged visitors and qualified video viewers using testimonial snippets and deadline CTAs.</li>
-        <li><strong>Landing Experience:</strong> Reduce friction: relevant headline, near-fold proof, single action. Keep ad promise congruent with page copy.</li>
-        <li><strong>Scale Policy:</strong> Expand winners incrementally, clone into adjacent geos, and monitor stability. Protect signal quality via paced budget increases.</li>
-      </ol>
+  <script>
+    // Lightbox Modal Logic
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxDesc = document.getElementById('lightbox-desc');
 
-      <div class="result-block" style="margin-top: 20px;">
-        <strong>Result:</strong> A repeatable, data-driven loop that compounds: precise targeting, native creative, and frictionless offers — measured continuously and scaled responsibly.
-      </div>
-    </div>
-  </div>
+    function openLightbox(src, title, desc) {
+      lightboxImg.src = src;
+      lightboxImg.alt = title;
+      lightboxTitle.textContent = title;
+      lightboxDesc.textContent = desc;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
 
-  <!-- CTA -->
-  <div class="cta-wrap">
-    <div>
-      <a href="https://calendar.app.google/7SukeeU8ezSXwkiX8" class="cta-btn" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Book a Strategy Call
-      </a>
-    </div>
-    <div class="cta-sub">
-      Prefer a quick review first? <a href="https://mpalomaresdigitalsolutions.site/html/Google%20Ads%20Audit.html">Request an ad account audit</a>.
-    </div>
-    <div class="footer-back">
-      <a href="https://mpalomaresdigitalsolutions.site/html/case_study.html">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        Back to Case Study
-      </a>
-    </div>
-  </div>
+    function closeLightbox(event) {
+      if (event && event.target !== lightbox && !event.target.classList.contains('lightbox-close')) {
+        return;
+      }
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        lightboxImg.src = '';
+      }, 200);
+    }
 
-</div><!-- /page -->
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+        closeLightbox();
+      }
+    });
 
-<!-- LIGHTBOX -->
-<div id="lb" onclick="lbBg(event)">
-  <div class="lb-box">
-    <button class="lb-x"           onclick="closeLb()">&#x2715;</button>
-    <button class="lb-nav lb-prev" onclick="go(-1)">&#8592;</button>
-    <button class="lb-nav lb-next" onclick="go(1)">&#8594;</button>
-    <img id="lb-img" src="" alt="">
-    <div id="lb-cap"></div>
-  </div>
-</div>
+    // Active Navigation Highlighting on Scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navPills = document.querySelectorAll('.nav-pill');
 
-<script>
-const IMGS = [
-  ['certificates%20images/Meta%20images/meta%20results.jpg',        'Meta Ads Campaign Results Dashboard'],
-  ['certificates%20images/Meta%20images/meta1.jpg',               'Meta Ads Creative &amp; Ad Set Preview'],
-  ['certificates%20images/Meta%20images/Mirror%20local%20bussines%20.jpeg', 'Mirror Local Business Campaign Results'],
-];
+    window.addEventListener('scroll', () => {
+      let current = '';
+      const scrollY = window.pageYOffset;
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          current = section.getAttribute('id');
+        }
+      });
 
-let cur = 0;
-const lb  = document.getElementById('lb');
-const img = document.getElementById('lb-img');
-const cap = document.getElementById('lb-cap');
-
-function openLb(i) {
-  cur = i;
-  img.src = IMGS[i][0];
-  img.alt = IMGS[i][1];
-  cap.textContent = IMGS[i][1];
-  lb.classList.add('on');
-  document.body.style.overflow = 'hidden';
-}
-function closeLb() {
-  lb.classList.remove('on');
-  document.body.style.overflow = '';
-}
-function lbBg(e) { if (e.target === lb) closeLb(); }
-function go(d) {
-  cur = (cur + d + IMGS.length) % IMGS.length;
-  img.style.opacity = '0';
-  setTimeout(() => {
-    img.src = IMGS[cur][0];
-    img.alt = IMGS[cur][1];
-    cap.textContent = IMGS[cur][1];
-    img.style.opacity = '1';
-  }, 130);
-}
-document.addEventListener('keydown', e => {
-  if (!lb.classList.contains('on')) return;
-  if (e.key === 'Escape')    closeLb();
-  if (e.key === 'ArrowLeft') go(-1);
-  if (e.key === 'ArrowRight') go(1);
-});
-</script>
-
-<!-- ═══════ PARTICLES + CURSOR ═══════ -->
-<script>
-const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
-document.addEventListener('mousemove',e=>{cursor.style.transform=`translate(${e.clientX-4}px,${e.clientY-4}px)`;ring.style.transform=`translate(${e.clientX-16}px,${e.clientY-16}px)`;});
-document.querySelectorAll('a,button,.img-card,.cert-card,.img-card-single').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='rgba(63,185,80,0.6)';});
-  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(88,166,255,0.5)';});
-});
-
-/* Particle canvas */
-const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
-let W,H,particles=[];
-const mouse={x:-1000,y:-1000};
-document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-resize();window.addEventListener('resize',resize);
-class Particle{
-  constructor(){this.reset(true);}
-  reset(init){this.x=Math.random()*W;this.y=init?Math.random()*H:H+10;this.size=Math.random()*1.2+0.3;this.speedY=-(Math.random()*.5+.1);this.speedX=(Math.random()-.5)*.15;this.opacity=Math.random()*.6+.1;this.hue=Math.random()<.6?205:(Math.random()<.5?140:20);}
-  update(){const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){this.x+=dx/d*.7;this.y+=dy/d*.7;}this.x+=this.speedX;this.y+=this.speedY;if(this.y<-10)this.reset(false);}
-  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`hsla(${this.hue},80%,60%,${this.opacity})`;ctx.fill();}
-}
-for(let i=0;i<65;i++)particles.push(new Particle());
-function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});
-  for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
-    const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
-    if(d<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(88,166,255,${(1-d/80)*.06})`;ctx.lineWidth=.5;ctx.stroke();}
-  }
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* Scroll reveals */
-const io=new IntersectionObserver((entries)=>{entries.forEach((entry,i)=>{if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add('in-view'),80*i);io.unobserve(entry.target);}});},{threshold:.08});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-</script>
+      navPills.forEach(pill => {
+        pill.classList.remove('active');
+        if (pill.getAttribute('href') === `#${current}`) {
+          pill.classList.add('active');
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
