@@ -87,7 +87,7 @@
   .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
 
   /* AI robot hero atmosphere — decorative, text-safe, and layered behind content */
-  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') right center / 55% no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
+  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') right center / 68% no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
   .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 22% 48%, rgba(6,8,16,.95) 0%, rgba(6,8,16,.7) 42%, transparent 75%), linear-gradient(to bottom, transparent 55%, var(--bg) 100%); }
 
   .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
@@ -1170,6 +1170,7 @@
     <div>© 2025 Marlon Palomares Digital Solutions · Manila, Philippines</div>
     <div class="footer-links">
       <a href="privacy.html" target="_blank">Privacy</a>
+      <a href="javascript:void(0)" id="cookieConsentSettingsBtn">Cookie Preferences</a>
       <a href="certifications.html" target="_blank">Certifications</a>
       <a href="meta.html" target="_blank">Meta Ads</a>
       <a href="ghl-work-samples.html" target="_blank">GHL Samples</a>
@@ -2089,5 +2090,6 @@ document.addEventListener('click', function(e) {
 
 })();
 </script>
+<script src="js/cookie-consent.js" defer></script>
 </body>
 </html>
