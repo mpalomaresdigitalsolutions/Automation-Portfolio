@@ -86,9 +86,12 @@
   #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
 
-  /* AI robot hero atmosphere — decorative, text-safe, and layered behind content */
-  .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 34%, rgba(6,8,16,.3) 68%, rgba(6,8,16,.1) 100%), url('ai-robot-bg.png') right center / 68% no-repeat; opacity: .78; filter: saturate(.96) contrast(1.05); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%); }
-  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 22% 48%, rgba(6,8,16,.95) 0%, rgba(6,8,16,.7) 42%, transparent 75%), linear-gradient(to bottom, transparent 55%, var(--bg) 100%); }
+  /* Cybernetic fixed background — stays visible during scrolling across the site */
+  .hero::before { display: none; }
+  .hero::after { display: none; }
+  .cybernetic-fixed-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .cybernetic-fixed-bg video { position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 68%; height: 100%; object-fit: cover; object-position: center center; opacity: .76; filter: saturate(.96) contrast(1.05); }
+  .cybernetic-overlay { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,0.98) 0%, rgba(6,8,16,0.85) 34%, rgba(6,8,16,0.25) 70%, rgba(6,8,16,0.08) 100%), radial-gradient(ellipse at 25% 50%, rgba(6,8,16,0.96) 0%, rgba(6,8,16,0.65) 45%, transparent 80%); }
 
   .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
   .orb-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; left: -100px; }
@@ -124,7 +127,7 @@
 
   .wrapper { position: relative; z-index: 1; }
 
-    .hero { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4rem; padding: 10rem 5vw 6rem; position: relative; isolation: isolate; overflow: hidden; }
+    .hero { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 760px) 1fr; align-items: center; gap: 4rem; padding: 10rem 5vw 6rem; position: relative; isolation: isolate; overflow: hidden; }
   .hero-content { display: flex; flex-direction: column; position: relative; max-width: 760px; z-index: 2; }
   .hero-content::before { content: ''; position: absolute; inset: -3rem -5rem; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 28% 48%, rgba(6,8,16,.96) 0%, rgba(6,8,16,.76) 48%, transparent 78%); }
   .hero-badge, .hero-eyebrow, .hero-title, .hero-sub, .hero-ctas, .hero-meta { position: relative; }
@@ -777,14 +780,14 @@
   #chat-send:disabled { opacity: 0.35; transform: none; }
   #chat-send svg { width: 16px; height: 16px; fill: #060810; }
 
-    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .hero::before { background-position: 72% center; opacity: .5; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .cybernetic-fixed-bg video { width: 100%; opacity: .45; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
 
   @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
-    @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .hero::before { background-position: 72% center; opacity: .34; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
+    @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .cybernetic-fixed-bg video { width: 100%; opacity: .35; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
 
     @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } .system-node { width:100px; } .node-n8n { left:34%; } .node-zapier { left:-3%; } }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .hero::before { animation:none; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after, .automation-core, .core-shade { animation:none !important; } .system-node.node-live { transform:none; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .hero::before { animation:none; } .cybernetic-fixed-bg video { display:none; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after, .automation-core, .core-shade { animation:none !important; } .system-node.node-live { transform:none; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
 
   /* ═══════ TYPEWRITER ═══════ */
   .typewriter-text { color: var(--accent); font-weight: 700; }
@@ -827,6 +830,14 @@
 <div class="cursor-ring" id="cursor-ring"></div>
 <canvas id="bg-canvas"></canvas>
 <div class="grid-overlay"></div>
+<div class="cybernetic-fixed-bg" id="cybernetic-bg" aria-hidden="true">
+  <video id="hero-scrub-video" muted playsinline preload="auto" poster="cybernetic-poster.jpg">
+    <source src="Cybernetic-scrub-fast.mp4" type="video/mp4">
+    <source src="Cybernetic-scrub.mp4" type="video/mp4">
+    <source src="Cybernetic.mp4.mp4" type="video/mp4">
+  </video>
+  <div class="cybernetic-overlay"></div>
+</div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
@@ -885,29 +896,6 @@
         <div class="meta-item"><div class="meta-num">8</div><div class="meta-label">Professional Certifications</div></div>
 
       </div>
-    </div>
-        <div class="automation-system" id="automation-system" aria-label="Animated AI operator workflow connecting n8n, GoHighLevel, Make.com, Google Ads, and Zapier">
-
-      <div class="automation-scene" id="automation-scene">
-                <div class="system-line line-1"></div><div class="system-line line-2"></div><div class="system-line line-3"></div><div class="system-line line-4"></div><div class="system-line line-5"></div><div class="system-particles" aria-hidden="true"><span class="system-particle particle-1"></span><span class="system-particle particle-2"></span><span class="system-particle particle-3"></span><span class="system-particle particle-4"></span><span class="system-particle particle-5"></span></div>
-        <div class="system-node node-n8n" data-workflow="n8n"><strong>n8n</strong><span>Trigger intake</span></div>
-        <div class="system-node node-ghl" data-workflow="ghl"><strong>GoHighLevel</strong><span>Qualify lead</span></div>
-        <div class="system-node node-make" data-workflow="make"><strong>Make.com</strong><span>Route signal</span></div>
-        <div class="system-node node-ads" data-workflow="ads"><strong>Google Ads</strong><span>Optimize spend</span></div>
-        <div class="system-node node-zapier" data-workflow="zapier"><strong>Zapier</strong><span>Book follow-up</span></div>
-        <div class="automation-core"><img class="core-portrait" src="Profile.png" alt="Marlon Palomares, Google Ads and GoHighLevel Automation Specialist"><div class="core-shade"></div><div class="core-copy"><strong>AI OPERATOR</strong><span>n8n · GHL · Make · Ads · Zapier</span></div></div>
-
-      </div>
-            <div class="system-status" id="workflow-status" aria-live="polite">AI automation system online</div>
-
-    </div>
-    <div class="hero-profile tilt-container" id="hero-profile-tilt">
-      <div class="profile-glow"></div>
-      <div class="profile-frame tilt-card" id="profile-tilt-card">
-        <img src="Profile.png" onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#0b0e1a,#1a1040)';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;\'>👤</div>';" alt="Marlon Palomares">
-        <div class="card-glow" id="profile-card-glow"></div>
-      </div>
-
     </div>
     <div class="scroll-indicator"><div class="scroll-line"></div> Scroll to explore</div>
   </section>
@@ -2087,6 +2075,76 @@ document.addEventListener('click', function(e) {
   document.body.appendChild(ripple);
   ripple.addEventListener('animationend', function() { ripple.remove(); });
 });
+
+/* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION ═══════ */
+const scrubVideo = document.getElementById('hero-scrub-video');
+if (scrubVideo && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+  let targetTime = 0;
+  let isSeeking = false;
+  let queuedTime = null;
+  let scrubRafId = null;
+
+  try { scrubVideo.pause(); } catch (e) {}
+
+  function getScrollTargetTime() {
+    const duration = scrubVideo.duration || 10;
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    const hero = document.getElementById('about') || document.querySelector('.hero');
+    const scrubDistance = hero ? Math.max(hero.offsetHeight * 0.75, 480) : 580;
+    const progress = Math.min(1, Math.max(0, scrollY / scrubDistance));
+    // Scale progress across video timeline (capping right before exact end to avoid stream stalls)
+    return progress * Math.max(0, duration - 0.08);
+  }
+
+  function commitSeek() {
+    scrubRafId = null;
+    if (!scrubVideo.duration) return;
+
+    if (isSeeking) {
+      queuedTime = targetTime;
+      return;
+    }
+
+    if (Math.abs(scrubVideo.currentTime - targetTime) > 0.035) {
+      isSeeking = true;
+      try {
+        scrubVideo.currentTime = targetTime;
+      } catch (err) {
+        isSeeking = false;
+      }
+    }
+  }
+
+  scrubVideo.addEventListener('seeked', function() {
+    isSeeking = false;
+    if (queuedTime !== null) {
+      const nextTime = queuedTime;
+      queuedTime = null;
+      if (Math.abs(scrubVideo.currentTime - nextTime) > 0.035) {
+        targetTime = nextTime;
+        if (!scrubRafId) {
+          scrubRafId = requestAnimationFrame(commitSeek);
+        }
+      }
+    }
+  });
+
+  function onUserScroll() {
+    targetTime = getScrollTargetTime();
+    if (!scrubRafId) {
+      scrubRafId = requestAnimationFrame(commitSeek);
+    }
+  }
+
+  window.addEventListener('scroll', onUserScroll, { passive: true });
+  window.addEventListener('resize', onUserScroll, { passive: true });
+
+  if (scrubVideo.readyState >= 1) {
+    onUserScroll();
+  } else {
+    scrubVideo.addEventListener('loadedmetadata', onUserScroll, { once: true });
+  }
+}
 
 })();
 </script>
