@@ -1156,7 +1156,7 @@
 
     @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } .system-node { width:100px; } .node-n8n { left:34%; } .node-zapier { left:-3%; } }
 
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .hero::before { animation:none; } .cybernetic-fixed-bg video { display:none; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after, .automation-core, .core-shade { animation:none !important; } .system-node.node-live { transform:none; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .hero::before { animation:none; } .automation-system.motion-enabled > * { opacity:1; } .automation-system.motion-enabled .automation-scene { transform:none; } .automation-system.motion-enabled.is-visible > .automation-scene, .automation-system.motion-enabled.is-visible .automation-core, .automation-system.motion-enabled.is-visible .system-node, .automation-system.motion-enabled.is-visible > .system-status { animation:system-enter .5s ease both; } .automation-scene::before, .system-particle, .system-line, .system-node::before, .automation-core::before, .automation-core::after, .automation-core, .core-shade { animation:none !important; } .system-node.node-live { transform:none; } *,*::before,*::after { scroll-behavior:auto !important; } .automation-scene,.tilt-card { transform:none !important; transition:none !important; } }
 
   /* ═══════ TYPEWRITER ═══════ */
   .typewriter-text { color: var(--accent); font-weight: 700; }
@@ -1369,6 +1369,7 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
 <div class="grid-overlay"></div>
 <div class="cybernetic-fixed-bg" id="cybernetic-bg" aria-hidden="true">
   <video id="hero-scrub-video" muted playsinline preload="auto" poster="cybernetic-poster.jpg">
+    <source src="Cybernetic.mp4" type="video/mp4">
     <source src="Cybernetic-scrub-fast.mp4" type="video/mp4">
     <source src="Cybernetic-scrub.mp4" type="video/mp4">
     <source src="Cybernetic.mp4.mp4" type="video/mp4">
@@ -2859,87 +2860,85 @@ document.addEventListener('click', function(e) {
   ripple.addEventListener('animationend', function() { ripple.remove(); });
 });
 
-/* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION (FULL-PAGE LERP) ═══════ */
+/* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION ═══════ */
 const scrubVideo = document.getElementById('hero-scrub-video');
-if (scrubVideo && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-  let targetTime = 0;
-  let smoothedTime = 0;
+if (scrubVideo) {
   let isSeeking = false;
-  let scrubRafId = null;
+  let queuedTime = null;
 
-  try { scrubVideo.pause(); } catch (e) {}
+  try {
+    scrubVideo.pause();
+    scrubVideo.load();
+  } catch (e) {}
 
   function getScrollMetrics() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-    const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const progress = Math.min(1, Math.max(0, scrollY / docHeight));
+    const hero = document.getElementById('about') || document.querySelector('.hero');
+    const scrubDistance = hero ? Math.max(hero.offsetHeight * 1.15, 850) : 950;
     const duration = scrubVideo.duration || 10;
+    const maxTarget = Math.max(0, duration - 0.2); // ~9.8s
+
+    // Transform from human headshot (0s) to cybernetic AI operator (9.5s) across hero section
+    const heroProgress = Math.min(1, Math.max(0, scrollY / scrubDistance));
+    const targetTime = heroProgress * maxTarget;
+
+    // Dynamic Opacity across page depth:
+    // Hero: 0.95 -> Content sections (services, case studies): 0.55 -> Contact/Footer: 0.90
+    let targetOpacity = 0.95;
+    const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const totalProgress = Math.min(1, Math.max(0, scrollY / docHeight));
+    if (totalProgress > 0.10 && totalProgress < 0.88) {
+      targetOpacity = 0.55;
+    } else if (totalProgress >= 0.88) {
+      const footerFactor = (totalProgress - 0.88) / 0.12;
+      targetOpacity = 0.55 + (0.35 * footerFactor);
+    }
+
     return {
-      progress,
-      // Map progress across entire page timeline from header to footer
-      targetTime: progress * Math.max(0, duration - 0.08)
+      targetTime,
+      targetOpacity: targetOpacity.toFixed(2)
     };
   }
 
-  function updateDynamicOpacity(progress) {
-    // Hero: 0.95 -> Content sections (services, projects, certs): 0.52 -> Contact/Footer: 0.90
-    let targetOpacity = 0.95;
-    if (progress > 0.12 && progress < 0.86) {
-      targetOpacity = 0.52;
-    } else if (progress >= 0.86) {
-      const footerFactor = (progress - 0.86) / 0.14; // 0 to 1
-      targetOpacity = 0.52 + (0.38 * footerFactor);
+  function commitSeek(time) {
+    if (isSeeking) {
+      queuedTime = time;
+      return;
     }
 
-    const currentStyleOpacity = scrubVideo.dataset.currentOpacity;
-    const formattedOpacity = targetOpacity.toFixed(2);
-    if (currentStyleOpacity !== formattedOpacity) {
-      scrubVideo.dataset.currentOpacity = formattedOpacity;
-      scrubVideo.style.opacity = formattedOpacity;
-    }
-  }
-
-  function tickScrub() {
-    scrubRafId = null;
-    if (!scrubVideo.duration) return;
-
-    // Smooth LERP towards target time for buttery feel
-    const diff = targetTime - smoothedTime;
-    if (Math.abs(diff) > 0.005) {
-      smoothedTime += diff * 0.16;
-    } else {
-      smoothedTime = targetTime;
-    }
-
-    if (!isSeeking && Math.abs(scrubVideo.currentTime - smoothedTime) > 0.035) {
+    if (Math.abs(scrubVideo.currentTime - time) > 0.04) {
       isSeeking = true;
       try {
-        scrubVideo.currentTime = smoothedTime;
+        if ('fastSeek' in scrubVideo) {
+          scrubVideo.fastSeek(time);
+        } else {
+          scrubVideo.currentTime = time;
+        }
       } catch (err) {
+        try { scrubVideo.currentTime = time; } catch (e) {}
         isSeeking = false;
       }
-    }
-
-    // Continue animation frame while interpolating or until video catches up
-    if (Math.abs(targetTime - smoothedTime) > 0.005 || Math.abs(scrubVideo.currentTime - targetTime) > 0.035) {
-      scrubRafId = requestAnimationFrame(tickScrub);
     }
   }
 
   scrubVideo.addEventListener('seeked', function() {
     isSeeking = false;
-    if (!scrubRafId && (Math.abs(targetTime - smoothedTime) > 0.005 || Math.abs(scrubVideo.currentTime - targetTime) > 0.035)) {
-      scrubRafId = requestAnimationFrame(tickScrub);
+    if (queuedTime !== null) {
+      const nextTime = queuedTime;
+      queuedTime = null;
+      commitSeek(nextTime);
     }
   });
 
   function onUserScroll() {
     const metrics = getScrollMetrics();
-    targetTime = metrics.targetTime;
-    updateDynamicOpacity(metrics.progress);
-    if (!scrubRafId) {
-      scrubRafId = requestAnimationFrame(tickScrub);
+
+    if (scrubVideo.dataset.currentOpacity !== metrics.targetOpacity) {
+      scrubVideo.dataset.currentOpacity = metrics.targetOpacity;
+      scrubVideo.style.opacity = metrics.targetOpacity;
     }
+
+    commitSeek(metrics.targetTime);
   }
 
   window.addEventListener('scroll', onUserScroll, { passive: true });
@@ -2949,6 +2948,7 @@ if (scrubVideo && !(window.matchMedia && window.matchMedia('(prefers-reduced-mot
     onUserScroll();
   } else {
     scrubVideo.addEventListener('loadedmetadata', onUserScroll, { once: true });
+    scrubVideo.addEventListener('canplay', onUserScroll, { once: true });
   }
 }
 /* ═══════ 9. SCI-FI HUD THEME SYSTEM ═══════ */
