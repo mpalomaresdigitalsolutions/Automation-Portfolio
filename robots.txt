@@ -9,3 +9,4 @@ Disallow: /migrations/
 Disallow: /scripts/
 
 Sitemap: https://mpalomaresdigitalsolutions.online/sitemap.xml
+# AI Search and LLM Index: https://mpalomaresdigitalsolutions.online/llms.txt
