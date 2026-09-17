@@ -232,181 +232,27 @@
   #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   .grid-overlay { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px); background-size: 60px 60px; }
 
-  /* ═══════ STARK TECH IRON MAN CINEMATIC HUD & 3D DOLLY ═══════ */
+  /* Cybernetic fixed background — stays visible during scrolling across the site */
   .hero::before { display: none; }
   .hero::after { display: none; }
-  .cybernetic-fixed-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; perspective: 1200px; }
-  .cybernetic-stage {
+  .cybernetic-fixed-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .cybernetic-fixed-bg video {
     position: absolute;
     top: 50%;
     right: 2%;
-    width: 53%;
-    max-width: 960px;
-    height: 94%;
-    transform: translateY(-50%) perspective(1200px) scale(0.86);
+    transform: translateY(-50%) scale(0.86);
     transform-origin: right center;
-    transform-style: preserve-3d;
-    transition: filter 0.4s ease;
-    will-change: transform;
-  }
-  .cybernetic-stage video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    width: 52%;
+    max-width: 950px;
+    height: 92%;
     object-fit: contain;
     object-position: center center;
     opacity: .95;
-    filter: saturate(1.15) contrast(1.12) brightness(1.08);
+    filter: saturate(1.12) contrast(1.1) brightness(1.06);
     -webkit-mask-image: radial-gradient(ellipse 100% 95% at 75% 50%, black 75%, transparent 100%);
     mask-image: radial-gradient(ellipse 100% 95% at 75% 50%, black 75%, transparent 100%);
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
-
-  /* Holographic Stark HUD Overlay */
-  .stark-hud {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateZ(40px);
-    transition: opacity 0.35s ease;
-    font-family: 'Space Mono', monospace;
-  }
-  .stark-hud.hud-active { opacity: 1; }
-
-  /* Targeting Reticle over cybernetic eye */
-  .hud-reticle {
-    position: absolute;
-    top: 36%;
-    left: 48%;
-    width: 94px;
-    height: 94px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  .reticle-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 1.5px dashed var(--accent);
-    box-shadow: 0 0 16px var(--hud-glow);
-  }
-  .reticle-ring.r1 { animation: hud-spin 8s linear infinite; }
-  .reticle-ring.r2 {
-    inset: 12px;
-    border: 1px solid rgba(0, 255, 136, 0.65);
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    animation: hud-spin-rev 4.5s linear infinite;
-  }
-  @keyframes hud-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes hud-spin-rev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-
-  .reticle-cross {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 14px;
-    height: 14px;
-    transform: translate(-50%, -50%);
-  }
-  .reticle-cross::before, .reticle-cross::after {
-    content: '';
-    position: absolute;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-  }
-  .reticle-cross::before { left: 6px; top: 0; width: 2px; height: 14px; }
-  .reticle-cross::after { top: 6px; left: 0; width: 14px; height: 2px; }
-
-  .reticle-label {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(6px);
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    white-space: nowrap;
-    text-shadow: 0 0 10px var(--hud-glow);
-    animation: blink-label 1.5s ease-in-out infinite alternate;
-  }
-  @keyframes blink-label { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 18px var(--accent); } }
-
-  /* Stark Telemetry Panel */
-  .hud-telemetry {
-    position: absolute;
-    bottom: 22%;
-    left: 6%;
-    background: rgba(6, 10, 24, 0.85);
-    border: 1px solid rgba(0, 212, 255, 0.38);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    padding: 10px 14px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 0 24px rgba(0, 212, 255, 0.16), inset 0 0 16px rgba(0, 212, 255, 0.08);
-    min-width: 220px;
-  }
-  .hud-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.62rem;
-    margin-bottom: 4px;
-    letter-spacing: 0.08em;
-  }
-  .hud-k { color: var(--muted); }
-  .hud-v { color: var(--accent); font-weight: 700; text-shadow: 0 0 8px var(--hud-glow); }
-  .hud-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    margin: 6px 0;
-  }
-  .hud-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--green));
-    box-shadow: 0 0 10px var(--accent);
-    transition: width 0.15s ease-out;
-  }
-  .hud-coords { font-size: 0.52rem; color: rgba(255, 255, 255, 0.45); letter-spacing: 0.06em; margin-top: 4px; }
-
-  /* Arc Reactor Energy Flare & Anamorphic Beam */
-  .hud-arc-flare {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 320px;
-    height: 320px;
-    transform: translate(-50%, -50%) scale(0);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 212, 255, 0.45) 0%, rgba(0, 255, 136, 0.22) 38%, transparent 70%);
-    filter: blur(22px);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-  }
-  .hud-arc-flare.flare-burst { transform: translate(-50%, -50%) scale(1.5); opacity: 0.9; }
-
-  .hud-beam {
-    position: absolute;
-    top: 52%;
-    left: -20%;
-    right: -20%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 212, 255, 0.85) 50%, transparent 100%);
-    box-shadow: 0 0 18px rgba(0, 212, 255, 0.9), 0 0 35px var(--accent2);
-    opacity: 0;
-    transform: scaleX(0);
-    transition: transform 0.45s ease-out, opacity 0.4s ease-out;
-  }
-  .hud-beam.beam-active { opacity: 1; transform: scaleX(1); }
-
   .cybernetic-overlay { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(6,8,16,0.95) 0%, rgba(6,8,16,0.80) 32%, rgba(6,8,16,0.10) 65%, transparent 100%); }
 
   .orb { position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.12; pointer-events: none; z-index: 0; animation: orb-drift 20s ease-in-out infinite alternate; }
@@ -1303,10 +1149,10 @@
   #chat-send:disabled { opacity: 0.35; transform: none; }
   #chat-send svg { width: 16px; height: 16px; fill: #060810; }
 
-    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .cybernetic-stage { width: 90%; max-width: 650px; opacity: .55; right: 5%; } .hud-telemetry { display: none; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .cybernetic-fixed-bg video { width: 90%; max-width: 650px; opacity: .55; transform: translateY(-50%) scale(0.92); right: 5%; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
 
   @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
-    @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .cybernetic-stage { width: 100%; opacity: .45; right: 0; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
+    @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .cybernetic-fixed-bg video { width: 100%; opacity: .45; transform: translateY(-50%) scale(0.95); right: 0; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
 
     @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } .system-node { width:100px; } .node-n8n { left:34%; } .node-zapier { left:-3%; } }
 
@@ -1522,34 +1368,12 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
 <canvas id="bg-canvas"></canvas>
 <div class="grid-overlay"></div>
 <div class="cybernetic-fixed-bg" id="cybernetic-bg" aria-hidden="true">
-  <div class="cybernetic-stage" id="cybernetic-stage">
-    <video id="hero-scrub-video" muted playsinline preload="auto" poster="cybernetic-poster.jpg">
-      <source src="Cybernetic.mp4" type="video/mp4">
-      <source src="Cybernetic-scrub-fast.mp4" type="video/mp4">
-      <source src="Cybernetic-scrub.mp4" type="video/mp4">
-      <source src="Cybernetic.mp4.mp4" type="video/mp4">
-    </video>
-
-    <!-- STARK TECH HOLOGRAPHIC HUD OVERLAY -->
-    <div class="stark-hud" id="stark-hud">
-      <div class="hud-reticle">
-        <div class="reticle-ring r1"></div>
-        <div class="reticle-ring r2"></div>
-        <div class="reticle-cross"></div>
-        <div class="reticle-label">TARGET // SYS.ONLINE</div>
-      </div>
-
-      <div class="hud-telemetry">
-        <div class="hud-row"><span class="hud-k">ARMOR PROTOCOL</span><span class="hud-v" id="hud-armor-val">INITIALIZING</span></div>
-        <div class="hud-bar"><div class="hud-bar-fill" id="hud-bar-fill"></div></div>
-        <div class="hud-row"><span class="hud-k">NEURAL SYNC</span><span class="hud-v" id="hud-sync-val">STANDBY</span></div>
-        <div class="hud-coords">SYS.COORD: 14.5995° N, 120.9842° E // AI OPERATOR</div>
-      </div>
-
-      <div class="hud-arc-flare" id="hud-arc-flare"></div>
-      <div class="hud-beam" id="hud-beam"></div>
-    </div>
-  </div>
+  <video id="hero-scrub-video" muted playsinline preload="auto" poster="cybernetic-poster.jpg">
+    <source src="Cybernetic.mp4" type="video/mp4">
+    <source src="Cybernetic-scrub-fast.mp4" type="video/mp4">
+    <source src="Cybernetic-scrub.mp4" type="video/mp4">
+    <source src="Cybernetic.mp4.mp4" type="video/mp4">
+  </video>
   <div class="cybernetic-overlay"></div>
 </div>
 <div class="orb orb-1"></div>
@@ -3037,43 +2861,16 @@ document.addEventListener('click', function(e) {
   ripple.addEventListener('animationend', function() { ripple.remove(); });
 });
 
-/* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION (STARK TECH IRON MAN 3D DOLLY) ═══════ */
-const scrubVideo  = document.getElementById('hero-scrub-video');
-const cyberStage  = document.getElementById('cybernetic-stage');
-const starkHud    = document.getElementById('stark-hud');
-const hudBarFill  = document.getElementById('hud-bar-fill');
-const hudArmorVal = document.getElementById('hud-armor-val');
-const hudSyncVal  = document.getElementById('hud-sync-val');
-const hudArcFlare = document.getElementById('hud-arc-flare');
-const hudBeam     = document.getElementById('hud-beam');
-
+/* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION ═══════ */
+const scrubVideo = document.getElementById('hero-scrub-video');
 if (scrubVideo) {
   let isSeeking = false;
   let queuedTime = null;
-  let currentHeroProgress = 0;
-  const mouse = { x: window.innerWidth * 0.75, y: window.innerHeight * 0.5 };
 
   try {
     scrubVideo.pause();
     scrubVideo.load();
   } catch (e) {}
-
-  document.addEventListener('mousemove', function(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    updateStageTransform();
-  }, { passive: true });
-
-  function updateStageTransform() {
-    if (!cyberStage) return;
-    const isMobile = window.innerWidth <= 900;
-    const scale = (isMobile ? 0.82 : 0.86) + (currentHeroProgress * 0.12);
-    const tiltX = isMobile ? 0 : -((mouse.y / window.innerHeight) - 0.5) * 5.0;
-    const baseRotY = isMobile ? 0 : -4 * (1 - currentHeroProgress);
-    const tiltY = isMobile ? 0 : (baseRotY + (((mouse.x / window.innerWidth) - 0.5) * 7.0));
-    const tz = currentHeroProgress * 30;
-    cyberStage.style.transform = `translateY(-50%) perspective(1200px) scale(${scale.toFixed(3)}) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translateZ(${tz.toFixed(1)}px)`;
-  }
 
   function getScrollMetrics() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
@@ -3084,10 +2881,10 @@ if (scrubVideo) {
 
     // Transform from human headshot (0s) to cybernetic AI operator (9.5s) across hero section
     const heroProgress = Math.min(1, Math.max(0, scrollY / scrubDistance));
-    currentHeroProgress = heroProgress;
     const targetTime = heroProgress * maxTarget;
 
     // Dynamic Opacity across page depth:
+    // Hero: 0.95 -> Content sections (services, case studies): 0.55 -> Contact/Footer: 0.90
     let targetOpacity = 0.95;
     const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     const totalProgress = Math.min(1, Math.max(0, scrollY / docHeight));
@@ -3099,35 +2896,9 @@ if (scrubVideo) {
     }
 
     return {
-      heroProgress,
       targetTime,
       targetOpacity: targetOpacity.toFixed(2)
     };
-  }
-
-  function updateStarkHud(heroProgress) {
-    if (!starkHud) return;
-    const isActive = heroProgress > 0.12;
-    starkHud.classList.toggle('hud-active', isActive);
-
-    if (isActive) {
-      if (hudBarFill) hudBarFill.style.width = Math.min(100, Math.round(heroProgress * 100)) + '%';
-      if (hudArmorVal) {
-        if (heroProgress < 0.35) hudArmorVal.textContent = 'HYDRAULICS ENGAGED';
-        else if (heroProgress < 0.70) hudArmorVal.textContent = 'TITANIUM ARMOR LOCK';
-        else if (heroProgress < 0.88) hudArmorVal.textContent = 'AVIONICS / NEURAL LINK';
-        else hudArmorVal.textContent = 'ONLINE // 100%';
-      }
-      if (hudSyncVal) {
-        if (heroProgress < 0.45) hudSyncVal.textContent = 'CONNECTING...';
-        else if (heroProgress < 0.85) hudSyncVal.textContent = 'CALIBRATING';
-        else hudSyncVal.textContent = 'LOCKED & ARMED';
-      }
-    }
-
-    const isFullPower = heroProgress >= 0.85;
-    if (hudArcFlare) hudArcFlare.classList.toggle('flare-burst', isFullPower);
-    if (hudBeam) hudBeam.classList.toggle('beam-active', isFullPower);
   }
 
   function commitSeek(time) {
@@ -3168,8 +2939,6 @@ if (scrubVideo) {
       scrubVideo.style.opacity = metrics.targetOpacity;
     }
 
-    updateStageTransform();
-    updateStarkHud(metrics.heroProgress);
     commitSeek(metrics.targetTime);
   }
 
