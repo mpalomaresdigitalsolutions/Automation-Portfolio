@@ -2874,25 +2874,23 @@ if (scrubVideo) {
 
   function getScrollMetrics() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-    const hero = document.getElementById('about') || document.querySelector('.hero');
-    const scrubDistance = hero ? Math.max(hero.offsetHeight * 1.15, 850) : 950;
+    const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const scrollProgress = Math.min(1, Math.max(0, scrollY / docHeight));
     const duration = scrubVideo.duration || 10;
     const maxTarget = Math.max(0, duration - 0.2); // ~9.8s
 
-    // Transform from human headshot (0s) to cybernetic AI operator (9.5s) across hero section
-    const heroProgress = Math.min(1, Math.max(0, scrollY / scrubDistance));
-    const targetTime = heroProgress * maxTarget;
+    // Transform from human headshot (0s) to full cybernetic AI operator (9.8s) across the ENTIRE page scroll
+    // The transformation completes only when the user reaches the end/footer of the page
+    const targetTime = scrollProgress * maxTarget;
 
     // Dynamic Opacity across page depth:
-    // Hero: 0.95 -> Content sections (services, case studies): 0.55 -> Contact/Footer: 0.90
+    // Top hero: 0.95 -> Content sections (services, case studies): 0.60 -> Contact/Footer at the end: 0.92
     let targetOpacity = 0.95;
-    const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const totalProgress = Math.min(1, Math.max(0, scrollY / docHeight));
-    if (totalProgress > 0.10 && totalProgress < 0.88) {
-      targetOpacity = 0.55;
-    } else if (totalProgress >= 0.88) {
-      const footerFactor = (totalProgress - 0.88) / 0.12;
-      targetOpacity = 0.55 + (0.35 * footerFactor);
+    if (scrollProgress > 0.08 && scrollProgress < 0.88) {
+      targetOpacity = 0.60;
+    } else if (scrollProgress >= 0.88) {
+      const footerFactor = (scrollProgress - 0.88) / 0.12;
+      targetOpacity = 0.60 + (0.32 * footerFactor);
     }
 
     return {
@@ -2907,7 +2905,7 @@ if (scrubVideo) {
       return;
     }
 
-    if (Math.abs(scrubVideo.currentTime - time) > 0.04) {
+    if (Math.abs(scrubVideo.currentTime - time) > 0.03) {
       isSeeking = true;
       try {
         if ('fastSeek' in scrubVideo) {
@@ -2931,15 +2929,22 @@ if (scrubVideo) {
     }
   });
 
+  let scrollTicking = false;
   function onUserScroll() {
-    const metrics = getScrollMetrics();
+    if (!scrollTicking) {
+      requestAnimationFrame(function() {
+        const metrics = getScrollMetrics();
 
-    if (scrubVideo.dataset.currentOpacity !== metrics.targetOpacity) {
-      scrubVideo.dataset.currentOpacity = metrics.targetOpacity;
-      scrubVideo.style.opacity = metrics.targetOpacity;
+        if (scrubVideo.dataset.currentOpacity !== metrics.targetOpacity) {
+          scrubVideo.dataset.currentOpacity = metrics.targetOpacity;
+          scrubVideo.style.opacity = metrics.targetOpacity;
+        }
+
+        commitSeek(metrics.targetTime);
+        scrollTicking = false;
+      });
+      scrollTicking = true;
     }
-
-    commitSeek(metrics.targetTime);
   }
 
   window.addEventListener('scroll', onUserScroll, { passive: true });
