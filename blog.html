@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Blog & Insights — Marlon Palomares | Automation & AI Specialist</title>
+<meta name="description" id="page-desc" content="In-depth guides, case studies, and engineering breakdowns on n8n, Zapier, GoHighLevel, and AI automation by Marlon Palomares.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#060810">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" id="og-title" content="Blog & Insights — Marlon Palomares">
+<meta property="og:description" id="og-desc" content="Automation workflows, AI systems, and lead generation case studies.">
+<meta property="og:image" id="og-image" content="https://mpalomaresdigitalsolutions.online/og-image.jpg">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Supabase & Markdown Parser -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.12/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:      #060810;
+    --bg2:     #0b0e1a;
+    --bg3:     #0f1424;
+    --accent:  #00d4ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --green:   #00ff88;
+    --text:    #e8eeff;
+    --muted:   #7d85aa;
+    --card:    rgba(255,255,255,0.03);
+    --border:  rgba(255,255,255,0.08);
+    --r:       14px;
+    --glow:    0 0 40px rgba(0,212,255,0.15);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', -apple-system, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(0,212,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 60%, rgba(123,47,255,0.06) 0%, transparent 50%);
+  }
+
+  code, pre, .mono { font-family: 'Space Mono', monospace; }
+
+  /* ══ Header / Navbar ══ */
+  header.nav-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 8, 16, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+  }
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-brand {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .nav-brand span { color: var(--accent); }
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
+  }
+  .nav-menu a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-menu a:hover, .nav-menu a.active { color: var(--text); }
+  .btn-cta {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(123,47,255,0.15));
+    border: 1px solid var(--accent);
+    color: var(--accent) !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px !important;
+    transition: all 0.2s;
+  }
+  .btn-cta:hover {
+    background: var(--accent);
+    color: #060810 !important;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  /* ══ Main Wrapper ══ */
+  main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ══ LIST VIEW ══ */
+  #blog-list-view { display: block; }
+  .blog-hero {
+    text-align: center;
+    padding: 30px 0 50px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .section-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .blog-hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .blog-hero h1 span {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .blog-hero p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* Filter & Search Bar */
+  .blog-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding: 16px 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+  }
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pill-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .pill-btn.active {
+    background: rgba(0,212,255,0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .search-input-wrap {
+    position: relative;
+    min-width: 260px;
+  }
+  .search-input-wrap input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input-wrap input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Blog Grid */
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 28px;
+  }
+  .blog-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,212,255,0.4);
+    box-shadow: 0 12px 30px rgba(0,212,255,0.08);
+  }
+  .card-cover {
+    width: 100%;
+    height: 190px;
+    background: #111625;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .blog-card:hover .card-cover img { transform: scale(1.04); }
+  .card-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,47,255,0.15));
+    font-size: 42px;
+  }
+  .card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 12px;
+  }
+  .card-category {
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .card-title {
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+    color: #fff;
+  }
+  .card-excerpt {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ══ SINGLE ARTICLE VIEW ══ */
+  #blog-single-view {
+    display: none;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--accent); }
+  .article-header {
+    margin-bottom: 32px;
+  }
+  .article-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+  }
+  .article-title {
+    font-size: clamp(28px, 4.5vw, 42px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.8px;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .article-lead {
+    font-size: 18px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .author-strip {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #060810;
+    font-size: 16px;
+  }
+  .author-name { font-weight: 600; font-size: 15px; color: #fff; }
+  .author-role { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  
+  .article-cover {
+    width: 100%;
+    max-height: 440px;
+    border-radius: var(--r);
+    overflow: hidden;
+    margin: 32px 0 40px;
+    border: 1px solid var(--border);
+  }
+  .article-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Article Content Styles */
+  .article-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #ccd4ed;
+  }
+  .article-content h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin: 40px 0 16px;
+    letter-spacing: -0.5px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .article-content h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 30px 0 12px;
+  }
+  .article-content p {
+    margin-bottom: 20px;
+  }
+  .article-content ul, .article-content ol {
+    margin: 0 0 24px 24px;
+  }
+  .article-content li {
+    margin-bottom: 8px;
+  }
+  .article-content blockquote {
+    border-left: 3px solid var(--accent);
+    background: rgba(0,212,255,0.04);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 24px 0;
+    font-style: italic;
+    color: var(--text);
+  }
+  .article-content pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    overflow-x: auto;
+    margin: 24px 0;
+    font-size: 13px;
+    color: #00ff88;
+  }
+  .article-content code:not(pre code) {
+    background: rgba(255,255,255,0.06);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .article-content a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .article-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 40px 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .tag-chip {
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 16px;
+  }
+
+  /* CTA Box */
+  .article-cta {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.12));
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: var(--r);
+    padding: 36px 30px;
+    text-align: center;
+    margin-top: 50px;
+  }
+  .article-cta h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .article-cta p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 540px;
+    margin: 0 auto 20px;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 768px) {
+    .blog-grid { grid-template-columns: 1fr; }
+    .blog-toolbar { flex-direction: column; align-items: stretch; }
+    .search-input-wrap { min-width: 100%; }
+    .nav-menu { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="nav-header">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">◈ MP<span>.dev</span></a>
+    <ul class="nav-menu">
+      <li><a href="index.html">Portfolio</a></li>
+      <li><a href="index.html#projects">Case Studies</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="certifications.html">Certifications</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a href="book.html" class="btn-cta">Book Meeting ↗</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <!-- ═════════ 1. BLOG LIST VIEW ═════════ -->
+  <div id="blog-list-view">
+    <div class="blog-hero">
+      <span class="section-tag">// KNOWLEDGE BASE &amp; INSIGHTS</span>
+      <h1>Automation, AI &amp;<br><span>Growth Engineering</span></h1>
+      <p>Practical breakdowns of n8n pipelines, GoHighLevel workflows, Google Ads architecture, and autonomous systems.</p>
+    </div>
+
+    <!-- Toolbar: Category filters & search -->
+    <div class="blog-toolbar">
+      <div class="filter-pills" id="categoryFilter">
+        <button class="pill-btn active" data-cat="all">All Articles</button>
+        <button class="pill-btn" data-cat="Automation">Automation</button>
+        <button class="pill-btn" data-cat="Zapier">Zapier</button>
+        <button class="pill-btn" data-cat="n8n">n8n</button>
+        <button class="pill-btn" data-cat="Google Ads">Google Ads</button>
+        <button class="pill-btn" data-cat="AI Solutions">AI Solutions</button>
+      </div>
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="blogSearchInput" placeholder="Search insights...">
+      </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="blog-grid" id="blogCardsContainer">
+      <div style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 40px;">
+        Loading insights...
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ 2. SINGLE ARTICLE VIEW ═════════ -->
+  <article id="blog-single-view">
+    <button class="back-btn" id="backToBlogBtn">← Back to all articles</button>
+
+    <div class="article-header">
+      <div class="article-meta-top">
+        <span class="card-category" id="singleCategory">Automation</span>
+        <span id="singleDate">Oct 12, 2026</span>
+        <span>·</span>
+        <span id="singleReadTime">5 min read</span>
+      </div>
+      <h1 class="article-title" id="singleTitle">Loading title...</h1>
+      <p class="article-lead" id="singleExcerpt"></p>
+
+      <div class="author-strip">
+        <div class="author-avatar" id="singleAuthorAvatar">MP</div>
+        <div>
+          <div class="author-name" id="singleAuthorName">Marlon Palomares</div>
+          <div class="author-role">Google Ads &amp; AI Automation Specialist</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-cover" id="singleCoverWrap" style="display:none;">
+      <img id="singleCoverImg" src="" alt="Article cover">
+    </div>
+
+    <div class="article-content" id="singleContent">
+      Loading content...
+    </div>
+
+    <div class="article-tags" id="singleTags"></div>
+
+    <div class="article-cta">
+      <h3>Ready to Build Intelligent Automations?</h3>
+      <p>I build custom n8n workflows, CRM funnels, and high-performance Google Ads campaigns that generate measurable revenue.</p>
+      <a href="book.html" class="btn-cta" style="display:inline-block;padding:12px 28px;font-size:15px !important;">Book a 30-Min Strategy Call →</a>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <p>© 2026 Marlon Palomares · Digital Solutions &amp; Automation Architecture</p>
+</footer>
+
+<script>
+  // Supabase Configuration
+  const SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
+  const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  // Starter / Fallback posts
+  const FALLBACK_POSTS = [
+    {
+      id: 1,
+      title: 'How to Build an Autonomous Lead Qualification Pipeline with n8n and AI',
+      slug: 'how-to-build-autonomous-lead-qualification-n8n-ai',
+      excerpt: 'Discover how connecting webhooks, LLM evaluation, and CRM routing eliminates 90% of manual lead triage while increasing reply speed.',
+      content: `## The Problem with Manual Lead Triage
+
+Most service businesses lose hot leads in the first 15 minutes. When someone submits an inquiry form, they are actively looking for a solution. If your team takes hours to respond, that lead has already booked with a competitor.
+
+### How the n8n Workflow Works
+
+By setting up an event-driven workflow in **n8n**, we can intercept incoming inquiries instantly:
+
+1. **Webhook Trigger**: Catches incoming form submissions from web landing pages or Google Ads campaigns.
+2. **Data Sanitization**: Cleans phone numbers, normalizes email addresses, and checks company domains.
+3. **AI Qualification Agent**: Passes the inquiry to an LLM evaluator (like DeepSeek or Claude) with a customized scoring rubric.
+4. **CRM Dispatch**: Automatically creates the contact in GoHighLevel with high-priority tags.
+5. **Instant SMS/Email Outreach**: Sends a personalized confirmation with a calendar booking link.
+
+\`\`\`javascript
+// Sample scoring rule snippet
+if (lead.budget >= 1500 && lead.timeline === "immediate") {
+  return { priority: "HOT", routing: "instant_booking" };
+}
+\`\`\`
+
+### Results & Impact
+Implementing this setup for local contractor and home service clients reduced response times from 3.5 hours down to **under 45 seconds**, boosting closed discovery calls by over 38%.`,
+      cover_image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+      category: 'Automation',
+      tags: ['n8n', 'AI', 'CRM', 'GoHighLevel'],
+      status: 'published',
+      published_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+      read_time_minutes: 6
+    },
+    {
+      id: 2,
+      title: 'Top 5 Zapier Workflows Every High-Growth Agency Needs in 2026',
+      slug: 'top-5-zapier-workflows-high-growth-agency-2026',
+      excerpt: 'A breakdown of the essential automations that streamline client onboarding, invoice reconciliation, and cross-channel task alerts.',
+      content: `## Why Modern Agencies Fail to Scale
+
+Scaling an agency is rarely a sales problem—it is almost always an operational bottleneck. When new clients sign on, onboarding checklists get delayed, Google Drive folders are created manually, and project managers spend hours copy-pasting data.
+
+### 1. Instant Client Workspace Onboarding
+Whenever a contract is signed in DocuSign or an initial retainer invoice is paid in Stripe:
+- Auto-generate the client Notion or ClickUp workspace.
+- Provision shared Google Drive directories with template assets.
+- Post a welcome message to a dedicated client Slack channel.
+
+### 2. Multi-Channel Alert Aggregation
+Cut down notification fatigue by routing high-priority client emails, Stripe disputes, and appointment cancellations into a unified incident feed.
+
+### 3. Automated Weekly Performance Digest
+Pull Google Ads and Meta Ads metrics every Monday at 8:00 AM, format a clean summary table, and send it directly to the client without human intervention.
+
+### Summary
+Automation is leverage. When you build reliable workflows, your team focuses on high-leverage strategy rather than repetitive admin work.`,
+      cover_image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+      category: 'Zapier',
+      tags: ['Zapier', 'Productivity', 'Agency', 'Operations'],
+      status: 'published',
+      published_at: new Date(Date.now() - 5 * 86400000).toISOString(),
+      read_time_minutes: 5
+    }
+  ];
+
+  let allArticles = [];
+  let currentCategory = 'all';
+
+  // Format Date Helper
+  function formatDate(isoStr) {
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  // Load Articles from Supabase
+  async function fetchArticles() {
+    try {
+      if (supabase) {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .eq('status', 'published')
+          .order('published_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          allArticles = data;
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Using fallback posts:', e.message);
+    }
+    allArticles = FALLBACK_POSTS;
+  }
+
+  // Render Grid Cards
+  function renderCards() {
+    const container = document.getElementById('blogCardsContainer');
+    const query = (document.getElementById('blogSearchInput').value || '').toLowerCase().trim();
+
+    const filtered = allArticles.filter(post => {
+      const matchCat = currentCategory === 'all' || post.category?.toLowerCase() === currentCategory.toLowerCase();
+      const matchQuery = !query ||
+        post.title?.toLowerCase().includes(query) ||
+        post.excerpt?.toLowerCase().includes(query) ||
+        (post.tags && post.tags.some(t => t.toLowerCase().includes(query)));
+      return matchCat && matchQuery;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 50px;">
+          <p style="font-size: 18px; margin-bottom: 8px;">No articles found matching your criteria.</p>
+          <small>Try selecting another category or clearing your search.</small>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(post => `
+      <article class="blog-card" onclick="viewArticle('${post.slug}')">
+        <div class="card-cover">
+          ${post.cover_image ? `<img src="${post.cover_image}" alt="${post.title}" loading="lazy">` : `<div class="card-cover-placeholder">◈</div>`}
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">${post.category || 'Insights'}</span>
+            <span>${formatDate(post.published_at || post.created_at)}</span>
+            <span>·</span>
+            <span>${post.read_time_minutes || 5} min read</span>
+          </div>
+          <h2 class="card-title">${post.title}</h2>
+          <p class="card-excerpt">${post.excerpt || ''}</p>
+          <div class="card-footer">
+            <span>Read Article</span>
+            <span>→</span>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  // Render Single Article
+  function renderSingleArticle(post) {
+    document.getElementById('blog-list-view').style.display = 'none';
+    document.getElementById('blog-single-view').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Update metadata
+    document.title = `${post.title} — Marlon Palomares`;
+    document.getElementById('singleTitle').textContent = post.title;
+    document.getElementById('singleExcerpt').textContent = post.excerpt || '';
+    document.getElementById('singleCategory').textContent = post.category || 'Insights';
+    document.getElementById('singleDate').textContent = formatDate(post.published_at || post.created_at);
+    document.getElementById('singleReadTime').textContent = `${post.read_time_minutes || 5} min read`;
+
+    if (post.author_name) {
+      document.getElementById('singleAuthorName').textContent = post.author_name;
+    }
+
+    // Cover image
+    const coverWrap = document.getElementById('singleCoverWrap');
+    const coverImg = document.getElementById('singleCoverImg');
+    if (post.cover_image) {
+      coverImg.src = post.cover_image;
+      coverWrap.style.display = 'block';
+    } else {
+      coverWrap.style.display = 'none';
+    }
+
+    // Render Content (supports Markdown / HTML)
+    const contentBox = document.getElementById('singleContent');
+    if (window.marked && typeof marked.parse === 'function') {
+      contentBox.innerHTML = marked.parse(post.content || '');
+    } else {
+      contentBox.innerHTML = post.content || '';
+    }
+
+    // Render tags
+    const tagsBox = document.getElementById('singleTags');
+    if (post.tags && post.tags.length > 0) {
+      tagsBox.innerHTML = post.tags.map(t => `<span class="tag-chip">#${t}</span>`).join('');
+      tagsBox.style.display = 'flex';
+    } else {
+      tagsBox.style.display = 'none';
+    }
+  }
+
+  // Navigation router
+  function viewArticle(slug) {
+    const post = allArticles.find(p => p.slug === slug);
+    if (post) {
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('slug', slug);
+      window.history.pushState({ slug }, post.title, newUrl);
+      renderSingleArticle(post);
+    }
+  }
+
+  function viewList() {
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.delete('slug');
+    window.history.pushState({}, 'Blog — Marlon Palomares', newUrl);
+    document.getElementById('blog-single-view').style.display = 'none';
+    document.getElementById('blog-list-view').style.display = 'block';
+    document.title = 'Blog & Insights — Marlon Palomares | Automation & AI Specialist';
+    renderCards();
+  }
+
+  // Handle Back Button
+  document.getElementById('backToBlogBtn').addEventListener('click', viewList);
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    if (slug) {
+      const post = allArticles.find(p => p.slug === slug);
+      if (post) renderSingleArticle(post);
+    } else {
+      viewList();
+    }
+  });
+
+  // Filter Buttons
+  document.querySelectorAll('#categoryFilter .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#categoryFilter .pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.dataset.cat;
+      renderCards();
+    });
+  });
+
+  // Search input
+  document.getElementById('blogSearchInput').addEventListener('input', renderCards);
+
+  // Initialize
+  (async function init() {
+    await fetchArticles();
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    if (slug) {
+      const post = allArticles.find(p => p.slug === slug);
+      if (post) {
+        renderSingleArticle(post);
+        return;
+      }
+    }
+    renderCards();
+  })();
+</script>
+</body>
+</html>

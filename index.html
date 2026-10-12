@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' https://cdnjs.cloudflare.com https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline';
+  script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline';
   style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com https://api.deepseek.com https://portfolio-chat-proxy.mpalomaresdigital.workers.dev https://script.google.com https://script.googleusercontent.com;
+  connect-src 'self' https://dkkriesneublbmrihgvp.supabase.co https://challenges.cloudflare.com https://www.google-analytics.com https://analytics.google.com https://api.deepseek.com https://portfolio-chat-proxy.mpalomaresdigital.workers.dev https://script.google.com https://script.googleusercontent.com;
   frame-src https://challenges.cloudflare.com;
-  img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com;
+  img-src 'self' data: https: https://www.googletagmanager.com https://www.google-analytics.com;
 ">
 <!--
   ⚠️ IMPORTANT: When you deploy the Cloudflare Worker proxy, add its domain to connect-src:
@@ -1151,7 +1151,21 @@
 
     @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 1.5rem; } .cybernetic-fixed-bg video { width: 90%; max-width: 650px; opacity: .55; transform: translateY(-50%) scale(0.92); right: 5%; } .hero > .hero-profile { display:none; } .automation-system { width:min(420px,88vw); margin:0 auto; order:-1; } .results-strip { grid-template-columns:repeat(2,1fr); margin-top:0; } .result-proof:nth-child(2) { border-right:0; } .result-proof:nth-child(-n+2) { border-bottom:1px solid var(--border); } }
 
-  @media (max-width: 768px) { .nav-links { display: none; } .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .social-strip { display: none; } .hero-meta { gap: 1.5rem; } .clb-prev { left: 4px; } .clb-next { right: 4px; } }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    nav { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(6,8,16,0.96) !important; }
+    .results-strip { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(11,14,26,0.96) !important; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .social-strip { display: none; }
+    .hero-meta { gap: 1.5rem; }
+    .clb-prev { left: 4px; }
+    .clb-next { right: 4px; }
+    #chat-fab { width: 58px; height: 58px; bottom: 1.25rem; right: 1.25rem; }
+    .assistant-icon-fab { width: 58px; height: 58px; }
+    .chat-label { display: none !important; }
+    #chat-window { bottom: 5.25rem; right: 1rem; width: calc(100vw - 2rem); max-height: calc(100vh - 6.5rem); }
+  }
     @media (max-width: 520px) { .hero { padding-top: 8rem; padding-bottom: 5rem; } .cybernetic-fixed-bg video { width: 100%; opacity: .45; transform: translateY(-50%) scale(0.95); right: 0; } .hero-content::before { inset: -2rem -1.5rem; background: radial-gradient(ellipse at 25% 45%, rgba(6,8,16,.98) 0%, rgba(6,8,16,.84) 58%, transparent 90%); } .automation-system { width:100%; } .system-node { width:96px; padding:.55rem .6rem; } .system-node span { font-size:.6rem; } .results-strip { grid-template-columns:1fr; } .result-proof,.result-proof:nth-child(2) { border-right:0; border-bottom:1px solid var(--border); } .result-proof:last-child { border-bottom:0; } }
 
     @media (max-width: 520px) { .system-particle:nth-child(n+4) { display:none; } .automation-scene::before { inset:15%; } .system-node { width:100px; } .node-n8n { left:34%; } .node-zapier { left:-3%; } }
@@ -1368,7 +1382,7 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
 <canvas id="bg-canvas"></canvas>
 <div class="grid-overlay"></div>
 <div class="cybernetic-fixed-bg" id="cybernetic-bg" aria-hidden="true">
-  <video id="hero-scrub-video" muted playsinline preload="auto" poster="cybernetic-poster.jpg">
+  <video id="hero-scrub-video" muted playsinline preload="none" poster="cybernetic-poster.jpg">
     <source src="Cybernetic.mp4" type="video/mp4">
     <source src="Cybernetic-scrub-fast.mp4" type="video/mp4">
     <source src="Cybernetic-scrub.mp4" type="video/mp4">
@@ -1395,10 +1409,12 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
     <li><a href="#experience">Experience</a></li>
     <li><a href="#certifications">Certs</a></li>
     <li><a href="#calculator">ROI Calc</a></li>
+    <li><a href="#blog">Blog</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li class="nav-dropdown">
       <a href="#projects">Guides &amp; Work <span class="nav-dropdown-arrow">▾</span></a>
       <div class="nav-dropdown-menu">
+        <a href="blog.html"><span class="dm-icon">✍️</span> Blog &amp; Insights</a>
         <a href="hvac-google-ads-and-automation-2026.html" target="_blank"><span class="dm-icon">❄️</span> HVAC Ads Guide</a>
         <a href="roofing-google-ads-management-2026.html" target="_blank"><span class="dm-icon">🏠</span> Roofing PPC Guide</a>
         <a href="google-ads-vs-lsa-for-contractors-2026.html" target="_blank"><span class="dm-icon">⚖️</span> Google Ads vs LSA</a>
@@ -1545,53 +1561,53 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
       <!-- Row 1: scrolls LEFT -->
       <div class="tools-marquee-row tools-marquee-row-1">
         <!-- original set -->
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads" loading="lazy" decoding="async"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel" loading="lazy" decoding="async"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier" loading="lazy" decoding="async"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n" loading="lazy" decoding="async"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make" loading="lazy" decoding="async"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code" loading="lazy" decoding="async"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics" loading="lazy" decoding="async"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager" loading="lazy" decoding="async"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush" loading="lazy" decoding="async"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads" loading="lazy" decoding="async"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
         <!-- duplicate for seamless loop -->
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads" loading="lazy" decoding="async"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel" loading="lazy" decoding="async"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier" loading="lazy" decoding="async"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n" loading="lazy" decoding="async"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make" loading="lazy" decoding="async"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code" loading="lazy" decoding="async"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics" loading="lazy" decoding="async"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager" loading="lazy" decoding="async"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush" loading="lazy" decoding="async"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads" loading="lazy" decoding="async"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
       </div>
 
       <!-- Row 2: scrolls RIGHT (reverse direction) -->
       <div class="tools-marquee-row tools-marquee-row-2">
         <!-- original set (reversed order) -->
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads" loading="lazy" decoding="async"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush" loading="lazy" decoding="async"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager" loading="lazy" decoding="async"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics" loading="lazy" decoding="async"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code" loading="lazy" decoding="async"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make" loading="lazy" decoding="async"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n" loading="lazy" decoding="async"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier" loading="lazy" decoding="async"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel" loading="lazy" decoding="async"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads" loading="lazy" decoding="async"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
         <!-- duplicate -->
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
-        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Meta.jpg" alt="Meta Ads" loading="lazy" decoding="async"></div><div class="tool-name">Meta Ads</div><div class="tool-cat">Social Ads</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Semrush.png" alt="SEMrush" loading="lazy" decoding="async"></div><div class="tool-name">SEMrush</div><div class="tool-cat">SEO &amp; PPC</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Tag.png" alt="Google Tag Manager" loading="lazy" decoding="async"></div><div class="tool-name">Google Tag Manager</div><div class="tool-cat">Tracking</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Analytics.jpg" alt="Google Analytics" loading="lazy" decoding="async"></div><div class="tool-name">Google Analytics</div><div class="tool-cat">Analytics</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Claude.png" alt="Claude Code" loading="lazy" decoding="async"></div><div class="tool-name">Claude Code</div><div class="tool-cat">AI Dev</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/make.jpg" alt="Make" loading="lazy" decoding="async"></div><div class="tool-name">Make</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/n8n.jpg" alt="n8n" loading="lazy" decoding="async"></div><div class="tool-name">n8n</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Zapier.png" alt="Zapier" loading="lazy" decoding="async"></div><div class="tool-name">Zapier</div><div class="tool-cat">Automation</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/GHL.jpg" alt="GoHighLevel" loading="lazy" decoding="async"></div><div class="tool-name">GoHighLevel</div><div class="tool-cat">CRM &amp; Funnels</div></div>
+        <div class="tool-item"><div class="tool-dot"></div><div class="tool-img-wrap"><img class="tool-img" src="Tool%20images/Gads.png" alt="Google Ads" loading="lazy" decoding="async"></div><div class="tool-name">Google Ads</div><div class="tool-cat">Paid Search</div></div>
       </div>
     </div>
   </section>
@@ -1743,6 +1759,23 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
     </div>
   </section>
 
+  <!-- ═══ BLOG & AUTOMATION INSIGHTS ═══ -->
+  <section id="blog">
+    <div class="section-tag">Insights &amp; Engineering</div>
+    <h2 class="section-title reveal">Latest Articles &amp;<br>Automation Blueprints</h2>
+    <p class="section-sub reveal">Practical guides, speed-to-lead case studies, and engineering breakdowns on n8n, Zapier, GoHighLevel, and AI automation.</p>
+
+    <div class="projects-grid" id="homeBlogGrid" style="margin-top:40px;">
+      <!-- Populated dynamically via initHomeBlog() -->
+    </div>
+
+    <div style="text-align:center;margin-top:45px;" class="reveal">
+      <a href="blog.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;padding:14px 28px;">
+        Explore All Articles &amp; Insights →
+      </a>
+    </div>
+  </section>
+
   <!-- ═══ CONTRACTOR PPC & SPEED-TO-LEAD FAQ ═══ -->
   <section id="faq">
     <div class="section-tag">Direct Answers</div>
@@ -1849,7 +1882,7 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
               <div style="font-size:0.88rem;font-weight:700;color:var(--text);">Marlon's AI Assistant</div>
               <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--green);letter-spacing:0.07em;display:flex;align-items:center;gap:0.35rem;margin-top:2px;">
                 <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse-dot 2s ease-in-out infinite;"></span>
-                INSTANT REPLY · Powered by DeepSeek AI
+                INSTANT REPLY · AI Assistant
               </div>
             </div>
             <div style="margin-left:auto;font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0.2rem 0.5rem;">JUST NOW</div>
@@ -1934,7 +1967,7 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
       </div>
       <button onclick="closeShowreelModal()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:16px;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;">✕</button>
     </div>
-    <video id="showreel-video" controls playsinline style="width:100%;display:block;aspect-ratio:16/9;background:#000;">
+    <video id="showreel-video" controls playsinline preload="none" style="width:100%;display:block;aspect-ratio:16/9;background:#000;">
       <source src="certifications-showreel.mp4" type="video/mp4">
     </video>
   </div>
@@ -1953,11 +1986,11 @@ if (location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1)$/i.test(locatio
     <div class="chat-avatar"><img class="assistant-icon" src="images/live-chatbot.svg" alt="Marlon AI Assistant" width="50" height="50"></div>
     <div class="chat-header-info">
       <div class="chat-header-name">Marlon's AI Assistant</div>
-      <div class="chat-header-status"><div class="chat-status-dot"></div> <span id="chat-status-text">Online · Powered by DeepSeek</span></div>
+      <div class="chat-header-status"><div class="chat-status-dot"></div> <span id="chat-status-text">Online · AI Assistant</span></div>
     </div>
     <button class="chat-close-btn" type="button" aria-label="Close Marlon AI Assistant">✕</button>
   </div>
-  <div class="chat-powered">AI · <span>DeepSeek-Chat</span> · Portfolio Assistant</div>
+  <div class="chat-powered"><span>AI Assistant</span></div>
   <div id="chat-messages">
     <div class="chat-msg bot">
       <div class="msg-micro-avatar">🤖</div>
@@ -2025,16 +2058,18 @@ const PROXY_URL = CONFIG.PROXY_URL || "https://portfolio-chat-proxy.mpalomaresdi
     nodes = [];
     edges = [];
     pulses= [];
-    const COLS  = Math.ceil(W / 90) + 1;
-    const ROWS  = Math.ceil(H / 90) + 1;
-    const jitter = 22;
+    const isMobile = W <= 768;
+    const step = isMobile ? 140 : 90;
+    const COLS  = Math.ceil(W / step) + 1;
+    const ROWS  = Math.ceil(H / step) + 1;
+    const jitter = isMobile ? 16 : 22;
 
     // Scatter nodes on a grid with jitter
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         nodes.push({
-          x: c * 90 + (Math.random() - 0.5) * jitter,
-          y: r * 90 + (Math.random() - 0.5) * jitter,
+          x: c * step + (Math.random() - 0.5) * jitter,
+          y: r * step + (Math.random() - 0.5) * jitter,
           r: Math.random() * 2 + 1,
           alpha: Math.random() * 0.5 + 0.2,
           pulsePhase: Math.random() * Math.PI * 2,
@@ -2050,7 +2085,7 @@ const PROXY_URL = CONFIG.PROXY_URL || "https://portfolio-chat-proxy.mpalomaresdi
         const dx = nodes[j].x - nodes[i].x;
         const dy = nodes[j].y - nodes[i].y;
         const d  = Math.sqrt(dx * dx + dy * dy);
-        if (d < 140 && Math.random() < 0.25) {
+        if (d < (isMobile ? 180 : 140) && Math.random() < 0.25) {
           candidates.push({ j, d });
         }
       }
@@ -2062,7 +2097,8 @@ const PROXY_URL = CONFIG.PROXY_URL || "https://portfolio-chat-proxy.mpalomaresdi
     }
 
     // Spawn initial pulses
-    for (let i = 0; i < 18; i++) spawnPulse();
+    const initialPulses = isMobile ? 6 : 18;
+    for (let i = 0; i < initialPulses; i++) spawnPulse();
   }
 
   function spawnPulse() {
@@ -2157,14 +2193,29 @@ const PROXY_URL = CONFIG.PROXY_URL || "https://portfolio-chat-proxy.mpalomaresdi
     });
 
     // Keep pulse count steady
-    while (pulses.length < 20) spawnPulse();
-
-    requestAnimationFrame(draw);
+    const targetPulses = W <= 768 ? 8 : 20;
+    while (pulses.length < targetPulses) spawnPulse();
   }
+
+  let animationFrameId = null;
+  function loop(t) {
+    if (document.hidden) {
+      animationFrameId = null;
+      return;
+    }
+    draw(t);
+    animationFrameId = requestAnimationFrame(loop);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !animationFrameId) {
+      animationFrameId = requestAnimationFrame(loop);
+    }
+  });
 
   window.addEventListener('resize', resize);
   resize();
-  requestAnimationFrame(draw);
+  animationFrameId = requestAnimationFrame(loop);
 })();
 
 
@@ -2623,7 +2674,7 @@ async function sendChat(){
     const known=buildKnownChatReply(text);if(known){setChatStatus('Offline · Quick reply',false);hideTyping();chatHistory.push({role:'assistant',content:known});appendMsg('bot',known);return;}
     if(isLocalPreview()||!PROXY_URL){setChatStatus('Offline · Local preview',false);hideTyping();appendMsg('bot',buildOfflineChatReply(text));return;}
     setChatStatus('Connecting…',false);const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:chatHistory.slice(-10)})});let data=null;try{data=await res.json();}catch(e){data=null;}if(!res.ok)throw new Error(extractChatErrorMessage(data,res.status)||('API '+res.status));
-    const reply=(data&&data.reply)||'Sorry, I had trouble responding. Please try again!';setChatStatus('Online · Powered by DeepSeek',true);hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply);
+    const reply=(data&&data.reply)||'Sorry, I had trouble responding. Please try again!';setChatStatus('Online · AI Assistant',true);hideTyping();chatHistory.push({role:'assistant',content:reply});appendMsg('bot',reply);
   }catch(err){setChatStatus('Offline · Try again later',false);hideTyping();const prefix=isLocalPreview()?'Local preview note: the live AI proxy is not reachable here. ':'',reason=err&&err.message&&!/^\s*API\s+\d+/i.test(err.message)?`(${err.message}) `:'';appendMsg('bot',`${prefix}${reason}${buildOfflineChatReply(text)}`);if(typeof console!=='undefined'&&console&&typeof console.warn==='function')console.warn('Chat error:',err);
   }finally{send.disabled=false;input.focus();}
 }
@@ -2635,6 +2686,9 @@ document.getElementById('chat-input').addEventListener('input',function(){this.s
 <!-- ══════════════════════════════════════════
      PHASE 1-3: WOW ANIMATIONS
 ══════════════════════════════════════════ -->
+<!-- Supabase JS Client for Dynamic Blog -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.12/dist/umd/supabase.min.js"></script>
+
 <script>
 (function() {
 
@@ -2864,13 +2918,16 @@ document.addEventListener('click', function(e) {
 /* ═══════ 8. SCROLL-DRIVEN CYBERNETIC TRANSFORMATION ═══════ */
 const scrubVideo = document.getElementById('hero-scrub-video');
 if (scrubVideo) {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
   let isSeeking = false;
   let queuedTime = null;
 
-  try {
-    scrubVideo.pause();
-    scrubVideo.load();
-  } catch (e) {}
+  if (!isMobile) {
+    try {
+      scrubVideo.pause();
+      scrubVideo.load();
+    } catch (e) {}
+  }
 
   function getScrollMetrics() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
@@ -2900,6 +2957,7 @@ if (scrubVideo) {
   }
 
   function commitSeek(time) {
+    if (isMobile) return;
     if (isSeeking) {
       queuedTime = time;
       return;
@@ -2940,7 +2998,9 @@ if (scrubVideo) {
           scrubVideo.style.opacity = metrics.targetOpacity;
         }
 
-        commitSeek(metrics.targetTime);
+        if (!isMobile) {
+          commitSeek(metrics.targetTime);
+        }
         scrollTicking = false;
       });
       scrollTicking = true;
@@ -2950,11 +3010,15 @@ if (scrubVideo) {
   window.addEventListener('scroll', onUserScroll, { passive: true });
   window.addEventListener('resize', onUserScroll, { passive: true });
 
-  if (scrubVideo.readyState >= 1) {
-    onUserScroll();
+  if (!isMobile) {
+    if (scrubVideo.readyState >= 1) {
+      onUserScroll();
+    } else {
+      scrubVideo.addEventListener('loadedmetadata', onUserScroll, { once: true });
+      scrubVideo.addEventListener('canplay', onUserScroll, { once: true });
+    }
   } else {
-    scrubVideo.addEventListener('loadedmetadata', onUserScroll, { once: true });
-    scrubVideo.addEventListener('canplay', onUserScroll, { once: true });
+    onUserScroll();
   }
 }
 /* ═══════ 9. SCI-FI HUD THEME SYSTEM ═══════ */
@@ -3067,6 +3131,106 @@ function initContractorCalc() {
   calculate();
 }
 initContractorCalc();
+
+/* ═══════ BLOG POSTS SHOWCASE ═══════ */
+const BLOG_SUPABASE_URL = 'https://dkkriesneublbmrihgvp.supabase.co';
+const BLOG_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra3JpZXNuZXVibGJtcmloZ3ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3Mzk2NjIsImV4cCI6MjA5ODMxNTY2Mn0.xBzuqJ4kCLWMxvT6CRNIpSMDVcBQvq42Xeg0OnHfPCY';
+
+const FALLBACK_BLOG_POSTS = [
+  {
+    id: 1,
+    title: 'How to Build an Autonomous Lead Qualification Pipeline with n8n and AI',
+    slug: 'how-to-build-autonomous-lead-qualification-n8n-ai',
+    excerpt: 'Discover how connecting webhooks, LLM evaluation, and CRM routing eliminates 90% of manual lead triage while increasing reply speed.',
+    cover_image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+    category: 'Automation',
+    read_time_minutes: 6
+  },
+  {
+    id: 2,
+    title: 'Top 5 Zapier Workflows Every High-Growth Agency Needs in 2026',
+    slug: 'top-5-zapier-workflows-high-growth-agency-2026',
+    excerpt: 'A breakdown of the essential automations that streamline client onboarding, invoice reconciliation, and cross-channel task alerts.',
+    cover_image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+    category: 'Zapier',
+    read_time_minutes: 5
+  },
+  {
+    id: 3,
+    title: 'High-Intent Contractor PPC: Why Google Ads + Speed-to-Lead Outperforms LSA',
+    slug: 'high-intent-contractor-ppc-speed-to-lead',
+    excerpt: 'Comparing Google Ads search intent against Local Services Ads, and how a 60-second GoHighLevel response sequence converts 391% more calls into booked jobs.',
+    cover_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
+    category: 'Google Ads',
+    read_time_minutes: 7
+  }
+];
+
+function escapeBlogHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function initHomeBlog() {
+  const grid = document.getElementById('homeBlogGrid');
+  if (!grid) return;
+
+  let posts = FALLBACK_BLOG_POSTS;
+  try {
+    if (window.supabase) {
+      const sbClient = window.supabase.createClient(BLOG_SUPABASE_URL, BLOG_SUPABASE_ANON_KEY);
+      const { data, error } = await sbClient
+        .from('blog_posts')
+        .select('id, title, slug, excerpt, cover_image, category, read_time_minutes, published_at')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(3);
+
+      if (!error && data && data.length > 0) {
+        posts = data;
+      }
+    }
+  } catch (e) {
+    console.warn('Using fallback blog articles:', e.message);
+  }
+
+  grid.innerHTML = posts.map(post => {
+    const cover = post.cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80';
+    const readTime = post.read_time_minutes || 5;
+    const cat = post.category || 'Automation';
+    const slug = post.slug || '';
+    return `
+      <article class="project-card in-view" style="display:flex;flex-direction:column;height:100%;">
+        <div class="project-thumb" style="aspect-ratio:16/9;overflow:hidden;background:rgba(255,255,255,0.02);padding:0;">
+          <img src="${escapeBlogHtml(cover)}" alt="${escapeBlogHtml(post.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+        </div>
+        <div class="project-inner" style="display:flex;flex-direction:column;flex-grow:1;">
+          <div class="project-tags" style="margin-bottom:0.75rem;">
+            <span class="tag tag-blue">${escapeBlogHtml(cat)}</span>
+            <span class="tag tag-purple">${readTime} min read</span>
+          </div>
+          <h3 class="project-name" style="font-size:1.18rem;line-height:1.4;margin-bottom:0.75rem;">
+            <a href="blog.html?slug=${encodeURIComponent(slug)}" style="color:inherit;text-decoration:none;">${escapeBlogHtml(post.title)}</a>
+          </h3>
+          <p class="project-desc" style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;flex-grow:1;">
+            ${escapeBlogHtml(post.excerpt || '')}
+          </p>
+          <div class="project-links" style="margin-top:auto;">
+            <a href="blog.html?slug=${encodeURIComponent(slug)}" class="proj-link proj-primary" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;">
+              Read Article →
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+initHomeBlog();
 
 })();
 </script>
