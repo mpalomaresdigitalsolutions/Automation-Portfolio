@@ -133,3 +133,5 @@ coverage.xml
 credentials.env.txt
 IconCrafts/
 remotion-showreel/frames/
+Cli/
+*.exe
