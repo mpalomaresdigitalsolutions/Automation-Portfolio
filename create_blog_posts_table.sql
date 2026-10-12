@@ -122,3 +122,28 @@ Automation is leverage. When you build reliable workflows, your team focuses on 
   NOW() - INTERVAL '5 days',
   5
 );
+
+-- ========================================================
+-- OPTIONAL: STORAGE BUCKET FOR BLOG MEDIA (IMAGES & VIDEOS)
+-- ========================================================
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'blog-media',
+  'blog-media',
+  true,
+  52428800,
+  ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
+)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+DROP POLICY IF EXISTS "Public can view blog media" ON storage.objects;
+CREATE POLICY "Public can view blog media"
+ON storage.objects FOR SELECT
+TO anon, authenticated
+USING (bucket_id = 'blog-media');
+
+DROP POLICY IF EXISTS "Authenticated users can upload blog media" ON storage.objects;
+CREATE POLICY "Authenticated users can upload blog media"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'blog-media');

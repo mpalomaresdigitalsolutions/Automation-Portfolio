@@ -371,8 +371,37 @@
     #blogPostPreview code { font-family: 'Space Mono', monospace; color: var(--accent); }
     #blogPostPreview ul, #blogPostPreview ol { padding-left: 20px; margin-bottom: 1em; }
     #blogPostPreview li { margin-bottom: 0.4em; }
-    #blogPostPreview blockquote { border-left: 3px solid var(--accent); padding-left: 14px; color: var(--muted); margin: 1em 0; }
     #blogPostPreview img { max-width: 100%; border-radius: 8px; }
+    #blogPostPreview video { max-width: 100%; border-radius: 8px; margin: 12px 0; background: #000; display: block; }
+    #blogPostPreview .video-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin: 12px 0; }
+    #blogPostPreview .video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .blog-dropzone {
+      border: 2px dashed rgba(0, 212, 255, 0.35);
+      border-radius: 10px;
+      padding: 22px 16px;
+      text-align: center;
+      background: rgba(0, 212, 255, 0.02);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .blog-dropzone:hover, .blog-dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(0, 212, 255, 0.08);
+      box-shadow: 0 0 16px rgba(0, 212, 255, 0.15);
+    }
+    .blog-media-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(0, 212, 255, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     /* Tabs inside detail */
@@ -1703,14 +1732,60 @@
         </div>
       </div>
 
-      <div class="form-group" style="margin-bottom:16px;">
-        <label>Cover Image URL</label>
-        <div style="display:flex;gap:10px;">
-          <input type="text" id="blogPostCover" placeholder="https://images.unsplash.com/photo-... or custom URL" style="flex:1;">
-          <button type="button" class="btn btn-outline btn-sm" id="blogTestCoverBtn">Preview Image</button>
+      <!-- Cover Media Section (Image or Video) -->
+      <div class="form-group" style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <label style="margin:0;font-weight:600;display:flex;align-items:center;gap:6px;">
+            <span>🎬</span> Cover Media (Image or Video)
+          </label>
+          <div style="display:flex;gap:6px;">
+            <button type="button" class="btn btn-sm" id="blogMediaTabUpload" style="padding:3px 10px;font-size:11px;background:var(--accent);color:#000;border:1px solid var(--accent);font-weight:600;">📁 Upload File</button>
+            <button type="button" class="btn btn-sm btn-outline" id="blogMediaTabUrl" style="padding:3px 10px;font-size:11px;">🔗 Paste URL</button>
+          </div>
         </div>
-        <div id="blogCoverPreviewWrap" style="display:none;margin-top:10px;max-width:340px;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
-          <img id="blogCoverPreviewImg" src="" alt="Cover preview" style="width:100%;height:150px;object-fit:cover;display:block;">
+
+        <!-- Mode A: File Upload Dropzone -->
+        <div id="blogMediaUploadPanel" style="display:block;">
+          <input type="file" id="blogMediaFileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,video/mp4,video/webm,video/ogg,video/quicktime" style="display:none;">
+          <div class="blog-dropzone" id="blogMediaDropzone">
+            <div style="font-size:26px;margin-bottom:4px;line-height:1;">☁️</div>
+            <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:3px;">
+              Click to select or drag &amp; drop an image or video
+            </div>
+            <div style="font-size:11px;color:var(--muted);">
+              Supports JPG, PNG, WebP, GIF, SVG &amp; MP4, WebM videos (up to 50MB)
+            </div>
+            <div id="blogMediaUploadStatus" style="display:none;margin-top:10px;font-size:12px;color:var(--accent);">
+              <span class="spinner" style="display:inline-block;width:12px;height:12px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>
+              <span id="blogMediaUploadText">Uploading media...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode B: Direct URL Input -->
+        <div id="blogMediaUrlPanel" style="display:none;">
+          <div style="display:flex;gap:10px;">
+            <input type="text" id="blogPostCover" placeholder="Paste image URL (Unsplash/Imgur) or video link (MP4, YouTube, Loom)" style="flex:1;">
+            <button type="button" class="btn btn-outline btn-sm" id="blogTestCoverBtn">Preview</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+            Works with direct image URLs, direct video URLs (.mp4/.webm), or YouTube/Loom links.
+          </div>
+        </div>
+
+        <!-- Live Cover Media Preview -->
+        <div id="blogCoverPreviewWrap" style="display:none;margin-top:12px;padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span id="blogCoverTypeBadge" class="blog-media-badge">📷 Image Cover</span>
+            <button type="button" id="blogCoverRemoveBtn" class="btn btn-sm btn-outline" style="padding:2px 8px;font-size:11px;border-color:rgba(255,68,68,0.4);color:#ff6b6b;" title="Remove media">
+              ✕ Remove Cover
+            </button>
+          </div>
+          <div style="max-height:240px;border-radius:8px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+            <img id="blogCoverPreviewImg" src="" alt="Cover preview" style="max-width:100%;max-height:240px;object-fit:contain;display:none;">
+            <video id="blogCoverPreviewVideo" controls playsinline style="max-width:100%;max-height:240px;display:none;width:100%;"></video>
+            <div id="blogCoverPreviewEmbed" style="width:100%;aspect-ratio:16/9;display:none;"></div>
+          </div>
         </div>
       </div>
 
@@ -1729,7 +1804,7 @@
         </div>
 
         <!-- Markdown Formatting Bar -->
-        <div id="blogToolbar" style="display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;">
+        <div id="blogToolbar" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:7px 10px;background:var(--bg3);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;">
           <button type="button" class="btn btn-sm btn-outline" data-md="h2" style="padding:2px 8px;font-size:11px;font-weight:700;">H2</button>
           <button type="button" class="btn btn-sm btn-outline" data-md="h3" style="padding:2px 8px;font-size:11px;font-weight:700;">H3</button>
           <button type="button" class="btn btn-sm btn-outline" data-md="bold" style="padding:2px 8px;font-size:11px;font-weight:700;">B</button>
@@ -1738,7 +1813,12 @@
           <button type="button" class="btn btn-sm btn-outline" data-md="code" style="padding:2px 8px;font-size:11px;font-family:monospace;">&lt;/&gt;</button>
           <button type="button" class="btn btn-sm btn-outline" data-md="quote" style="padding:2px 8px;font-size:11px;">" Quote</button>
           <button type="button" class="btn btn-sm btn-outline" data-md="link" style="padding:2px 8px;font-size:11px;">🔗 Link</button>
+          <span style="color:var(--border);padding:0 2px;">|</span>
+          <button type="button" class="btn btn-sm btn-outline" id="blogInsertImageBtn" style="padding:2px 8px;font-size:11px;border-color:rgba(0,212,255,0.4);color:var(--accent);" title="Upload image and insert into post">🖼️ Insert Image</button>
+          <button type="button" class="btn btn-sm btn-outline" id="blogInsertVideoBtn" style="padding:2px 8px;font-size:11px;border-color:rgba(123,47,255,0.4);color:#b388ff;" title="Upload or embed video into post">🎬 Insert Video</button>
         </div>
+        <input type="file" id="blogContentImageInput" accept="image/*" style="display:none;">
+        <input type="file" id="blogContentVideoInput" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display:none;">
 
         <textarea id="blogPostContent" rows="14" placeholder="Write full article here in Markdown... Use ## for headers, - for bullets, and ```javascript for code blocks." style="font-family:'Space Mono',monospace;font-size:13px;line-height:1.6;border-top-left-radius:0;border-top-right-radius:0;resize:vertical;"></textarea>
 
@@ -4819,9 +4899,14 @@ Marlon Palomares`
 
       tbody.innerHTML = filtered.map(post => {
         const cover = post.cover_image || '';
-        const thumb = cover
-          ? `<img src="${esc(cover)}" alt="thumb" style="width:48px;height:34px;object-fit:cover;border-radius:4px;border:1px solid var(--border);">`
-          : `<div style="width:48px;height:34px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;">📝</div>`;
+        let thumb = `<div style="width:48px;height:34px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;">📝</div>`;
+        if (cover) {
+          if (isMediaVideo(cover)) {
+            thumb = `<div style="width:48px;height:34px;background:#000;border:1px solid rgba(0,212,255,0.4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent);" title="Video Post">🎬</div>`;
+          } else {
+            thumb = `<img src="${esc(cover)}" alt="thumb" style="width:48px;height:34px;object-fit:cover;border-radius:4px;border:1px solid var(--border);">`;
+          }
+        }
 
         const isPub = post.status === 'published';
         const statusBadge = isPub
@@ -4860,6 +4945,242 @@ Marlon Palomares`
           </tr>
         `;
       }).join('');
+    }
+
+    function isMediaVideo(url) {
+      if (!url) return false;
+      const clean = String(url).trim().toLowerCase();
+      return clean.startsWith('data:video/') ||
+             /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(clean) ||
+             clean.includes('youtube.com/') ||
+             clean.includes('youtu.be/') ||
+             clean.includes('vimeo.com/') ||
+             clean.includes('loom.com/');
+    }
+
+    function getEmbedVideoUrl(url) {
+      if (!url) return '';
+      const clean = String(url).trim();
+      let match = clean.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+      }
+      match = clean.match(/loom\.com\/share\/([a-zA-Z0-9]+)/i);
+      if (match && match[1]) {
+        return `https://www.loom.com/embed/${match[1]}`;
+      }
+      match = clean.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)/i);
+      if (match && match[3]) {
+        return `https://player.vimeo.com/video/${match[3]}`;
+      }
+      return clean;
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function fileToCompressedDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file.type.startsWith('image/')) {
+          return resolve(fileToDataUrl(file));
+        }
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif' || file.size <= 500 * 1024) {
+          return resolve(fileToDataUrl(file));
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const maxDim = 1600;
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              const compressed = canvas.toDataURL('image/jpeg', 0.85);
+              resolve(compressed);
+            } catch (err) {
+              resolve(e.target.result);
+            }
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadBlogMediaFile(file, onProgressText) {
+      if (!file) throw new Error('No file selected.');
+      const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|ogg|mov|m4v)$/i.test(file.name);
+      const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(file.name);
+
+      if (!isImage && !isVideo) {
+        throw new Error('Unsupported format. Please select an image (JPG, PNG, WebP, GIF, SVG) or video (MP4, WebM).');
+      }
+
+      if (isImage && file.size > 25 * 1024 * 1024) {
+        throw new Error('Image exceeds 25 MB. Please choose a smaller file.');
+      }
+      if (isVideo && file.size > 60 * 1024 * 1024) {
+        throw new Error('Video exceeds 60 MB. For larger videos, embed via YouTube or Loom.');
+      }
+
+      if (typeof onProgressText === 'function') onProgressText('Connecting to storage...');
+
+      const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const timestamp = Date.now();
+      const folder = isVideo ? 'videos' : 'images';
+      const filePath = `${folder}/${timestamp}_${cleanName}`;
+
+      try {
+        if (typeof onProgressText === 'function') onProgressText('Uploading to Supabase CDN...');
+        let { data, error } = await supabase.storage
+          .from('blog-media')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: file.type || (isVideo ? 'video/mp4' : 'image/jpeg')
+          });
+
+        if (!error && data) {
+          const { data: pubData } = supabase.storage.from('blog-media').getPublicUrl(filePath);
+          if (pubData && pubData.publicUrl) {
+            return {
+              url: pubData.publicUrl,
+              type: isVideo ? 'video' : 'image',
+              name: file.name,
+              storage: 'supabase'
+            };
+          }
+        }
+      } catch (err) {
+        console.warn('Supabase storage upload error, trying fallback:', err);
+      }
+
+      if (typeof onProgressText === 'function') onProgressText('Processing file fallback...');
+      if (isImage) {
+        const dataUrl = await fileToCompressedDataUrl(file);
+        return {
+          url: dataUrl,
+          type: 'image',
+          name: file.name,
+          storage: 'dataurl'
+        };
+      }
+
+      if (isVideo && file.size <= 15 * 1024 * 1024) {
+        const dataUrl = await fileToDataUrl(file);
+        return {
+          url: dataUrl,
+          type: 'video',
+          name: file.name,
+          storage: 'dataurl'
+        };
+      }
+
+      throw new Error('Supabase bucket "blog-media" not reachable. Please run create_blog_media_bucket.sql in your Supabase SQL editor or paste an embed link.');
+    }
+
+    function updateBlogCoverPreview(url) {
+      const wrap = $('blogCoverPreviewWrap');
+      const img = $('blogCoverPreviewImg');
+      const video = $('blogCoverPreviewVideo');
+      const embed = $('blogCoverPreviewEmbed');
+      const badge = $('blogCoverTypeBadge');
+
+      if (!wrap) return;
+
+      const cleanUrl = (url || '').trim();
+      if (!cleanUrl) {
+        wrap.style.display = 'none';
+        if (img) { img.src = ''; img.style.display = 'none'; }
+        if (video) { video.pause(); video.src = ''; video.style.display = 'none'; }
+        if (embed) { embed.innerHTML = ''; embed.style.display = 'none'; }
+        return;
+      }
+
+      wrap.style.display = 'block';
+
+      if (isMediaVideo(cleanUrl)) {
+        if (cleanUrl.startsWith('data:video/') || /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(cleanUrl)) {
+          if (img) img.style.display = 'none';
+          if (embed) { embed.innerHTML = ''; embed.style.display = 'none'; }
+          if (video) {
+            video.src = cleanUrl;
+            video.style.display = 'block';
+          }
+          if (badge) badge.innerHTML = '🎬 Video Cover (MP4/WebM)';
+        } else {
+          const embedUrl = getEmbedVideoUrl(cleanUrl);
+          if (img) img.style.display = 'none';
+          if (video) { video.pause(); video.src = ''; video.style.display = 'none'; }
+          if (embed) {
+            embed.innerHTML = `<iframe src="${embedUrl}" style="width:100%;height:100%;border:0;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+            embed.style.display = 'block';
+          }
+          if (badge) badge.innerHTML = '🎬 Video Cover (Embed)';
+        }
+      } else {
+        if (video) { video.pause(); video.src = ''; video.style.display = 'none'; }
+        if (embed) { embed.innerHTML = ''; embed.style.display = 'none'; }
+        if (img) {
+          img.src = cleanUrl;
+          img.style.display = 'block';
+        }
+        if (badge) badge.innerHTML = '📷 Image Cover';
+      }
+    }
+
+    function switchBlogMediaMode(mode) {
+      const uploadBtn = $('blogMediaTabUpload');
+      const urlBtn = $('blogMediaTabUrl');
+      const uploadPanel = $('blogMediaUploadPanel');
+      const urlPanel = $('blogMediaUrlPanel');
+
+      if (mode === 'url') {
+        if (uploadBtn) { uploadBtn.className = 'btn btn-sm btn-outline'; uploadBtn.style.background = ''; uploadBtn.style.color = ''; }
+        if (urlBtn) { urlBtn.className = 'btn btn-sm'; urlBtn.style.background = 'var(--accent)'; urlBtn.style.color = '#000'; urlBtn.style.border = '1px solid var(--accent)'; urlBtn.style.fontWeight = '600'; }
+        if (uploadPanel) uploadPanel.style.display = 'none';
+        if (urlPanel) urlPanel.style.display = 'block';
+      } else {
+        if (urlBtn) { urlBtn.className = 'btn btn-sm btn-outline'; urlBtn.style.background = ''; urlBtn.style.color = ''; }
+        if (uploadBtn) { uploadBtn.className = 'btn btn-sm'; uploadBtn.style.background = 'var(--accent)'; uploadBtn.style.color = '#000'; uploadBtn.style.border = '1px solid var(--accent)'; uploadBtn.style.fontWeight = '600'; }
+        if (uploadPanel) uploadPanel.style.display = 'block';
+        if (urlPanel) urlPanel.style.display = 'none';
+      }
+    }
+
+    function insertTextAtCursor(textarea, textToInsert) {
+      if (!textarea) return;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const before = textarea.value.substring(0, start);
+      const after = textarea.value.substring(end);
+      textarea.value = before + textToInsert + after;
+      textarea.focus();
+      const newPos = start + textToInsert.length;
+      textarea.setSelectionRange(newPos, newPos);
     }
 
     function generateSlug(text) {
@@ -4901,12 +5222,8 @@ Marlon Palomares`
 
         isSlugManual = true; // existing post has defined slug
 
-        if (post.cover_image) {
-          $('blogCoverPreviewWrap').style.display = 'block';
-          $('blogCoverPreviewImg').src = post.cover_image;
-        } else {
-          $('blogCoverPreviewWrap').style.display = 'none';
-        }
+        updateBlogCoverPreview(post.cover_image || '');
+        switchBlogMediaMode(post.cover_image && !post.cover_image.startsWith('data:') && !post.cover_image.includes('supabase') ? 'url' : 'upload');
       } else {
         $('blogModalHeading').textContent = 'Create Blog Post';
         $('blogPostId').value = '';
@@ -4919,12 +5236,14 @@ Marlon Palomares`
         $('blogPostCover').value = '';
         $('blogPostExcerpt').value = '';
         $('blogPostContent').value = '';
-        $('blogCoverPreviewWrap').style.display = 'none';
+        updateBlogCoverPreview('');
+        switchBlogMediaMode('upload');
       }
 
       modal.classList.add('open');
       setTimeout(() => $('blogPostTitle').focus(), 100);
     }
+
 
     function switchBlogTab(mode) {
       const writeBtn = $('blogTabWrite');
@@ -5423,13 +5742,11 @@ You MUST format your entire response using these exact delimiters:
         $('blogPostTags').value = parsed.tags;
         $('blogPostReadTime').value = parsed.read_time_minutes;
         $('blogPostExcerpt').value = parsed.excerpt;
-        $('blogPostCover').value = parsed.cover_image;
+        $('blogPostCover').value = parsed.cover_image || '';
         $('blogPostContent').value = parsed.content;
 
-        if (parsed.cover_image) {
-          $('blogCoverPreviewWrap').style.display = 'block';
-          $('blogCoverPreviewImg').src = parsed.cover_image;
-        }
+        updateBlogCoverPreview(parsed.cover_image || '');
+        switchBlogMediaMode(parsed.cover_image ? 'url' : 'upload');
 
         // Switch to Live Preview immediately
         switchBlogTab('preview');
@@ -5444,7 +5761,6 @@ You MUST format your entire response using these exact delimiters:
     }
 
     // Attach Blog Event Listeners
-    // Check if DOM is already loaded or attach
     function initBlogEventListeners() {
       // Nav buttons
       $('newBlogPostBtn')?.addEventListener('click', () => openBlogEditor(null));
@@ -5489,16 +5805,159 @@ You MUST format your entire response using these exact delimiters:
         isSlugManual = true;
       });
 
-      // Cover image preview button
+      // Cover Media Mode Toggles
+      $('blogMediaTabUpload')?.addEventListener('click', () => switchBlogMediaMode('upload'));
+      $('blogMediaTabUrl')?.addEventListener('click', () => switchBlogMediaMode('url'));
+
+      // Cover Media File Picker & Dropzone
+      const dropzone = $('blogMediaDropzone');
+      const fileInput = $('blogMediaFileInput');
+      const statusBox = $('blogMediaUploadStatus');
+      const statusTxt = $('blogMediaUploadText');
+
+      dropzone?.addEventListener('click', () => fileInput?.click());
+
+      async function handleCoverFileUpload(file) {
+        if (!file) return;
+        if (statusBox) statusBox.style.display = 'block';
+        if (statusTxt) statusTxt.textContent = 'Uploading media...';
+        try {
+          const res = await uploadBlogMediaFile(file, (msg) => {
+            if (statusTxt) statusTxt.textContent = msg;
+          });
+          $('blogPostCover').value = res.url;
+          updateBlogCoverPreview(res.url);
+        } catch (err) {
+          alert('Upload failed: ' + err.message);
+        } finally {
+          if (statusBox) statusBox.style.display = 'none';
+          if (fileInput) fileInput.value = '';
+        }
+      }
+
+      fileInput?.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (file) handleCoverFileUpload(file);
+      });
+
+      if (dropzone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('dragover');
+          });
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('dragover');
+          });
+        });
+        dropzone.addEventListener('drop', (e) => {
+          const file = e.dataTransfer?.files?.[0];
+          if (file) handleCoverFileUpload(file);
+        });
+      }
+
+      // Cover Media Remove button
+      $('blogCoverRemoveBtn')?.addEventListener('click', () => {
+        $('blogPostCover').value = '';
+        updateBlogCoverPreview('');
+      });
+
+      // Cover image URL preview & input
       $('blogTestCoverBtn')?.addEventListener('click', () => {
-        const url = $('blogPostCover')?.value.trim();
-        const wrap = $('blogCoverPreviewWrap');
-        const img = $('blogCoverPreviewImg');
-        if (url && wrap && img) {
-          img.src = url;
-          wrap.style.display = 'block';
-        } else if (wrap) {
-          wrap.style.display = 'none';
+        updateBlogCoverPreview($('blogPostCover')?.value);
+      });
+      $('blogPostCover')?.addEventListener('input', (e) => {
+        updateBlogCoverPreview(e.target.value);
+      });
+
+      // Markdown Toolbar Media Inserters (Image & Video)
+      const contentImageInput = $('blogContentImageInput');
+      const contentVideoInput = $('blogContentVideoInput');
+
+      $('blogInsertImageBtn')?.addEventListener('click', () => contentImageInput?.click());
+
+      contentImageInput?.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const btn = $('blogInsertImageBtn');
+        const originalText = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Uploading...'; }
+        try {
+          const res = await uploadBlogMediaFile(file);
+          const altName = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+          insertTextAtCursor($('blogPostContent'), `\n![${altName}](${res.url})\n\n`);
+        } catch (err) {
+          alert('Failed to insert image: ' + err.message);
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = originalText; }
+          contentImageInput.value = '';
+        }
+      });
+
+      $('blogInsertVideoBtn')?.addEventListener('click', () => {
+        const choice = window.confirm("Click OK to upload a video file (.mp4/.webm)\nOr click CANCEL to embed YouTube, Loom, or Vimeo link.");
+        if (choice) {
+          contentVideoInput?.click();
+        } else {
+          const rawUrl = window.prompt("Enter YouTube, Vimeo, Loom, or direct MP4/WebM video URL:");
+          if (rawUrl && rawUrl.trim()) {
+            const cleanUrl = rawUrl.trim();
+            if (isMediaVideo(cleanUrl)) {
+              if (cleanUrl.startsWith('data:video/') || /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(cleanUrl)) {
+                insertTextAtCursor($('blogPostContent'), `\n<video controls playsinline src="${cleanUrl}" style="width:100%;max-height:480px;border-radius:8px;margin:16px 0;background:#000;display:block;"></video>\n\n`);
+              } else {
+                const embed = getEmbedVideoUrl(cleanUrl);
+                insertTextAtCursor($('blogPostContent'), `\n<div class="video-embed" style="position:relative;padding-bottom:56.25%;height:0;margin:16px 0;border-radius:8px;overflow:hidden;"><iframe src="${embed}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe></div>\n\n`);
+              }
+            } else {
+              insertTextAtCursor($('blogPostContent'), `\n<video controls playsinline src="${cleanUrl}" style="width:100%;max-height:480px;border-radius:8px;margin:16px 0;background:#000;display:block;"></video>\n\n`);
+            }
+          }
+        }
+      });
+
+      contentVideoInput?.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const btn = $('blogInsertVideoBtn');
+        const originalText = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Uploading...'; }
+        try {
+          const res = await uploadBlogMediaFile(file);
+          insertTextAtCursor($('blogPostContent'), `\n<video controls playsinline src="${res.url}" style="width:100%;max-height:480px;border-radius:8px;margin:16px 0;background:#000;display:block;"></video>\n\n`);
+        } catch (err) {
+          alert('Failed to insert video: ' + err.message);
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = originalText; }
+          contentVideoInput.value = '';
+        }
+      });
+
+      // Direct Screenshot Paste into Content Textarea (Ctrl+V)
+      $('blogPostContent')?.addEventListener('paste', async (e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf('image') !== -1) {
+            e.preventDefault();
+            const file = items[i].getAsFile();
+            if (!file) continue;
+            const tempTag = `\n![Uploading screenshot...](${Date.now()})\n`;
+            insertTextAtCursor($('blogPostContent'), tempTag);
+            try {
+              const res = await uploadBlogMediaFile(file);
+              $('blogPostContent').value = $('blogPostContent').value.replace(tempTag, `\n![Screenshot](${res.url})\n\n`);
+            } catch (err) {
+              $('blogPostContent').value = $('blogPostContent').value.replace(tempTag, '');
+              alert('Screenshot paste failed: ' + err.message);
+            }
+            break;
+          }
         }
       });
 
