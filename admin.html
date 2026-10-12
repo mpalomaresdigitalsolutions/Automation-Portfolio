@@ -373,6 +373,7 @@
     #blogPostPreview li { margin-bottom: 0.4em; }
     #blogPostPreview blockquote { border-left: 3px solid var(--accent); padding-left: 14px; color: var(--muted); margin: 1em 0; }
     #blogPostPreview img { max-width: 100%; border-radius: 8px; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     /* Tabs inside detail */
     .detail-tabs {
@@ -1231,10 +1232,13 @@
       <div class="page" id="page-blog">
         <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
           <h2><span>✍️</span> Blog Posts</h2>
-          <div style="display:flex;gap:10px;">
+          <div style="display:flex;gap:10px;align-items:center;">
             <a href="blog.html" target="_blank" class="btn btn-outline" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
               <span>🌐</span> Public Blog ↗
             </a>
+            <button class="btn btn-outline" id="aiBlogWriterBtn" style="border-color:var(--accent);color:var(--accent);display:inline-flex;align-items:center;gap:6px;">
+              <span>✨</span> Auto-Write with AI
+            </button>
             <button class="btn btn-primary" id="newBlogPostBtn">+ New Post</button>
           </div>
         </div>
@@ -1647,7 +1651,12 @@
     <div class="modal modal-blog">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:14px;">
         <h3 style="margin:0;"><span id="blogModalIcon">✍️</span> <span id="blogModalHeading">Create Blog Post</span></h3>
-        <button type="button" id="blogModalCloseX" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;" title="Close">✕</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button type="button" class="btn btn-outline btn-sm" id="blogModalAiHelperBtn" style="border-color:var(--accent);color:var(--accent);font-size:11px;">
+            ✨ Write with AI
+          </button>
+          <button type="button" id="blogModalCloseX" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;" title="Close">✕</button>
+        </div>
       </div>
 
       <div id="blogModalAlert" class="alert alert-error" style="display:none;margin-bottom:16px;"></div>
@@ -1743,6 +1752,92 @@
           <button type="button" class="btn btn-outline" id="blogSaveDraftBtn" style="border-color:var(--muted);color:var(--muted);">Save as Draft</button>
           <button type="button" class="btn btn-primary" id="blogSavePublishBtn">🚀 Publish Post</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Blog Writer Modal -->
+  <div class="modal-overlay" id="aiBlogModal">
+    <div class="modal" style="max-width:620px;width:95%;padding:28px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:12px;">
+        <h3 style="margin:0;"><span style="color:var(--accent);">✨</span> Auto-Write Blog with AI</h3>
+        <button type="button" id="aiBlogModalCloseX" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;" title="Close">✕</button>
+      </div>
+
+      <div id="aiBlogAlert" class="alert alert-error" style="display:none;margin-bottom:14px;"></div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label style="font-weight:600;color:var(--text);margin-bottom:6px;">Topic, Question, or Bullet Points *</label>
+        <textarea id="aiBlogTopic" rows="3" placeholder="e.g. Why every contractor needs missed-call text-back in 2026, or paste key bullet points..." style="width:100%;font-size:13px;line-height:1.5;resize:vertical;"></textarea>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Paste any topic, problem statement, or rough outline. The AI will write the full article, headline, tags, and summary.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div class="form-group" style="margin:0;">
+          <label>Category / Niche</label>
+          <select id="aiBlogCategory">
+            <option value="Automation">Automation &amp; n8n</option>
+            <option value="Zapier">Zapier Workflows</option>
+            <option value="AI Systems">AI Systems &amp; Agents</option>
+            <option value="Google Ads">Contractor PPC &amp; Google Ads</option>
+            <option value="CRM">CRM &amp; GoHighLevel</option>
+            <option value="Case Study">Case Study / Breakdown</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Target Depth</label>
+          <select id="aiBlogLength">
+            <option value="standard">Standard Guide (~800 words)</option>
+            <option value="deep">In-Depth Blueprint (~1,200 words)</option>
+            <option value="quick">Quick Insights (~500 words)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Collapsible AI Provider Settings -->
+      <div style="margin-bottom:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" id="aiProviderToggle">
+          <div style="font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;">
+            <span>⚙️</span> AI Engine &amp; API Key
+          </div>
+          <span style="font-size:11px;color:var(--accent);" id="aiProviderLabel">Built-in Proxy (Default) ▾</span>
+        </div>
+        <div id="aiProviderSettings" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="display:grid;grid-template-columns:140px 1fr;gap:12px;margin-bottom:10px;">
+            <div class="form-group" style="margin:0;">
+              <label>Provider</label>
+              <select id="aiProviderSelect" style="font-size:12px;">
+                <option value="proxy">Built-in Proxy</option>
+                <option value="deepseek">DeepSeek API</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="openai">OpenAI (GPT-4o)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>API Key (Optional / Saved in Browser)</label>
+              <input type="password" id="aiApiKeyInput" placeholder="sk-..." style="font-size:12px;font-family:'Space Mono',monospace;">
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.4;">
+            • <strong>Built-in Proxy</strong>: Uses your deployed Cloudflare proxy without needing a key.<br>
+            • <strong>DeepSeek / Gemini / OpenAI</strong>: Provide your personal key for full-length 1,500+ word guides. Stored strictly in your browser's local storage.
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress / Status -->
+      <div id="aiGenProgress" style="display:none;margin-bottom:16px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:14px 16px;text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;color:var(--accent);font-size:13px;font-weight:600;">
+          <span style="display:inline-block;animation:spin 1s linear infinite;">⚡</span>
+          <span id="aiGenStatusText">Brainstorming title and outline...</span>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;">
+        <button type="button" class="btn btn-outline" id="aiBlogModalCancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="aiGenerateSubmitBtn" style="padding:10px 24px;font-weight:600;">
+          ⚡ Generate Full Article
+        </button>
       </div>
     </div>
   </div>
@@ -5071,6 +5166,283 @@ Marlon Palomares`
       }
     }
 
+    /* ══════════════════════════════════════════
+       AUTOMATED AI BLOG POST GENERATOR
+    ══════════════════════════════════════════ */
+    function openAIBlogModal(defaultTopic) {
+      const modal = $('aiBlogModal');
+      const alertBox = $('aiBlogAlert');
+      const progress = $('aiGenProgress');
+      if (!modal) return;
+
+      alertBox.style.display = 'none';
+      alertBox.textContent = '';
+      progress.style.display = 'none';
+
+      if (defaultTopic) {
+        $('aiBlogTopic').value = defaultTopic;
+      } else {
+        $('aiBlogTopic').value = '';
+      }
+
+      // Restore saved provider and API key from localStorage
+      const savedProvider = localStorage.getItem('blog_ai_provider') || 'proxy';
+      const savedKey = localStorage.getItem('blog_ai_key') || '';
+      $('aiProviderSelect').value = savedProvider;
+      $('aiApiKeyInput').value = savedKey;
+      updateAiProviderLabel(savedProvider);
+
+      modal.classList.add('open');
+      setTimeout(() => $('aiBlogTopic').focus(), 100);
+    }
+
+    function updateAiProviderLabel(val) {
+      const labelMap = {
+        'proxy': 'Built-in Proxy (Default) ▾',
+        'deepseek': 'DeepSeek API ▾',
+        'gemini': 'Google Gemini ▾',
+        'openai': 'OpenAI (GPT-4o) ▾'
+      };
+      if ($('aiProviderLabel')) {
+        $('aiProviderLabel').textContent = labelMap[val] || 'Built-in Proxy ▾';
+      }
+    }
+
+    function parseAIBlogResponse(text, fallbackTopic, fallbackCategory) {
+      function getSection(marker, nextMarker) {
+        const startIdx = text.indexOf(marker);
+        if (startIdx === -1) return '';
+        const after = text.slice(startIdx + marker.length);
+        if (!nextMarker) return after.trim();
+        const endIdx = after.indexOf(nextMarker);
+        return (endIdx !== -1 ? after.slice(0, endIdx) : after).trim();
+      }
+
+      let title = getSection('===TITLE===', '===SLUG===') || fallbackTopic;
+      let slug = getSection('===SLUG===', '===CATEGORY===') || generateSlug(title);
+      let category = getSection('===CATEGORY===', '===TAGS===') || fallbackCategory || 'Automation';
+      let tagsStr = getSection('===TAGS===', '===READ_TIME===') || 'Automation, AI, Lead Gen';
+      let readTime = parseInt(getSection('===READ_TIME===', '===EXCERPT==='), 10) || 5;
+      let excerpt = getSection('===EXCERPT===', '===COVER_KEYWORD===');
+      let coverKeyword = getSection('===COVER_KEYWORD===', '===CONTENT===') || 'technology';
+      let content = getSection('===CONTENT===', null);
+
+      if (!content) {
+        content = text.replace(/===[A-Z_]+===/g, '').trim();
+      }
+
+      if (!excerpt) {
+        excerpt = content.replace(/[#*`>-]/g, '').slice(0, 160).trim() + '...';
+      }
+
+      const fallbackPhotos = {
+        'Automation': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+        'Zapier': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+        'AI Systems': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+        'Google Ads': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
+        'CRM': 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80',
+        'Case Study': 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=1200&q=80'
+      };
+
+      const cover_image = fallbackPhotos[category] || fallbackPhotos['Automation'];
+
+      return {
+        title,
+        slug: generateSlug(slug || title),
+        category,
+        tags: tagsStr,
+        read_time_minutes: readTime,
+        excerpt,
+        cover_image,
+        content
+      };
+    }
+
+    async function executeAIBlogGeneration() {
+      const topic = $('aiBlogTopic')?.value.trim();
+      const category = $('aiBlogCategory')?.value || 'Automation';
+      const length = $('aiBlogLength')?.value || 'standard';
+      const provider = $('aiProviderSelect')?.value || 'proxy';
+      const apiKey = $('aiApiKeyInput')?.value.trim();
+      const alertBox = $('aiBlogAlert');
+      const progress = $('aiGenProgress');
+      const statusText = $('aiGenStatusText');
+      const submitBtn = $('aiGenerateSubmitBtn');
+
+      if (!topic) {
+        alertBox.textContent = 'Please enter a topic or notes for the article.';
+        alertBox.style.display = 'block';
+        $('aiBlogTopic').focus();
+        return;
+      }
+
+      alertBox.style.display = 'none';
+      progress.style.display = 'block';
+      submitBtn.disabled = true;
+
+      // Save preferences to localStorage
+      localStorage.setItem('blog_ai_provider', provider);
+      if (apiKey) localStorage.setItem('blog_ai_key', apiKey);
+
+      statusText.textContent = 'Structuring outline, SEO title, and headings...';
+
+      const prompt = `You are a top-tier tech author, speed-to-lead strategist, and automation engineer writing for Marlon Palomares Digital Solutions.
+Specialties:
+- High-Intent Google Ads & PPC for home service contractors (HVAC, Plumbing, Roofing, Junk Removal)
+- Speed-to-lead automation (<60 seconds response via missed-call text-back and GoHighLevel)
+- Complex workflow engineering with n8n and Zapier
+- AI systems and custom business web apps
+
+Write a complete, highly engaging, authoritative blog post based on this topic:
+Topic: "${topic}"
+Target Category: "${category}"
+Desired Depth: ${length === 'deep' ? 'In-Depth Technical Blueprint (~1,200 words)' : length === 'quick' ? 'Concise Insights (~500 words)' : 'Standard High-Impact Guide (~800 words)'}
+
+Tone: Professional, direct, authoritative, practical, and backed by measurable results (e.g. 391% conversion boost, sub-60s response times). Include actionable steps, code/workflow snippet where applicable, and a strong concluding recommendation to book a strategy call.
+
+You MUST format your entire response using these exact delimiters:
+
+===TITLE===
+[Catchy, SEO-optimized headline with high search intent]
+
+===SLUG===
+[clean-url-slug-using-lowercase-and-hyphens]
+
+===CATEGORY===
+[Category: Automation, Zapier, AI Systems, Google Ads, CRM, or Case Study]
+
+===TAGS===
+[3 to 5 comma-separated tags, e.g. n8n, GoHighLevel, Speed-to-Lead, Contractor PPC]
+
+===READ_TIME===
+[estimated read time number, e.g. 5]
+
+===EXCERPT===
+[Compelling 1-2 sentence hook for Google search snippets and social sharing]
+
+===COVER_KEYWORD===
+[Single English search term for a relevant stock photo, e.g. technology, automation, smartphone, contractor]
+
+===CONTENT===
+[Full article in Markdown format:
+- Hook & Problem Statement (## Heading)
+- Why Traditional Methods Fail
+- The Automated Solution / Architecture (## Heading with bullet points or workflow steps)
+- Real-World Results / Impact
+- Actionable Takeaways & Next Steps
+]`;
+
+      try {
+        let rawText = '';
+
+        if (provider === 'deepseek' && apiKey) {
+          statusText.textContent = 'Calling DeepSeek API...';
+          const res = await fetch('https://api.deepseek.com/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: 'deepseek-chat',
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.7,
+              max_tokens: 3000
+            })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error?.message || `DeepSeek API error (${res.status})`);
+          }
+          const d = await res.json();
+          rawText = d.choices?.[0]?.message?.content || '';
+        } else if (provider === 'gemini' && apiKey) {
+          statusText.textContent = 'Calling Google Gemini API...';
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { maxOutputTokens: 3000, temperature: 0.7 }
+            })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error?.message || `Gemini API error (${res.status})`);
+          }
+          const d = await res.json();
+          rawText = d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        } else if (provider === 'openai' && apiKey) {
+          statusText.textContent = 'Calling OpenAI API...';
+          const res = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: 'gpt-4o-mini',
+              messages: [{ role: 'user', content: prompt }],
+              max_tokens: 3000
+            })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error?.message || `OpenAI API error (${res.status})`);
+          }
+          const d = await res.json();
+          rawText = d.choices?.[0]?.message?.content || '';
+        } else {
+          statusText.textContent = 'Generating via Cloudflare Proxy...';
+          const res = await fetch('https://portfolio-chat-proxy.mpalomaresdigital.workers.dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+          if (!res.ok) {
+            throw new Error(`AI proxy returned HTTP ${res.status}`);
+          }
+          const d = await res.json();
+          rawText = d.reply || (d.choices?.[0]?.message?.content) || '';
+        }
+
+        statusText.textContent = 'Formatting article and populating editor...';
+
+        const parsed = parseAIBlogResponse(rawText, topic, category);
+
+        // Close AI Modal
+        $('aiBlogModal').classList.remove('open');
+
+        // Populate Blog Editor Modal
+        openBlogEditor(null);
+        $('blogPostTitle').value = parsed.title;
+        $('blogPostSlug').value = parsed.slug;
+        $('blogPostCategory').value = parsed.category;
+        $('blogPostTags').value = parsed.tags;
+        $('blogPostReadTime').value = parsed.read_time_minutes;
+        $('blogPostExcerpt').value = parsed.excerpt;
+        $('blogPostCover').value = parsed.cover_image;
+        $('blogPostContent').value = parsed.content;
+
+        if (parsed.cover_image) {
+          $('blogCoverPreviewWrap').style.display = 'block';
+          $('blogCoverPreviewImg').src = parsed.cover_image;
+        }
+
+        // Switch to Live Preview immediately
+        switchBlogTab('preview');
+
+      } catch (err) {
+        alertBox.textContent = 'Generation failed: ' + err.message;
+        alertBox.style.display = 'block';
+      } finally {
+        progress.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    }
+
     // Attach Blog Event Listeners
     // Check if DOM is already loaded or attach
     function initBlogEventListeners() {
@@ -5079,6 +5451,29 @@ Marlon Palomares`
       $('blogEmptyCreateBtn')?.addEventListener('click', () => openBlogEditor(null));
       $('blogModalCloseX')?.addEventListener('click', () => $('blogPostModal').classList.remove('open'));
       $('blogModalCancel')?.addEventListener('click', () => $('blogPostModal').classList.remove('open'));
+
+      // AI Writer buttons
+      $('aiBlogWriterBtn')?.addEventListener('click', () => openAIBlogModal(''));
+      $('blogModalAiHelperBtn')?.addEventListener('click', () => openAIBlogModal($('blogPostTitle')?.value || ''));
+      $('aiBlogModalCloseX')?.addEventListener('click', () => $('aiBlogModal').classList.remove('open'));
+      $('aiBlogModalCancel')?.addEventListener('click', () => $('aiBlogModal').classList.remove('open'));
+      $('aiGenerateSubmitBtn')?.addEventListener('click', executeAIBlogGeneration);
+
+      // AI Provider settings toggle
+      $('aiProviderToggle')?.addEventListener('click', () => {
+        const wrap = $('aiProviderSettings');
+        if (wrap) wrap.style.display = (wrap.style.display === 'none' || !wrap.style.display) ? 'block' : 'none';
+      });
+
+      $('aiProviderSelect')?.addEventListener('change', (e) => {
+        const val = e.target.value;
+        updateAiProviderLabel(val);
+        localStorage.setItem('blog_ai_provider', val);
+      });
+
+      $('aiApiKeyInput')?.addEventListener('input', (e) => {
+        localStorage.setItem('blog_ai_key', e.target.value.trim());
+      });
 
       // Save buttons
       $('blogSaveDraftBtn')?.addEventListener('click', () => saveBlogPost('draft'));
@@ -5132,6 +5527,7 @@ Marlon Palomares`
 
     // Make global for inline onclicks in generated table rows
     window.openBlogEditor = openBlogEditor;
+    window.openAIBlogModal = openAIBlogModal;
     window.toggleBlogPostStatus = toggleBlogPostStatus;
     window.deleteBlogPost = deleteBlogPost;
   </script>
